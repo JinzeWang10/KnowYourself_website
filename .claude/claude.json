@@ -1,0 +1,71 @@
+{
+  "project": {
+    "name": "心理量表测评平台",
+    "description": "专业的心理量表测评平台，提供多种心理健康评估工具"
+  },
+  "context": {
+    "framework": "Next.js 15 (App Router)",
+    "language": "TypeScript",
+    "styling": "Tailwind CSS",
+    "charts": "Recharts",
+    "storage": "LocalStorage (client-side only)"
+  },
+  "architecture": {
+    "patterns": [
+      "量表数据定义在 lib/scales/ 目录",
+      "每个量表是独立的 TypeScript 文件",
+      "使用 QuizTemplate 类型定义量表结构",
+      "评分算法在 lib/scales/index.ts 或独立文件中",
+      "页面路由：/scales/[scaleId]/* 动态路由"
+    ],
+    "key_features": [
+      "完全本地化存储，隐私保护",
+      "自动保存测评进度",
+      "多维度结果分析",
+      "雷达图可视化",
+      "测评历史管理"
+    ]
+  },
+  "scales": {
+    "available": [
+      {
+        "id": "ani",
+        "name": "ANI - 戒断必要性指数",
+        "questions": 33,
+        "customScoring": true,
+        "note": "使用 lib/calculateANI.ts 自定义评分算法"
+      },
+      {
+        "id": "scl90",
+        "name": "SCL-90 - 症状自评量表",
+        "questions": 90,
+        "customScoring": false
+      }
+    ]
+  },
+  "guidelines": {
+    "adding_new_scale": [
+      "1. 在 lib/scales/ 创建新量表文件（如 new-scale.ts）",
+      "2. 定义 QuizTemplate 结构：题目、维度、评分规则",
+      "3. 在 lib/scales/index.ts 导入并添加到 scales 数组",
+      "4. 如需自定义评分，创建独立计算文件并在 quiz/page.tsx 中调用",
+      "5. 在首页 app/page.tsx 添加图标映射"
+    ],
+    "privacy_first": [
+      "所有用户数据存储在 localStorage",
+      "不上传任何数据到服务器",
+      "用户可随时清除浏览器缓存删除数据"
+    ],
+    "code_style": [
+      "使用 TypeScript 严格模式",
+      "组件使用 'use client' 标记客户端组件",
+      "保持简洁的代码注释",
+      "遵循 Next.js App Router 最佳实践"
+    ]
+  },
+  "commands": {
+    "dev": "npm run dev (端口 3001)",
+    "build": "npm run build",
+    "start": "npm start"
+  }
+}
