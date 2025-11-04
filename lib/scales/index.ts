@@ -6,10 +6,10 @@ import { ini } from './ini';
 
 // 所有可用的量表
 const scales: QuizTemplate[] = [
-  ani,
-  scl90,
   essScale,
   ini,
+  ani,
+  scl90,
 ];
 
 // 获取所有量表列表

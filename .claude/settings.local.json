@@ -2,7 +2,10 @@
   "permissions": {
     "allow": [
       "Bash(npm run dev:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git log:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nfeat: 添加ESS和INI量表及后端分析功能\n\n- 新增ESS (Epworth嗜睡量表) 和INI (失眠严重程度指数) 量表\n- 实现量表评估API和百分位数计算功能\n- 添加百分位数图表可视化组件\n- 新增免责声明、隐私政策和用户协议页面\n- 完善量表结果展示页面，添加百分位数对比\n- 更新知情同意书和问卷界面\n- 添加后端分析功能文档\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git push:*)"
     ],
     "deny": [],
     "ask": []

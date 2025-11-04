@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import { getScaleById, calculateDimensionScores, normalizeScore } from '@/lib/scales';
 import { getPercentileRank } from '@/lib/api-client';
@@ -46,7 +47,7 @@ export default function ResultPage() {
   const scale = getScaleById(scaleId);
 
   // 设置页面标题
-  usePageTitle(scale ? `${scale.title} - 测评结果 | 心理量表` : '测评结果 | 心理量表');
+  usePageTitle(scale ? `${scale.title} - 测评结果 | KnowYourself` : '测评结果 | KnowYourself');
 
   useEffect(() => {
     // 从历史记录中获取结果
@@ -112,7 +113,17 @@ export default function ResultPage() {
       <header className="bg-white shadow-sm">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3 hover:opacity-90 transition">
-            <span className="text-xl font-bold text-primary">心理量表</span>
+            <Image
+              src="/knowyourself_logo.png"
+              alt="KnowYourself Logo"
+              width={32}
+              height={32}
+              className="object-contain"
+            />
+            <div className="flex flex-col">
+              <span className="text-lg font-bold text-primary">KnowYourself</span>
+              <span className="text-xs text-gray-600">知己</span>
+            </div>
           </Link>
           <Link href="/" className="text-gray-600 hover:text-primary transition text-sm">
             返回首页 →

@@ -6,14 +6,14 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://scales.example.com'
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "心理量表测评平台",
-    template: "%s | 心理量表"
+    default: "KnowYourself 知己 - 了解更真实的自己",
+    template: "%s | KnowYourself 知己"
   },
-  description: "专业的心理量表测评平台，提供多种心理健康评估工具，帮助你更好地了解自己。包括SCL-90等科学量表，匿名测评，专业解读。",
-  keywords: "心理测评,心理健康,量表测评,SCL-90,心理评估,自我认知",
-  authors: [{ name: "心理量表团队" }],
-  creator: "心理量表团队",
-  publisher: "心理量表",
+  description: "KnowYourself 专业的心理量表测评平台，提供多种心理健康评估工具，帮助你更好地了解自己。包括SCL-90等科学量表，匿名测评，专业解读。",
+  keywords: "KnowYourself,知己,心理测评,心理健康,量表测评,SCL-90,心理评估,自我认知",
+  authors: [{ name: "KnowYourself Team" }],
+  creator: "KnowYourself",
+  publisher: "KnowYourself 知己",
   formatDetection: {
     email: false,
     address: false,

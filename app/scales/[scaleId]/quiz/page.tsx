@@ -244,7 +244,7 @@ export default function QuizPage() {
           <div className="flex items-center justify-between mb-3">
             <Link href="/" className="flex items-center gap-2 hover:opacity-90 transition">
               <div>
-                <div className="text-xs text-primary font-semibold">心理量表</div>
+                <div className="text-xs text-primary font-semibold">KnowYourself</div>
                 <div className="text-xs text-gray-600">{scale.title}</div>
               </div>
             </Link>

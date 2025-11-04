@@ -4,9 +4,9 @@ import { getScaleList } from '@/lib/scales';
 import Header from '@/components/Header';
 
 export const metadata: Metadata = {
-  title: "心理量表测评平台",
-  description: "专业的心理量表测评平台，提供多种心理健康评估工具，帮助你更好地了解自己。包括SCL-90等科学量表，匿名测评，专业解读。",
-  keywords: "心理测评,心理健康,量表测评,SCL-90,心理评估,自我认知",
+  title: "KnowYourself 知己 - 了解更真实的自己",
+  description: "KnowYourself 专业的心理量表测评平台，提供多种心理健康评估工具，帮助你更好地了解自己。包括SCL-90等科学量表，匿名测评，专业解读。",
+  keywords: "KnowYourself,知己,心理测评,心理健康,量表测评,SCL-90,心理评估,自我认知",
 };
 
 export default function HomePage() {
@@ -133,8 +133,8 @@ export default function HomePage() {
       <footer className="bg-gray-900 text-gray-400 py-8">
         <div className="container mx-auto px-4">
           <div className="text-center mb-4">
-            <p>&copy; 2025 心理量表测评平台. All rights reserved.</p>
-            <p className="mt-2 text-sm">专注于心理健康与自我认知</p>
+            <p>&copy; 2025 KnowYourself 知己. All rights reserved.</p>
+            <p className="mt-2 text-sm">了解更真实的自己 · 专注于心理健康与自我认知</p>
           </div>
           <div className="flex justify-center gap-6 text-sm">
             <Link href="/terms" className="hover:text-white transition">

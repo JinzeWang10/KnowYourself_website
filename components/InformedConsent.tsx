@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface InformedConsentProps {
   scaleId: string;
@@ -52,7 +53,17 @@ export default function InformedConsent({
       <header className="bg-white shadow-sm">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3 hover:opacity-90 transition">
-            <span className="text-xl font-bold text-primary">心理量表</span>
+            <Image
+              src="/knowyourself_logo.png"
+              alt="KnowYourself Logo"
+              width={32}
+              height={32}
+              className="object-contain"
+            />
+            <div className="flex flex-col">
+              <span className="text-lg font-bold text-primary">KnowYourself</span>
+              <span className="text-xs text-gray-600">知己</span>
+            </div>
           </Link>
           <Link href={`/scales/${scaleId}`} className="text-gray-600 hover:text-primary transition text-sm">
             返回量表介绍 →

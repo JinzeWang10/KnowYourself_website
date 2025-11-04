@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import type { QuizResult } from '@/types/quiz';
 
@@ -56,9 +57,22 @@ export default function HistoryPage() {
     <div className="min-h-screen bg-gradient-to-b from-primary-light/10 to-white">
       {/* Header */}
       <header className="bg-white shadow-sm">
-        <div className="container mx-auto px-4 py-4">
-          <Link href="/" className="text-primary hover:text-primary-dark font-semibold">
-            ← 返回首页
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-3 hover:opacity-90 transition">
+            <Image
+              src="/knowyourself_logo.png"
+              alt="KnowYourself Logo"
+              width={32}
+              height={32}
+              className="object-contain"
+            />
+            <div className="flex flex-col">
+              <span className="text-lg font-bold text-primary">KnowYourself</span>
+              <span className="text-xs text-gray-600">知己</span>
+            </div>
+          </Link>
+          <Link href="/" className="text-gray-600 hover:text-primary transition text-sm">
+            返回首页 →
           </Link>
         </div>
       </header>
