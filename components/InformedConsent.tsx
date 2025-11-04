@@ -5,17 +5,13 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 
+import type { Reference } from '@/types/quiz';
+
 interface InformedConsentProps {
   scaleId: string;
   scaleTitle: string;
   scaleDescription: string;
-  references?: Array<{
-    authors: string;
-    year: number;
-    title: string;
-    journal?: string;
-    doi?: string;
-  }>;
+  references?: Reference[];
 }
 
 export default function InformedConsent({

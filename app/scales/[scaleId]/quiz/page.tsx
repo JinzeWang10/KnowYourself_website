@@ -123,7 +123,8 @@ export default function QuizPage() {
         completedAt: new Date(),
         answers: Object.entries(answersToSubmit).map(([questionId, answer]) => ({
           questionId,
-          answer,
+          // Coerce stored answers to number for scoring. If it's already a number, keep it.
+          answer: typeof answer === 'number' ? answer : Number(answer),
         })),
         dimensionScores: {
           hbi_consequences: aniResult.dimensionScores.hbi_consequences.normalized,
@@ -174,8 +175,13 @@ export default function QuizPage() {
     }
 
     // 其他量表使用常规计算
-    const totalScore = calculateScore(scale, answersToSubmit);
-    const dimensionScores = calculateDimensionScores(scale, answersToSubmit);
+    // 将 answersToSubmit 转换为 numericAnswers（Record<string, number>）以匹配计算函数接口
+    const numericAnswers: Record<string, number> = Object.fromEntries(
+      Object.entries(answersToSubmit).map(([k, v]) => [k, typeof v === 'number' ? v : Number(v)])
+    ) as Record<string, number>;
+
+    const totalScore = calculateScore(scale, numericAnswers);
+    const dimensionScores = calculateDimensionScores(scale, numericAnswers);
     const scoreLevel = getScoreLevel(scale, totalScore);
 
     // 创建结果对象
@@ -188,7 +194,8 @@ export default function QuizPage() {
       completedAt: new Date(),
       answers: Object.entries(answersToSubmit).map(([questionId, answer]) => ({
         questionId,
-        answer,
+        // Ensure answer is a number type in the result
+        answer: typeof answer === 'number' ? answer : Number(answer),
       })),
       dimensionScores: dimensionScores,
       report: {

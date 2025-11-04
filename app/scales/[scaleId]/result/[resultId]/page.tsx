@@ -91,7 +91,7 @@ export default function ResultPage() {
     );
   }
 
-  // 重建 answers 对象
+  // 重建 answers 对象（可能包含 string 或 number）
   const answers: Record<string, number | string> = {};
   result.answers.forEach((a) => {
     if (typeof a.answer !== 'object') {
@@ -99,7 +99,12 @@ export default function ResultPage() {
     }
   });
 
-  const dimensionScores = calculateDimensionScores(scale, answers);
+  // 将 answers 转换为 numericAnswers 以匹配计算接口
+  const numericAnswers: Record<string, number> = Object.fromEntries(
+    Object.entries(answers).map(([k, v]) => [k, typeof v === 'number' ? v : Number(v)])
+  ) as Record<string, number>;
+
+  const dimensionScores = calculateDimensionScores(scale, numericAnswers);
   const scoreLevel = scale.scoring.ranges.find(
     (r) => result.score >= r.min && result.score <= r.max
   );

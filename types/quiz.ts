@@ -37,10 +37,15 @@ export interface ScoreRange {
 // 参考文献
 export interface Reference {
   title: string;
-  authors: string;
+  // authors/year may be absent for simplified reference entries
+  authors?: string;
   journal?: string;
-  year: number;
+  year?: number;
   doi?: string;
+  // 可选的补充字段：卷号、页码或简化内容描述
+  volume?: string | number;
+  pages?: string;
+  content?: string;
 }
 
 // 量表模板
