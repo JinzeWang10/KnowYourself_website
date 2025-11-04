@@ -5,8 +5,8 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { getScaleById, calculateDimensionScores, normalizeScore } from '@/lib/scales';
-import { quizApi } from '@/lib/api';
-import type { QuizResult, PercentileData } from '@/types/quiz';
+import { getPercentileRank } from '@/lib/api-client';
+import type { QuizResult } from '@/types/quiz';
 import type { RadarDataPoint } from '@/components/DimensionRadarChart';
 
 // 动态导入雷达图组件（仅客户端）
@@ -35,7 +35,13 @@ export default function ResultPage() {
   const resultId = params.resultId as string;
 
   const [result, setResult] = useState<QuizResult | null>(null);
-  const [percentileData, setPercentileData] = useState<PercentileData | null>(null);
+  const [percentileData, setPercentileData] = useState<{
+    percentile: number | null;
+    totalCount: number;
+    higherCount?: number;
+    lowerCount?: number;
+    message?: string;
+  } | null>(null);
   const [isLoadingPercentile, setIsLoadingPercentile] = useState(true);
   const scale = getScaleById(scaleId);
 
@@ -61,8 +67,8 @@ export default function ResultPage() {
   const fetchPercentileData = async (score: number) => {
     try {
       setIsLoadingPercentile(true);
-      const response = await quizApi.getPercentile(scaleId, score);
-      if (response.success) {
+      const response = await getPercentileRank(scaleId, score);
+      if (response.success && response.data) {
         setPercentileData(response.data);
       }
     } catch (error) {
@@ -161,11 +167,6 @@ export default function ResultPage() {
                   <span>100</span>
                 </div>
               </div>
-
-              {/* 原始得分备注 */}
-              <p className="text-sm text-gray-500 mt-3">
-                得分已归一化到 0-100 范围（原始得分: {result.score} / {scale.scoring.scaleRange.max}）
-              </p>
             </div>
 
             {/* Score Description */}
@@ -175,7 +176,77 @@ export default function ResultPage() {
                 {scoreLevel?.description}
               </p>
             </div>
+
+            {/* Psychological Traits - 心理特征 */}
+            {scoreLevel?.psychologicalTraits && (
+              <div className="mt-6 p-6 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl border border-purple-200">
+                <h3 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                  <span className="text-2xl">🧠</span>
+                  心理特征
+                </h3>
+                <p className="text-gray-700 leading-relaxed">
+                  {scoreLevel.psychologicalTraits}
+                </p>
+              </div>
+            )}
+
+            {/* Suggestions - 建议 */}
+            {scoreLevel?.suggestions && scoreLevel.suggestions.length > 0 && (
+              <div className="mt-6 p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
+                <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                  <span className="text-2xl">💡</span>
+                  改善建议
+                </h3>
+                <ul className="space-y-3">
+                  {scoreLevel.suggestions.map((suggestion, index) => (
+                    <li key={index} className="flex items-start gap-3">
+                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary text-white text-xs flex items-center justify-center mt-0.5">
+                        {index + 1}
+                      </span>
+                      <span className="text-gray-700 leading-relaxed flex-1">
+                        {suggestion}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* 免责声明和参考提示 */}
+            <div className="mt-6 p-4 bg-blue-50 border-l-4 border-blue-500 rounded-lg">
+              <p className="text-sm text-gray-700 leading-relaxed">
+                ℹ️ <strong>重要提示：</strong>测评结果仅供参考，不具备临床诊断效力。
+                若您有心理健康疑虑，请咨询专业心理咨询师或医疗机构。
+                详情请查阅
+                <Link href="/disclaimer" target="_blank" className="text-primary hover:underline mx-1">
+                  《免责声明》
+                </Link>
+              </p>
+            </div>
           </div>
+
+          {/* 心理援助信息（异常结果时显示） */}
+          {normalizedScore >= 70 && (
+            <div className="bg-red-50 border-l-4 border-red-500 rounded-2xl shadow-lg p-6 mb-6">
+              <div className="flex items-start gap-3">
+                <span className="text-3xl">🆘</span>
+                <div className="flex-1">
+                  <h3 className="text-xl font-bold text-red-900 mb-3">需要帮助？</h3>
+                  <p className="text-red-800 leading-relaxed mb-4">
+                    您的测评结果显示可能存在需要关注的情况。请不要过度担心，但建议您寻求专业帮助。
+                  </p>
+                  <div className="bg-white p-4 rounded-lg">
+                    <p className="text-gray-900 font-semibold mb-2">心理援助热线：</p>
+                    <ul className="list-none text-gray-800 space-y-2 text-sm">
+                      <li>🇨🇳 全国心理援助热线: <strong>400-161-9995</strong></li>
+                      <li>🇭🇰 香港撒玛利亚防止自杀会: <strong>2389-2222</strong></li>
+                      <li>🌏 国际心理援助: <a href="https://findahelpline.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">findahelpline.com</a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Percentile Chart - 百分位分析 */}
           {!isLoadingPercentile && percentileData && (
@@ -213,9 +284,13 @@ export default function ResultPage() {
                 const radarData: RadarDataPoint[] = scale.dimensions.map((dimension) => {
                   const dimScore = dimensionScores[dimension.id] || 0;
                   // 根据量表类型确定最高分
-                  let maxScorePerQuestion = 7; // 默认7分制
-                  if (scaleId === 'ppus') {
-                    maxScorePerQuestion = 5; // PPUS是0-5分制
+                  let maxScorePerQuestion = 5; // 默认5分制
+                  if (scaleId === 'scl90' || scaleId === 'ani') {
+                    maxScorePerQuestion = 5; // SCL-90和ANI是5分制
+                  } else if (scaleId === 'ppus') {
+                    maxScorePerQuestion = 6; // PPUS是0-5分制,实际range是6
+                  } else if (scaleId === 'ess') {
+                    maxScorePerQuestion = 4; // ESS是0-3分制
                   }
                   const maxScore = dimension.questionIds.length * maxScorePerQuestion;
                   const normalizedValue = (dimScore / maxScore) * 100;
@@ -243,13 +318,22 @@ export default function ResultPage() {
               <div className="space-y-6">
                 {scale.dimensions.map((dimension) => {
                   const dimScore = dimensionScores[dimension.id] || 0;
-                  const maxScore = dimension.questionIds.length * 7; // 假设每题最高7分
+                  // 根据量表类型确定每题最高分
+                  let maxScorePerQuestion = 5; // 默认5分制
+                  if (scaleId === 'scl90' || scaleId === 'ani') {
+                    maxScorePerQuestion = 5; // SCL-90和ANI是5分制
+                  } else if (scaleId === 'ppus') {
+                    maxScorePerQuestion = 6; // PPUS是0-5分制,实际range是6
+                  } else if (scaleId === 'ess') {
+                    maxScorePerQuestion = 4; // ESS是0-3分制
+                  }
+                  const maxScore = dimension.questionIds.length * maxScorePerQuestion;
                   const dimPercentage = (dimScore / maxScore) * 100;
 
                   return (
                     <div key={dimension.id}>
                       <div className="flex items-center justify-between mb-2">
-                        <div>
+                        <div className="flex-1">
                           <h3 className="font-semibold text-gray-900">
                             {dimension.name}
                           </h3>
@@ -258,7 +342,7 @@ export default function ResultPage() {
                           </p>
                         </div>
                         <span className="text-2xl font-bold text-primary ml-4">
-                          {dimScore}
+                          {Math.round(dimPercentage)}%
                         </span>
                       </div>
 
@@ -270,8 +354,8 @@ export default function ResultPage() {
                       </div>
 
                       <div className="flex justify-between text-xs text-gray-500 mt-1">
-                        <span>0</span>
-                        <span>{maxScore}</span>
+                        <span>0%</span>
+                        <span>100%</span>
                       </div>
                     </div>
                   );

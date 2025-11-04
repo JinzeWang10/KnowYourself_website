@@ -34,6 +34,7 @@ export default function HomePage() {
   const scaleIcons: Record<string, string> = {
     'ani': '🎯',
     'scl90': '🧠',
+    'ess': '💭',
   };
 
   return (
@@ -130,9 +131,22 @@ export default function HomePage() {
 
       {/* Footer */}
       <footer className="bg-gray-900 text-gray-400 py-8">
-        <div className="container mx-auto px-4 text-center">
-          <p>&copy; 2025 心理量表测评平台. All rights reserved.</p>
-          <p className="mt-2 text-sm">专注于心理健康与自我认知</p>
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-4">
+            <p>&copy; 2025 心理量表测评平台. All rights reserved.</p>
+            <p className="mt-2 text-sm">专注于心理健康与自我认知</p>
+          </div>
+          <div className="flex justify-center gap-6 text-sm">
+            <Link href="/terms" className="hover:text-white transition">
+              用户协议
+            </Link>
+            <Link href="/privacy" className="hover:text-white transition">
+              隐私政策
+            </Link>
+            <Link href="/disclaimer" className="hover:text-white transition">
+              免责声明
+            </Link>
+          </div>
         </div>
       </footer>
     </div>

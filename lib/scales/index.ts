@@ -1,11 +1,15 @@
 import { QuizTemplate, QuizResult, UserAnswer } from '@/types/quiz';
 import { scl90 } from './scl90';
 import { ani } from './ani';
+import { essScale } from './ess';
+import { ini } from './ini';
 
 // 所有可用的量表
 const scales: QuizTemplate[] = [
   ani,
-  scl90
+  scl90,
+  essScale,
+  ini,
 ];
 
 // 获取所有量表列表
@@ -25,7 +29,13 @@ export function calculateScore(scale: QuizTemplate, answers: Record<string, numb
   scale.questions.forEach(question => {
     const answer = answers[question.id];
     if (answer !== undefined) {
-      totalScore += answer;
+      // 处理反向计分（reversed = true）
+      if (question.reversed) {
+        // 5点Likert量表：1->5, 2->4, 3->3, 4->2, 5->1
+        totalScore += (6 - answer);
+      } else {
+        totalScore += answer;
+      }
     }
   });
 
@@ -45,8 +55,15 @@ export function calculateDimensionScores(
     let score = 0;
     dimension.questionIds.forEach(questionId => {
       const answer = answers[questionId];
-      if (answer !== undefined) {
-        score += answer;
+      const question = scale.questions.find(q => q.id === questionId);
+
+      if (answer !== undefined && question) {
+        // 处理反向计分
+        if (question.reversed) {
+          score += (6 - answer);
+        } else {
+          score += answer;
+        }
       }
     });
     dimensionScores[dimension.id] = score;

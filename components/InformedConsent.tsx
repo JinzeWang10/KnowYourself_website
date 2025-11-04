@@ -154,7 +154,13 @@ export default function InformedConsent({
                 />
                 <span className="text-gray-900 font-medium">
                   我已仔细阅读并理解上述所有内容，包括评估目的、隐私保护政策、自愿参与原则、非诊断性质以及重要提醒。
-                  我同意参与本次评估。
+                  我同意遵守
+                  <Link href="/terms" target="_blank" className="text-primary hover:underline mx-1">《用户协议》</Link>
+                  和
+                  <Link href="/privacy" target="_blank" className="text-primary hover:underline mx-1">《隐私政策》</Link>
+                  ，并接受
+                  <Link href="/disclaimer" target="_blank" className="text-primary hover:underline mx-1">《免责声明》</Link>
+                  的全部条款。
                 </span>
               </label>
             </div>

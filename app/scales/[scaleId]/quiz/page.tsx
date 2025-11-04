@@ -3,9 +3,11 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { getScaleById, calculateScore, calculateDimensionScores, getScoreLevel } from '@/lib/scales';
+import { getScaleById, calculateScore, calculateDimensionScores, getScoreLevel, normalizeScore } from '@/lib/scales';
 import { calculateANI } from '@/lib/calculateANI';
-import type { QuizResult } from '@/types/quiz';
+import { submitAssessmentRecord } from '@/lib/api-client';
+import type { QuizResult, UserInfo } from '@/types/quiz';
+import type { AssessmentRecord } from '@/types/analytics';
 
 export default function QuizPage() {
   const params = useParams();
@@ -96,6 +98,17 @@ export default function QuizPage() {
   const handleSubmitWithAnswers = async (answersToSubmit: Record<string, number | string>) => {
     setIsSubmitting(true);
 
+    // 获取用户信息
+    const userInfoStr = localStorage.getItem('userInfo');
+    let userInfo: UserInfo | null = null;
+    if (userInfoStr) {
+      try {
+        userInfo = JSON.parse(userInfoStr);
+      } catch (e) {
+        console.error('解析用户信息失败');
+      }
+    }
+
     // ANI量表使用自定义计算
     if (scaleId === 'ani') {
       const aniResult = calculateANI(answersToSubmit);
@@ -124,6 +137,28 @@ export default function QuizPage() {
           recommendations: aniResult.suggestions,
         },
       };
+
+      // 提交到后台（如果有用户信息）
+      if (userInfo) {
+        const normalizedScore = normalizeScore(scale, aniResult.totalScore);
+        const record: AssessmentRecord = {
+          id: result.id,
+          scaleId: scale.id,
+          scaleTitle: scale.title,
+          gender: userInfo.gender,
+          age: userInfo.age,
+          totalScore: aniResult.totalScore,
+          normalizedScore,
+          level: aniResult.level,
+          dimensionScores: result.dimensionScores,
+          completedAt: new Date().toISOString(),
+        };
+
+        // 异步提交，不阻塞用户
+        submitAssessmentRecord(record).catch(err => {
+          console.error('提交测评记录失败:', err);
+        });
+      }
 
       // 保存到历史记录
       const history = JSON.parse(localStorage.getItem('quiz-history') || '[]');
@@ -162,6 +197,28 @@ export default function QuizPage() {
         recommendations: scoreLevel.suggestions || [],
       },
     };
+
+    // 提交到后台（如果有用户信息）
+    if (userInfo) {
+      const normalizedScore = normalizeScore(scale, totalScore);
+      const record: AssessmentRecord = {
+        id: result.id,
+        scaleId: scale.id,
+        scaleTitle: scale.title,
+        gender: userInfo.gender,
+        age: userInfo.age,
+        totalScore,
+        normalizedScore,
+        level: scoreLevel.level,
+        dimensionScores,
+        completedAt: new Date().toISOString(),
+      };
+
+      // 异步提交，不阻塞用户
+      submitAssessmentRecord(record).catch(err => {
+        console.error('提交测评记录失败:', err);
+      });
+    }
 
     // 保存到历史记录
     const history = JSON.parse(localStorage.getItem('quiz-history') || '[]');

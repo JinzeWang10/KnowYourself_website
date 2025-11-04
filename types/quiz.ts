@@ -30,6 +30,7 @@ export interface ScoreRange {
   level: string;
   description: string;
   color: string;
+  psychologicalTraits?: string; // 心理特征
   suggestions?: string[];
 }
 
