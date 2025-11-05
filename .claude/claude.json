@@ -158,7 +158,7 @@
     ]
   },
   "commands": {
-    "dev": "npm run dev (端口 3001)",
+    "dev": "npm run dev ",
     "build": "npm run build",
     "start": "npm start"
   }
