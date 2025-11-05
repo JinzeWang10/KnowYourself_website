@@ -55,10 +55,10 @@ export default function Header() {
           {/* 桌面端导航链接 */}
           <div className="hidden md:flex items-center gap-6 lg:gap-8">
             <Link
-              href="/#scales"
+              href="/scales"
               className="relative text-neutral-700 hover:text-primary transition-colors font-medium text-sm group"
             >
-              量表测评
+              开始测评
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full"></span>
             </Link>
             <Link
@@ -151,12 +151,12 @@ export default function Header() {
                   <p className="text-xs font-semibold text-neutral-400 uppercase tracking-wider">导航</p>
                 </div>
                 <Link
-                  href="/#scales"
+                  href="/scales"
                   onClick={closeMobileMenu}
                   className="flex items-center gap-3 px-5 py-3 mx-2 rounded-lg text-neutral-700 hover:bg-primary-50 hover:text-primary transition-colors font-medium text-sm"
                 >
                   <span className="text-lg">📝</span>
-                  <span>量表测评</span>
+                  <span>开始测评</span>
                 </Link>
                 <Link
                   href="/history"
