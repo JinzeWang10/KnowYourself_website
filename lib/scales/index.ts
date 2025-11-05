@@ -3,13 +3,15 @@ import { scl90 } from './scl90';
 import { ani } from './ani';
 import { essScale } from './ess';
 import { ini } from './ini';
+import { pat } from './pat';
 
 // 所有可用的量表
 const scales: QuizTemplate[] = [
+  pat,
   essScale,
   ini,
   ani,
-  scl90,
+  // scl90,
 ];
 
 // 获取所有量表列表

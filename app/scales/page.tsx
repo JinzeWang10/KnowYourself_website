@@ -57,16 +57,6 @@ export default function ScalesPage() {
           <h1 className="text-4xl md:text-5xl font-bold text-neutral-900 mb-4 leading-tight">
             选择您的测评量表
           </h1>
-          <p className="text-base md:text-lg text-neutral-600 mb-8 max-w-2xl mx-auto font-light leading-relaxed">
-            我们提供多种专业的心理测评量表，请根据您的需求选择合适的测评工具
-          </p>
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-sm text-neutral-500 hover:text-primary transition-colors"
-          >
-            <span>←</span>
-            <span>返回首页</span>
-          </Link>
         </div>
       </section>
 

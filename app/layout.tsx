@@ -28,8 +28,17 @@ export const metadata: Metadata = {
     telephone: false,
   },
   icons: {
-    icon: '/favicon.ico',
-    apple: '/apple-touch-icon.png',
+    icon: [
+      { url: '/knowyourself_logo.png', sizes: '32x32', type: 'image/png' },
+      { url: '/knowyourself_logo.png', sizes: '16x16', type: 'image/png' },
+    ],
+    apple: '/knowyourself_logo.png',
+    other: [
+      {
+        rel: 'apple-touch-icon-precomposed',
+        url: '/knowyourself_logo.png',
+      },
+    ],
   },
   manifest: '/site.webmanifest',
 };
