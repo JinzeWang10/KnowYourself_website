@@ -94,31 +94,31 @@ export default function HomePage() {
       </section>
 
       {/* Features Section */}
-      <section className="bg-gradient-to-br from-primary-50/50 to-purple-50/50 py-24">
+      <section className="bg-gradient-to-br from-primary-50/50 to-purple-50/50 py-12 sm:py-16">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-neutral-900 mb-4">为什么选择我们</h2>
-            <p className="text-neutral-500 font-light">专业、安全、可靠的心理测评平台</p>
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl font-bold text-neutral-900 mb-2">为什么选择我们</h2>
+            <p className="text-sm text-neutral-500 font-light">专业、安全、可靠的心理测评平台</p>
           </div>
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            <div className="group bg-white/80 backdrop-blur-sm p-10 rounded-2xl shadow-soft hover:shadow-soft-xl transition-all hover:-translate-y-2 border border-neutral-100">
-              <div className="text-6xl mb-6 group-hover:scale-110 transition-transform">🔬</div>
-              <h3 className="text-2xl font-bold mb-4 text-neutral-900">科学专业</h3>
-              <p className="text-neutral-600 leading-relaxed">
+          <div className="grid md:grid-cols-3 gap-4 sm:gap-6 max-w-4xl mx-auto">
+            <div className="group bg-white/80 backdrop-blur-sm p-6 sm:p-8 rounded-xl sm:rounded-2xl shadow-soft hover:shadow-soft-xl transition-all hover:-translate-y-2 border border-neutral-100">
+              <div className="text-4xl sm:text-5xl mb-4 group-hover:scale-110 transition-transform">🔬</div>
+              <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3 text-neutral-900">科学专业</h3>
+              <p className="text-sm text-neutral-600 leading-relaxed">
                 所有量表均基于国际标准化工具，具有良好的信效度
               </p>
             </div>
-            <div className="group bg-white/80 backdrop-blur-sm p-10 rounded-2xl shadow-soft hover:shadow-soft-xl transition-all hover:-translate-y-2 border border-neutral-100">
-              <div className="text-6xl mb-6 group-hover:scale-110 transition-transform">🔒</div>
-              <h3 className="text-2xl font-bold mb-4 text-neutral-900">隐私保护</h3>
-              <p className="text-neutral-600 leading-relaxed">
+            <div className="group bg-white/80 backdrop-blur-sm p-6 sm:p-8 rounded-xl sm:rounded-2xl shadow-soft hover:shadow-soft-xl transition-all hover:-translate-y-2 border border-neutral-100">
+              <div className="text-4xl sm:text-5xl mb-4 group-hover:scale-110 transition-transform">🔒</div>
+              <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3 text-neutral-900">隐私保护</h3>
+              <p className="text-sm text-neutral-600 leading-relaxed">
                 所有数据仅保存在本地，不上传服务器，完全匿名
               </p>
             </div>
-            <div className="group bg-white/80 backdrop-blur-sm p-10 rounded-2xl shadow-soft hover:shadow-soft-xl transition-all hover:-translate-y-2 border border-neutral-100">
-              <div className="text-6xl mb-6 group-hover:scale-110 transition-transform">📊</div>
-              <h3 className="text-2xl font-bold mb-4 text-neutral-900">详细报告</h3>
-              <p className="text-neutral-600 leading-relaxed">
+            <div className="group bg-white/80 backdrop-blur-sm p-6 sm:p-8 rounded-xl sm:rounded-2xl shadow-soft hover:shadow-soft-xl transition-all hover:-translate-y-2 border border-neutral-100">
+              <div className="text-4xl sm:text-5xl mb-4 group-hover:scale-110 transition-transform">📊</div>
+              <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3 text-neutral-900">详细报告</h3>
+              <p className="text-sm text-neutral-600 leading-relaxed">
                 提供多维度的评估结果和专业建议
               </p>
             </div>
