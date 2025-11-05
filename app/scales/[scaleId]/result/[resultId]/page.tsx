@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import { getScaleById, calculateDimensionScores, normalizeScore, normalizeDimensionScore, getScaleScoreRange } from '@/lib/scales';
 import { getPercentileRank } from '@/lib/api-client';
+import { exportWithFeedback } from '@/lib/export-image';
 import type { QuizResult } from '@/types/quiz';
 import type { RadarDataPoint } from '@/components/DimensionRadarChart';
 import ShareCard from '@/components/ShareCard';
@@ -45,6 +46,8 @@ export default function ResultPage() {
     message?: string;
   } | null>(null);
   const [isLoadingPercentile, setIsLoadingPercentile] = useState(true);
+  const [isExporting, setIsExporting] = useState(false);
+  const shareCardRef = useRef<HTMLDivElement>(null);
   const scale = getScaleById(scaleId);
 
   // 设置页面标题
@@ -79,6 +82,35 @@ export default function ResultPage() {
     } finally {
       setIsLoadingPercentile(false);
     }
+  };
+
+  // 导出分享卡片为图片
+  const handleExportImage = async () => {
+    if (!shareCardRef.current) {
+      alert('无法获取分享卡片，请稍后重试');
+      return;
+    }
+
+    await exportWithFeedback(
+      shareCardRef.current,
+      `${scale?.title || '测评结果'}_${new Date().toLocaleDateString('zh-CN')}`,
+      {
+        onStart: () => setIsExporting(true),
+        onComplete: (success) => {
+          setIsExporting(false);
+          if (success) {
+            // 可以添加成功提示，这里暂时不做UI提示
+          } else {
+            alert('图片生成失败，请重试');
+          }
+        },
+        onError: (error) => {
+          setIsExporting(false);
+          console.error('Export error:', error);
+          alert('图片导出失败：' + error.message);
+        },
+      }
+    );
   };
 
   if (!scale || !result) {
@@ -141,15 +173,15 @@ export default function ResultPage() {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-12">
+      <main className="container mx-auto px-3 sm:px-4 py-8 sm:py-12">
         <div className="max-w-4xl mx-auto">
           {/* Title - 更简洁的标题区 */}
-          <div className="text-center mb-8 animate-fade-in">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/60 backdrop-blur-sm rounded-full shadow-soft border border-neutral-100 mb-4">
-              <span className="text-2xl">🎯</span>
-              <span className="text-sm font-medium text-neutral-600">测评完成</span>
+          <div className="text-center mb-6 sm:mb-8 animate-fade-in">
+            <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 bg-white/60 backdrop-blur-sm rounded-full shadow-soft border border-neutral-100/50 mb-3 sm:mb-4">
+              <span className="text-xl sm:text-2xl">🎯</span>
+              <span className="text-xs sm:text-sm font-medium text-neutral-600">测评完成</span>
             </div>
-            <h1 className="text-3xl font-bold text-neutral-900 mb-2">
+            <h1 className="text-2xl sm:text-3xl font-bold text-neutral-900 mb-2 px-4">
               {scale.title}
             </h1>
             <p className="text-sm text-neutral-500 font-light">
@@ -184,6 +216,7 @@ export default function ResultPage() {
 
             return (
               <ShareCard
+                ref={shareCardRef}
                 scaleTitle={scale.title}
                 score={normalizedScore}
                 level={scoreLevel?.level || ''}
@@ -196,34 +229,61 @@ export default function ResultPage() {
             );
           })()}
 
+          {/* 下载分享卡片按钮 */}
+          <div className="text-center mb-6 sm:mb-8 animate-fade-in animation-delay-100">
+            <button
+              onClick={handleExportImage}
+              disabled={isExporting}
+              className="group relative inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-primary via-purple-500 to-pink-500 text-white rounded-xl sm:rounded-2xl font-bold hover:shadow-glow-lg transition-all duration-300 shadow-soft hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 text-sm sm:text-base overflow-hidden"
+            >
+              <span className="relative z-10 flex items-center gap-2">
+                {isExporting ? (
+                  <>
+                    <span className="animate-spin">⏳</span>
+                    生成中...
+                  </>
+                ) : (
+                  <>
+                    <span>📸</span>
+                    下载分享图片
+                  </>
+                )}
+              </span>
+              <div className="absolute inset-0 bg-gradient-to-r from-primary-light to-purple-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            </button>
+            <p className="text-xs sm:text-sm text-neutral-500 mt-2 sm:mt-3">
+              💡 点击按钮生成精美分享图片，或截图此卡片分享至社交平台
+            </p>
+          </div>
+
           {/* Detailed Interpretation - 详细解读区 */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-soft-xl p-10 mb-8 border border-neutral-100 animate-slide-up">
-            <div className="flex items-center gap-3 mb-8">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-purple-500 flex items-center justify-center shadow-soft">
-                <span className="text-2xl">📖</span>
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-soft-xl p-5 sm:p-10 mb-6 sm:mb-8 border border-neutral-100/50 animate-slide-up">
+            <div className="flex items-center gap-2 sm:gap-3 mb-6 sm:mb-8">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-gradient-to-br from-primary to-purple-500 flex items-center justify-center shadow-soft">
+                <span className="text-xl sm:text-2xl">📖</span>
               </div>
-              <h2 className="text-2xl font-bold text-neutral-900">详细解读</h2>
+              <h2 className="text-xl sm:text-2xl font-bold text-neutral-900">详细解读</h2>
             </div>
 
             {/* Score Description */}
-            <div className="p-8 bg-gradient-to-br from-neutral-50 to-purple-50/30 rounded-2xl border border-neutral-200/50 shadow-soft mb-6">
-              <h3 className="font-bold text-neutral-900 mb-4 text-lg flex items-center gap-2">
-                <span className="text-2xl">🎯</span>
+            <div className="p-5 sm:p-8 bg-gradient-to-br from-neutral-50 to-purple-50/30 rounded-xl sm:rounded-2xl border border-neutral-200/30 shadow-soft mb-4 sm:mb-6">
+              <h3 className="font-bold text-neutral-900 mb-3 sm:mb-4 text-base sm:text-lg flex items-center gap-2">
+                <span className="text-xl sm:text-2xl">🎯</span>
                 核心解读
               </h3>
-              <p className="text-neutral-700 leading-relaxed">
+              <p className="text-sm sm:text-base text-neutral-700 leading-relaxed">
                 {scoreLevel?.description}
               </p>
             </div>
 
             {/* Psychological Traits - 心理特征 */}
             {scoreLevel?.psychologicalTraits && (
-              <div className="p-8 bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl border border-purple-200/50 shadow-soft mb-6">
-                <h3 className="font-bold text-neutral-900 mb-4 text-lg flex items-center gap-2">
-                  <span className="text-2xl">🧠</span>
+              <div className="p-5 sm:p-8 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl sm:rounded-2xl border border-purple-200/30 shadow-soft mb-4 sm:mb-6">
+                <h3 className="font-bold text-neutral-900 mb-3 sm:mb-4 text-base sm:text-lg flex items-center gap-2">
+                  <span className="text-xl sm:text-2xl">🧠</span>
                   心理特征
                 </h3>
-                <p className="text-neutral-700 leading-relaxed">
+                <p className="text-sm sm:text-base text-neutral-700 leading-relaxed">
                   {scoreLevel.psychologicalTraits}
                 </p>
               </div>
@@ -231,18 +291,18 @@ export default function ResultPage() {
 
             {/* Suggestions - 建议 */}
             {scoreLevel?.suggestions && scoreLevel.suggestions.length > 0 && (
-              <div className="p-8 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-2xl border border-blue-200/50 shadow-soft">
-                <h3 className="font-bold text-neutral-900 mb-6 text-lg flex items-center gap-2">
-                  <span className="text-2xl">💡</span>
+              <div className="p-5 sm:p-8 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-xl sm:rounded-2xl border border-blue-200/30 shadow-soft">
+                <h3 className="font-bold text-neutral-900 mb-4 sm:mb-6 text-base sm:text-lg flex items-center gap-2">
+                  <span className="text-xl sm:text-2xl">💡</span>
                   改善建议
                 </h3>
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   {scoreLevel.suggestions.map((suggestion, index) => (
-                    <div key={index} className="flex items-start gap-4 group hover:translate-x-1 transition-transform">
-                      <span className="flex-shrink-0 w-8 h-8 rounded-xl bg-gradient-to-br from-primary via-purple-500 to-pink-500 text-white text-sm flex items-center justify-center font-bold shadow-soft group-hover:shadow-glow transition-shadow">
+                    <div key={index} className="flex items-start gap-3 sm:gap-4 group hover:translate-x-1 transition-transform">
+                      <span className="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-gradient-to-br from-primary via-purple-500 to-pink-500 text-white text-xs sm:text-sm flex items-center justify-center font-bold shadow-soft group-hover:shadow-glow transition-shadow">
                         {index + 1}
                       </span>
-                      <span className="text-neutral-700 leading-relaxed flex-1 pt-0.5">
+                      <span className="text-sm sm:text-base text-neutral-700 leading-relaxed flex-1 pt-0.5">
                         {suggestion}
                       </span>
                     </div>
@@ -312,11 +372,13 @@ export default function ResultPage() {
 
           {/* Radar Chart for Dimensions */}
           {scale.dimensions && scale.dimensions.length > 0 && (
-            <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-soft-lg p-10 mb-8 border border-neutral-100 animate-slide-up animation-delay-100">
-              <h2 className="text-2xl font-bold text-neutral-900 mb-8 flex items-center gap-3">
-                <span className="text-3xl">📈</span>
-                维度分析雷达图
-              </h2>
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-soft-lg p-5 sm:p-10 mb-6 sm:mb-8 border border-neutral-100/50 animate-slide-up animation-delay-100">
+              <div className="flex items-center gap-2 sm:gap-3 mb-6 sm:mb-8">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center shadow-soft">
+                  <span className="text-xl sm:text-2xl">📈</span>
+                </div>
+                <h2 className="text-xl sm:text-2xl font-bold text-neutral-900">维度分析雷达图</h2>
+              </div>
 
               {(() => {
                 // 准备雷达图数据
@@ -344,15 +406,15 @@ export default function ResultPage() {
 
           {/* Dimension Scores - Detailed Bars */}
           {scale.dimensions && scale.dimensions.length > 0 && (
-            <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-soft-lg p-10 mb-8 border border-neutral-100 animate-slide-up animation-delay-200">
-              <div className="flex items-center gap-3 mb-8">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-soft">
-                  <span className="text-2xl">📊</span>
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-soft-lg p-5 sm:p-10 mb-6 sm:mb-8 border border-neutral-100/50 animate-slide-up animation-delay-200">
+              <div className="flex items-center gap-2 sm:gap-3 mb-6 sm:mb-8">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-soft">
+                  <span className="text-xl sm:text-2xl">📊</span>
                 </div>
-                <h2 className="text-2xl font-bold text-neutral-900">维度得分详情</h2>
+                <h2 className="text-xl sm:text-2xl font-bold text-neutral-900">维度得分详情</h2>
               </div>
 
-              <div className="space-y-6">
+              <div className="space-y-4 sm:space-y-6">
                 {scale.dimensions.map((dimension, index) => {
                   const dimScore = dimensionScores[dimension.id] || 0;
                   // 使用正确的归一化函数计算百分比，传入量表的分值范围
@@ -377,33 +439,33 @@ export default function ResultPage() {
                   return (
                     <div
                       key={dimension.id}
-                      className="group p-6 rounded-2xl bg-gradient-to-br from-neutral-50/50 to-purple-50/30 border border-neutral-100 hover:shadow-soft transition-all duration-300"
+                      className="group p-4 sm:p-6 rounded-xl sm:rounded-2xl bg-gradient-to-br from-neutral-50/50 to-purple-50/30 border border-neutral-100/50 hover:shadow-soft transition-all duration-300"
                       style={{ animationDelay: `${index * 50}ms` }}
                     >
-                      <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center justify-between mb-3 sm:mb-4">
                         <div className="flex-1">
-                          <h3 className="font-bold text-neutral-900 text-lg mb-1">
+                          <h3 className="font-bold text-neutral-900 text-base sm:text-lg mb-1">
                             {dimension.name}
                           </h3>
-                          <p className="text-sm text-neutral-600">
+                          <p className="text-xs sm:text-sm text-neutral-600">
                             {dimension.description}
                           </p>
                         </div>
-                        <div className={`ml-6 px-5 py-3 rounded-xl bg-gradient-to-br ${bgColor} border border-neutral-200/50 shadow-soft`}>
-                          <span className={`text-3xl font-black bg-gradient-to-br ${barColor} bg-clip-text text-transparent`}>
+                        <div className={`ml-3 sm:ml-6 px-3 py-2 sm:px-5 sm:py-3 rounded-lg sm:rounded-xl bg-gradient-to-br ${bgColor} border border-neutral-200/30 shadow-soft`}>
+                          <span className={`text-2xl sm:text-3xl font-black bg-gradient-to-br ${barColor} bg-clip-text text-transparent`}>
                             {Math.round(dimPercentage)}
                           </span>
-                          <span className="text-sm text-neutral-600 font-medium">%</span>
+                          <span className="text-xs sm:text-sm text-neutral-600 font-medium">%</span>
                         </div>
                       </div>
 
                       {/* 3D进度条 */}
                       <div className="relative">
                         {/* 底层阴影 */}
-                        <div className={`absolute inset-x-0 top-1 h-6 bg-gradient-to-r ${barColor} opacity-10 rounded-full blur-sm`}></div>
+                        <div className={`absolute inset-x-0 top-1 h-5 sm:h-6 bg-gradient-to-r ${barColor} opacity-10 rounded-full blur-sm`}></div>
 
                         {/* 背景轨道 */}
-                        <div className="relative h-6 bg-neutral-100 rounded-full overflow-hidden shadow-inner">
+                        <div className="relative h-5 sm:h-6 bg-neutral-100 rounded-full overflow-hidden shadow-inner">
                           {/* 进度条 */}
                           <div
                             className={`h-full bg-gradient-to-r ${barColor} transition-all duration-1000 ease-out group-hover:brightness-110 relative overflow-hidden`}
@@ -417,11 +479,11 @@ export default function ResultPage() {
                         </div>
 
                         {/* 刻度标记 */}
-                        <div className="flex justify-between text-xs text-neutral-400 mt-2 font-medium">
+                        <div className="flex justify-between text-[10px] sm:text-xs text-neutral-400 mt-2 font-medium">
                           <span>0</span>
-                          <span>25</span>
+                          <span className="hidden sm:inline">25</span>
                           <span>50</span>
-                          <span>75</span>
+                          <span className="hidden sm:inline">75</span>
                           <span>100</span>
                         </div>
                       </div>
@@ -434,20 +496,20 @@ export default function ResultPage() {
 
           {/* References */}
           {scale.references && scale.references.length > 0 && (
-            <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-soft-lg p-10 mb-8 border border-neutral-100">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-soft">
-                  <span className="text-2xl">📚</span>
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-soft-lg p-5 sm:p-10 mb-6 sm:mb-8 border border-neutral-100/50">
+              <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-soft">
+                  <span className="text-xl sm:text-2xl">📚</span>
                 </div>
-                <h2 className="text-2xl font-bold text-neutral-900">科学依据</h2>
+                <h2 className="text-xl sm:text-2xl font-bold text-neutral-900">科学依据</h2>
               </div>
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 {scale.references.map((ref, index) => {
                   // 检查是否为学术参考文献格式
                   if ('authors' in ref && 'year' in ref && 'journal' in ref) {
                     return (
-                      <div key={index} className="p-5 bg-gradient-to-br from-neutral-50 to-purple-50/30 rounded-xl border border-neutral-200/50">
-                        <p className="text-sm text-neutral-700 leading-relaxed">
+                      <div key={index} className="p-4 sm:p-5 bg-gradient-to-br from-neutral-50 to-purple-50/30 rounded-xl border border-neutral-200/30">
+                        <p className="text-xs sm:text-sm text-neutral-700 leading-relaxed">
                           {ref.authors} ({ref.year}). <em>{ref.title}</em>.{' '}
                           <span className="font-semibold">{ref.journal}</span>
                           {ref.volume && `, ${ref.volume}`}
@@ -463,9 +525,9 @@ export default function ResultPage() {
                   } else {
                     // 简化的参考信息格式
                     return (
-                      <div key={index} className="p-5 bg-gradient-to-br from-neutral-50 to-purple-50/30 rounded-xl border border-neutral-200/50">
-                        <p className="text-sm font-semibold text-neutral-900 mb-2">{ref.title}</p>
-                        <p className="text-sm text-neutral-600 leading-relaxed">{ref.content}</p>
+                      <div key={index} className="p-4 sm:p-5 bg-gradient-to-br from-neutral-50 to-purple-50/30 rounded-xl border border-neutral-200/30">
+                        <p className="text-xs sm:text-sm font-semibold text-neutral-900 mb-2">{ref.title}</p>
+                        <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed">{ref.content}</p>
                       </div>
                     );
                   }
@@ -475,10 +537,10 @@ export default function ResultPage() {
           )}
 
           {/* Action Buttons - 精美设计 */}
-          <div className="flex flex-wrap gap-4 justify-center animate-fade-in animation-delay-300">
+          <div className="flex flex-wrap gap-3 sm:gap-4 justify-center animate-fade-in animation-delay-300">
             <button
               onClick={() => router.push(`/scales/${scaleId}/quiz`)}
-              className="group relative px-8 py-4 bg-white border-2 border-primary text-primary rounded-2xl font-bold hover:bg-primary hover:text-white transition-all duration-300 shadow-soft hover:shadow-soft-lg hover:scale-105 overflow-hidden"
+              className="group relative px-6 sm:px-8 py-3 sm:py-4 bg-white border-2 border-primary text-primary rounded-xl sm:rounded-2xl font-bold hover:bg-primary hover:text-white transition-all duration-300 shadow-soft hover:shadow-soft-lg hover:scale-105 overflow-hidden text-sm sm:text-base"
             >
               <span className="relative z-10 flex items-center gap-2">
                 <span>🔄</span>
@@ -489,17 +551,18 @@ export default function ResultPage() {
 
             <Link
               href="/history"
-              className="group relative px-8 py-4 bg-gradient-to-br from-neutral-100 to-neutral-50 border-2 border-neutral-200 text-neutral-700 rounded-2xl font-bold hover:border-neutral-300 transition-all duration-300 shadow-soft hover:shadow-soft-lg hover:scale-105 inline-block overflow-hidden"
+              className="group relative px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-br from-neutral-100 to-neutral-50 border-2 border-neutral-200 text-neutral-700 rounded-xl sm:rounded-2xl font-bold hover:border-neutral-300 transition-all duration-300 shadow-soft hover:shadow-soft-lg hover:scale-105 inline-block overflow-hidden text-sm sm:text-base"
             >
               <span className="relative z-10 flex items-center gap-2">
                 <span>📜</span>
-                查看历史记录
+                <span className="hidden sm:inline">查看历史记录</span>
+                <span className="sm:hidden">历史</span>
               </span>
             </Link>
 
             <Link
               href="/"
-              className="group relative px-8 py-4 bg-gradient-to-r from-primary via-purple-500 to-pink-500 text-white rounded-2xl font-bold hover:shadow-glow-lg transition-all duration-300 shadow-soft hover:scale-105 inline-block overflow-hidden"
+              className="group relative px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-primary via-purple-500 to-pink-500 text-white rounded-xl sm:rounded-2xl font-bold hover:shadow-glow-lg transition-all duration-300 shadow-soft hover:scale-105 inline-block overflow-hidden text-sm sm:text-base"
             >
               <span className="relative z-10 flex items-center gap-2">
                 <span>🏠</span>

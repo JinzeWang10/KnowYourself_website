@@ -1,5 +1,6 @@
 'use client';
 
+import { forwardRef } from 'react';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import { QRCodeSVG } from 'qrcode.react';
@@ -22,7 +23,7 @@ interface ShareCardProps {
   radarData?: RadarDataPoint[];
 }
 
-export default function ShareCard({
+const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(function ShareCard({
   scaleTitle,
   score,
   level,
@@ -31,7 +32,7 @@ export default function ShareCard({
   completedAt,
   percentile,
   radarData,
-}: ShareCardProps) {
+}, ref) {
   // 根据levelColor生成统一的配色方案
   const getColorScheme = (color: string) => {
     const normalizedColor = color.toLowerCase();
@@ -74,55 +75,55 @@ export default function ShareCard({
   const colorScheme = getColorScheme(levelColor);
 
   return (
-    <div className="relative w-full max-w-2xl mx-auto mb-8 animate-slide-up">
+    <div ref={ref} className="relative w-full max-w-2xl mx-auto mb-6 sm:mb-8 animate-slide-up">
       {/* 装饰性背景光晕 - 使用动态颜色 */}
-      <div className={`absolute -inset-1 bg-gradient-to-r ${colorScheme.glow} rounded-3xl blur-2xl`}></div>
+      <div className={`absolute -inset-1 bg-gradient-to-r ${colorScheme.glow} rounded-2xl sm:rounded-3xl blur-2xl`}></div>
 
       {/* 主卡片 */}
-      <div className="relative bg-white rounded-3xl shadow-soft-xl overflow-hidden border border-neutral-100">
+      <div className="relative bg-white rounded-2xl sm:rounded-3xl shadow-soft-xl overflow-hidden border border-neutral-100/50">
         {/* 顶部装饰性渐变条 - 使用动态颜色 */}
         <div className={`h-2 bg-gradient-to-r ${colorScheme.stripe}`}></div>
 
         {/* 背景装饰图案 */}
-        <div className="absolute top-0 right-0 w-64 h-64 opacity-5">
+        <div className="absolute top-0 right-0 w-64 h-64 opacity-5 hidden sm:block">
           <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
             <path fill="currentColor" d="M44.7,-76.4C58.8,-69.2,71.8,-59.1,79.6,-45.8C87.4,-32.6,90,-16.3,88.5,-0.9C87,14.6,81.4,29.2,73.1,42.8C64.8,56.4,53.8,69,39.9,76.8C26,84.6,9.2,87.6,-6.5,86.8C-22.2,86,-37.8,81.4,-51.2,73.4C-64.6,65.4,-75.8,54,-82.6,40.2C-89.4,26.4,-91.8,10.2,-90.1,-5.3C-88.4,-20.8,-82.6,-35.6,-73.8,-48.2C-65,-60.8,-53.2,-71.2,-39.7,-78.6C-26.2,-86,-13.1,-90.4,1.3,-92.5C15.7,-94.6,30.6,-83.6,44.7,-76.4Z" transform="translate(100 100)" />
           </svg>
         </div>
 
-        <div className="relative p-10">
+        <div className="relative p-5 sm:p-10">
           {/* Logo和标题 */}
-          <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
-            <div className="flex items-center gap-3">
+          <div className="flex items-center justify-between mb-5 sm:mb-8 flex-wrap gap-3 sm:gap-4">
+            <div className="flex items-center gap-2 sm:gap-3">
               <Image
                 src="/knowyourself_logo.png"
                 alt="KnowYourself"
-                width={40}
-                height={40}
-                className="object-contain"
+                width={32}
+                height={32}
+                className="object-contain sm:w-10 sm:h-10"
               />
               <div>
-                <div className="font-bold text-xl gradient-text">KnowYourself</div>
-                <div className="text-xs text-neutral-500 font-light">专业心理测评</div>
+                <div className="font-bold text-base sm:text-xl gradient-text">KnowYourself</div>
+                <div className="text-[10px] sm:text-xs text-neutral-500 font-light">专业心理测评</div>
               </div>
             </div>
-            <div className="text-xs text-neutral-400 font-light">
+            <div className="text-[10px] sm:text-xs text-neutral-400 font-light">
               {new Date(completedAt).toLocaleDateString('zh-CN')}
             </div>
           </div>
 
           {/* 量表标题 */}
-          <div className="text-center mb-8">
-            <h2 className="text-xl sm:text-2xl font-bold text-neutral-900 mb-2">{scaleTitle}</h2>
-            <div className="h-1 w-20 bg-gradient-to-r from-primary to-purple-500 mx-auto rounded-full"></div>
+          <div className="text-center mb-5 sm:mb-8">
+            <h2 className="text-lg sm:text-2xl font-bold text-neutral-900 mb-2 px-2">{scaleTitle}</h2>
+            <div className="h-0.5 sm:h-1 w-16 sm:w-20 bg-gradient-to-r from-primary to-purple-500 mx-auto rounded-full"></div>
           </div>
 
           {/* 分数展示区 - 核心视觉元素 */}
-          <div className="relative mb-8">
+          <div className="relative mb-5 sm:mb-8">
             {/* 装饰性背景 */}
-            <div className="absolute inset-0 bg-gradient-to-br from-primary-50 via-purple-50 to-pink-50 rounded-3xl -z-10"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-primary-50 via-purple-50 to-pink-50 rounded-2xl sm:rounded-3xl -z-10"></div>
 
-            <div className="py-10 px-8">
+            <div className="py-6 px-4 sm:py-10 sm:px-8">
               {/* 分数圆环 */}
               <div className="flex justify-center mb-6">
                 <div className="relative">
@@ -144,43 +145,43 @@ export default function ShareCard({
               </div>
 
               {/* 等级标签 */}
-              <div className="text-center mb-6">
+              <div className="text-center mb-4 sm:mb-6">
                 <div
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-xl shadow-soft"
+                  className="inline-flex items-center gap-1.5 sm:gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-full font-bold text-base sm:text-xl shadow-soft"
                   style={{
                     backgroundColor: `${levelColor}15`,
                     color: levelColor,
                     border: `2px solid ${levelColor}30`
                   }}
                 >
-                  <span className="text-2xl">✨</span>
+                  <span className="text-xl sm:text-2xl">✨</span>
                   {level}
                 </div>
               </div>
 
               {/* 百分位信息 */}
               {percentile !== null && percentile !== undefined && (
-                <div className="text-center mb-6">
-                  <div className="inline-flex items-center gap-2 px-5 py-2 bg-white/80 backdrop-blur-sm rounded-full shadow-soft border border-neutral-100">
-                    <span className="text-lg">📊</span>
-                    <span className="text-sm text-neutral-600">
-                      超过 <span className="font-bold text-primary text-lg">{percentile}%</span> 的测评者
+                <div className="text-center mb-4 sm:mb-6">
+                  <div className="inline-flex items-center gap-1.5 sm:gap-2 px-4 sm:px-5 py-1.5 sm:py-2 bg-white/80 backdrop-blur-sm rounded-full shadow-soft border border-neutral-100">
+                    <span className="text-base sm:text-lg">📊</span>
+                    <span className="text-xs sm:text-sm text-neutral-600">
+                      超过 <span className="font-bold text-primary text-sm sm:text-lg">{percentile}%</span> 的测评者
                     </span>
                   </div>
                 </div>
               )}
 
               {/* 简短解读 */}
-              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-soft border border-neutral-100 mb-6">
-                <p className="text-neutral-700 leading-relaxed text-center text-sm line-clamp-3">
+              <div className="bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-soft border border-neutral-100 mb-4 sm:mb-6">
+                <p className="text-neutral-700 leading-relaxed text-center text-xs sm:text-sm line-clamp-3">
                   {description}
                 </p>
               </div>
 
               {/* 雷达图 - 维度分析 */}
               {radarData && radarData.length > 0 && (
-                <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-5 shadow-soft border border-neutral-100">
-                  <h3 className="text-center text-base font-bold text-neutral-900 mb-2">维度分析</h3>
+                <div className="bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-5 shadow-soft border border-neutral-100">
+                  <h3 className="text-center text-sm sm:text-base font-bold text-neutral-900 mb-1 sm:mb-2">维度分析</h3>
                   <DimensionRadarChart data={radarData} showLegend={false} compact={true} />
                 </div>
               )}
@@ -188,13 +189,13 @@ export default function ShareCard({
           </div>
 
           {/* 底部装饰和CTA */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-neutral-100">
-            <div className="text-xs text-neutral-400 text-center sm:text-left">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 pt-4 sm:pt-6 border-t border-neutral-100">
+            <div className="text-[10px] sm:text-xs text-neutral-400 text-center sm:text-left">
               扫码了解更多心理测评
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
               {/* 真实的二维码 */}
-              <div className="w-16 h-16 p-2 bg-white rounded-lg shadow-soft border border-neutral-200">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 p-1.5 sm:p-2 bg-white rounded-lg shadow-soft border border-neutral-200">
                 <QRCodeSVG
                   value="https://knowyourself.cc"
                   size={48}
@@ -203,21 +204,18 @@ export default function ShareCard({
                   className="w-full h-full"
                 />
               </div>
-              <div className="text-xs text-neutral-500">
-                <div className="font-semibold text-neutral-900">KnowYourself</div>
-                <div className="text-[10px] leading-tight text-neutral-400">knowyourself.cc</div>
+              <div className="text-[10px] sm:text-xs text-neutral-500">
+                <div className="font-semibold text-neutral-900 text-xs sm:text-sm">KnowYourself</div>
+                <div className="text-[9px] sm:text-[10px] leading-tight text-neutral-400">knowyourself.cc</div>
               </div>
             </div>
           </div>
         </div>
       </div>
-
-      {/* 提示文字 */}
-      <div className="text-center mt-4">
-        <p className="text-sm text-neutral-500">
-          💡 截图此卡片可分享至社交平台
-        </p>
-      </div>
     </div>
   );
-}
+});
+
+ShareCard.displayName = 'ShareCard';
+
+export default ShareCard;
