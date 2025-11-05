@@ -84,12 +84,33 @@ export function getScoreLevel(scale: QuizTemplate, score: number) {
   return range || scale.scoring.ranges[0];
 }
 
+// 获取量表的分值范围（每题的最小和最大分）
+export function getScaleScoreRange(scale: QuizTemplate): { min: number; max: number } {
+  // 从第一个问题的选项中获取分值范围
+  if (scale.questions.length > 0 && scale.questions[0].options) {
+    const values = scale.questions[0].options.map(opt => opt.value as number);
+    return {
+      min: Math.min(...values),
+      max: Math.max(...values)
+    };
+  }
+  // 默认为1-5分制
+  return { min: 1, max: 5 };
+}
+
 // 计算维度归一化分数
-export function normalizeDimensionScore(dimensionScore: number, questionCount: number): number {
-  // 每题1-5分，归一化到0-100
-  const min = questionCount * 1;
-  const max = questionCount * 5;
-  return Math.round(((dimensionScore - min) / (max - min)) * 100);
+export function normalizeDimensionScore(
+  dimensionScore: number,
+  questionCount: number,
+  minPerQuestion: number = 1,
+  maxPerQuestion: number = 5
+): number {
+  // 根据实际的分值范围归一化到0-100
+  const min = questionCount * minPerQuestion;
+  const max = questionCount * maxPerQuestion;
+  const normalized = ((dimensionScore - min) / (max - min)) * 100;
+  // 确保结果在0-100范围内
+  return Math.round(Math.max(0, Math.min(100, normalized)));
 }
 
 // 保存测评结果到localStorage

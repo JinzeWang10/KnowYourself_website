@@ -56,7 +56,7 @@ export interface QuizTemplate {
   description: string;
   category: string;
   purpose: string;
-  duration: number;
+  duration: string; // 时间范围，如 "5-7分钟"
   questionCount: number;
   questions: QuizQuestion[];
   dimensions?: ScaleDimension[];

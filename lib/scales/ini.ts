@@ -15,7 +15,7 @@ export const ini: QuizTemplate = {
   description: '评估个体在情感上对亲密关系的需求程度，包括情感需求、依赖性、孤独感、亲密互动需求以及安全感需求等方面',
   category: '亲密关系',
   purpose: '通过评估五个核心维度，帮助分析个体在亲密关系中的依赖性和情感渴望',
-  duration: 8,
+  duration: '5-7分钟',
   questionCount: 20,
 
   instructions: '请根据您的实际感受，选择最符合您情况的选项。',

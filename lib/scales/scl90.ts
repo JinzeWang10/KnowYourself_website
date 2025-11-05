@@ -9,7 +9,7 @@ export const scl90: QuizTemplate = {
   description: '全面评估心理症状的标准化量表，广泛应用于心理健康筛查和临床诊断',
   category: '心理健康评估',
   purpose: '评估躯体化、强迫症状、人际关系敏感、抑郁、焦虑、敌对、恐怖、偏执、精神病性等9个维度',
-  duration: 15,
+  duration: '23-30分钟',
   questionCount: 90,
 
   instructions: '根据最近一周(包括今天)您的实际感觉，选择最符合的答案。请注意：1=没有，2=很轻，3=中等，4=偏重，5=严重',

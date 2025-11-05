@@ -19,7 +19,7 @@ export const essScale: QuizTemplate = {
   description: '衡量个体的情绪稳定性，评估情绪反应、调节能力、压力应对以及情绪恢复能力',
   category: '情绪评估',
   purpose: '本量表旨在衡量个体的情绪稳定性，评估其在不同情境下的情绪反应、调节能力、压力应对以及情绪恢复能力。通过该量表可以了解个体在面对挑战和压力时的情绪波动及其调节能力。',
-  duration: 5,
+  duration: '5-7分钟',
   questionCount: 20,
 
   questions: [

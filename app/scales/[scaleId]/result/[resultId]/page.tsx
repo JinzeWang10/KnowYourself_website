@@ -5,10 +5,11 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
-import { getScaleById, calculateDimensionScores, normalizeScore } from '@/lib/scales';
+import { getScaleById, calculateDimensionScores, normalizeScore, normalizeDimensionScore, getScaleScoreRange } from '@/lib/scales';
 import { getPercentileRank } from '@/lib/api-client';
 import type { QuizResult } from '@/types/quiz';
 import type { RadarDataPoint } from '@/components/DimensionRadarChart';
+import ShareCard from '@/components/ShareCard';
 
 // 动态导入雷达图组件（仅客户端）
 const DimensionRadarChart = dynamic(
@@ -112,25 +113,28 @@ export default function ResultPage() {
   const normalizedScore = normalizeScore(scale, result.score);
   const scorePercentage = normalizedScore;
 
+  // 获取量表的分值范围，用于维度归一化
+  const scoreRange = getScaleScoreRange(scale);
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-primary-light/10 to-white">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-purple-50/30 to-pink-50/30">
       {/* Header */}
-      <header className="bg-white shadow-sm">
+      <header className="glass-effect border-b border-neutral-200/50 backdrop-blur-xl sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 hover:opacity-90 transition">
+          <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition group">
             <Image
               src="/knowyourself_logo.png"
               alt="KnowYourself Logo"
               width={32}
               height={32}
-              className="object-contain"
+              className="object-contain transition-transform group-hover:scale-110"
             />
             <div className="flex flex-col">
-              <span className="text-lg font-bold text-primary">KnowYourself</span>
-              <span className="text-xs text-gray-600">知己</span>
+              <span className="text-lg font-bold gradient-text">KnowYourself</span>
+              <span className="text-xs text-neutral-500 font-light">知己</span>
             </div>
           </Link>
-          <Link href="/" className="text-gray-600 hover:text-primary transition text-sm">
+          <Link href="/" className="text-neutral-600 hover:text-primary transition-colors text-sm font-medium">
             返回首页 →
           </Link>
         </div>
@@ -139,68 +143,87 @@ export default function ResultPage() {
       {/* Main Content */}
       <main className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto">
-          {/* Title */}
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              测评结果
+          {/* Title - 更简洁的标题区 */}
+          <div className="text-center mb-8 animate-fade-in">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/60 backdrop-blur-sm rounded-full shadow-soft border border-neutral-100 mb-4">
+              <span className="text-2xl">🎯</span>
+              <span className="text-sm font-medium text-neutral-600">测评完成</span>
+            </div>
+            <h1 className="text-3xl font-bold text-neutral-900 mb-2">
+              {scale.title}
             </h1>
-            <p className="text-gray-600">{scale.title}</p>
-            <p className="text-sm text-gray-500 mt-2">
-              完成时间: {new Date(result.completedAt).toLocaleString('zh-CN')}
+            <p className="text-sm text-neutral-500 font-light">
+              {new Date(result.completedAt).toLocaleString('zh-CN', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+              })}
             </p>
           </div>
 
-          {/* Score Display */}
-          <div className="bg-white rounded-2xl shadow-lg p-8 mb-6">
-            <div className="text-center mb-6">
-              <div className="inline-flex items-center justify-center w-32 h-32 rounded-full bg-gradient-to-br from-primary-light to-primary mb-4">
-                <div className="text-center">
-                  <div className="text-4xl font-bold text-white">{normalizedScore}</div>
-                  <div className="text-sm text-white/90">分</div>
-                </div>
-              </div>
+          {/* ShareCard - 精美分享卡片置顶 */}
+          {(() => {
+            // 准备雷达图数据（如果有维度）
+            const radarData: RadarDataPoint[] | undefined = scale.dimensions?.map((dimension) => {
+              const dimScore = dimensionScores[dimension.id] || 0;
+              const normalizedValue = normalizeDimensionScore(
+                dimScore,
+                dimension.questionIds.length,
+                scoreRange.min,
+                scoreRange.max
+              );
 
-              <h2
-                className="text-2xl font-bold mb-2"
-                style={{ color: scoreLevel?.color }}
-              >
-                {scoreLevel?.level}
-              </h2>
+              return {
+                dimension: dimension.name,
+                value: Math.round(normalizedValue * 10) / 10,
+                fullMark: 100,
+              };
+            });
 
-              {/* Score Bar */}
-              <div className="max-w-md mx-auto">
-                <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
-                  <div
-                    className="h-full transition-all duration-1000"
-                    style={{
-                      width: `${scorePercentage}%`,
-                      backgroundColor: scoreLevel?.color
-                    }}
-                  />
-                </div>
-                <div className="flex justify-between text-xs text-gray-500 mt-1">
-                  <span>0</span>
-                  <span>100</span>
-                </div>
+            return (
+              <ShareCard
+                scaleTitle={scale.title}
+                score={normalizedScore}
+                level={scoreLevel?.level || ''}
+                levelColor={scoreLevel?.color || '#6366F1'}
+                description={scoreLevel?.description || ''}
+                completedAt={typeof result.completedAt === 'string' ? result.completedAt : new Date(result.completedAt).toISOString()}
+                percentile={percentileData?.percentile}
+                radarData={radarData}
+              />
+            );
+          })()}
+
+          {/* Detailed Interpretation - 详细解读区 */}
+          <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-soft-xl p-10 mb-8 border border-neutral-100 animate-slide-up">
+            <div className="flex items-center gap-3 mb-8">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-purple-500 flex items-center justify-center shadow-soft">
+                <span className="text-2xl">📖</span>
               </div>
+              <h2 className="text-2xl font-bold text-neutral-900">详细解读</h2>
             </div>
 
             {/* Score Description */}
-            <div className="mt-6 p-6 bg-gray-50 rounded-xl">
-              <h3 className="font-semibold text-gray-900 mb-2">结果解读</h3>
-              <p className="text-gray-700 leading-relaxed">
+            <div className="p-8 bg-gradient-to-br from-neutral-50 to-purple-50/30 rounded-2xl border border-neutral-200/50 shadow-soft mb-6">
+              <h3 className="font-bold text-neutral-900 mb-4 text-lg flex items-center gap-2">
+                <span className="text-2xl">🎯</span>
+                核心解读
+              </h3>
+              <p className="text-neutral-700 leading-relaxed">
                 {scoreLevel?.description}
               </p>
             </div>
 
             {/* Psychological Traits - 心理特征 */}
             {scoreLevel?.psychologicalTraits && (
-              <div className="mt-6 p-6 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl border border-purple-200">
-                <h3 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
+              <div className="p-8 bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl border border-purple-200/50 shadow-soft mb-6">
+                <h3 className="font-bold text-neutral-900 mb-4 text-lg flex items-center gap-2">
                   <span className="text-2xl">🧠</span>
                   心理特征
                 </h3>
-                <p className="text-gray-700 leading-relaxed">
+                <p className="text-neutral-700 leading-relaxed">
                   {scoreLevel.psychologicalTraits}
                 </p>
               </div>
@@ -208,23 +231,23 @@ export default function ResultPage() {
 
             {/* Suggestions - 建议 */}
             {scoreLevel?.suggestions && scoreLevel.suggestions.length > 0 && (
-              <div className="mt-6 p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
-                <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <div className="p-8 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-2xl border border-blue-200/50 shadow-soft">
+                <h3 className="font-bold text-neutral-900 mb-6 text-lg flex items-center gap-2">
                   <span className="text-2xl">💡</span>
                   改善建议
                 </h3>
-                <ul className="space-y-3">
+                <div className="space-y-4">
                   {scoreLevel.suggestions.map((suggestion, index) => (
-                    <li key={index} className="flex items-start gap-3">
-                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary text-white text-xs flex items-center justify-center mt-0.5">
+                    <div key={index} className="flex items-start gap-4 group hover:translate-x-1 transition-transform">
+                      <span className="flex-shrink-0 w-8 h-8 rounded-xl bg-gradient-to-br from-primary via-purple-500 to-pink-500 text-white text-sm flex items-center justify-center font-bold shadow-soft group-hover:shadow-glow transition-shadow">
                         {index + 1}
                       </span>
-                      <span className="text-gray-700 leading-relaxed flex-1">
+                      <span className="text-neutral-700 leading-relaxed flex-1 pt-0.5">
                         {suggestion}
                       </span>
-                    </li>
+                    </div>
                   ))}
-                </ul>
+                </div>
               </div>
             )}
 
@@ -289,9 +312,9 @@ export default function ResultPage() {
 
           {/* Radar Chart for Dimensions */}
           {scale.dimensions && scale.dimensions.length > 0 && (
-            <div className="bg-white rounded-2xl shadow-lg p-8 mb-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                <span className="text-2xl">📈</span>
+            <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-soft-lg p-10 mb-8 border border-neutral-100 animate-slide-up animation-delay-100">
+              <h2 className="text-2xl font-bold text-neutral-900 mb-8 flex items-center gap-3">
+                <span className="text-3xl">📈</span>
                 维度分析雷达图
               </h2>
 
@@ -299,17 +322,13 @@ export default function ResultPage() {
                 // 准备雷达图数据
                 const radarData: RadarDataPoint[] = scale.dimensions.map((dimension) => {
                   const dimScore = dimensionScores[dimension.id] || 0;
-                  // 根据量表类型确定最高分
-                  let maxScorePerQuestion = 5; // 默认5分制
-                  if (scaleId === 'scl90' || scaleId === 'ani') {
-                    maxScorePerQuestion = 5; // SCL-90和ANI是5分制
-                  } else if (scaleId === 'ppus') {
-                    maxScorePerQuestion = 6; // PPUS是0-5分制,实际range是6
-                  } else if (scaleId === 'ess') {
-                    maxScorePerQuestion = 4; // ESS是0-3分制
-                  }
-                  const maxScore = dimension.questionIds.length * maxScorePerQuestion;
-                  const normalizedValue = (dimScore / maxScore) * 100;
+                  // 使用正确的归一化函数计算百分比，传入量表的分值范围
+                  const normalizedValue = normalizeDimensionScore(
+                    dimScore,
+                    dimension.questionIds.length,
+                    scoreRange.min,
+                    scoreRange.max
+                  );
 
                   return {
                     dimension: dimension.name,
@@ -325,53 +344,86 @@ export default function ResultPage() {
 
           {/* Dimension Scores - Detailed Bars */}
           {scale.dimensions && scale.dimensions.length > 0 && (
-            <div className="bg-white rounded-2xl shadow-lg p-8 mb-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                <span className="text-2xl">📊</span>
-                维度得分详情
-              </h2>
+            <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-soft-lg p-10 mb-8 border border-neutral-100 animate-slide-up animation-delay-200">
+              <div className="flex items-center gap-3 mb-8">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-soft">
+                  <span className="text-2xl">📊</span>
+                </div>
+                <h2 className="text-2xl font-bold text-neutral-900">维度得分详情</h2>
+              </div>
 
               <div className="space-y-6">
-                {scale.dimensions.map((dimension) => {
+                {scale.dimensions.map((dimension, index) => {
                   const dimScore = dimensionScores[dimension.id] || 0;
-                  // 根据量表类型确定每题最高分
-                  let maxScorePerQuestion = 5; // 默认5分制
-                  if (scaleId === 'scl90' || scaleId === 'ani') {
-                    maxScorePerQuestion = 5; // SCL-90和ANI是5分制
-                  } else if (scaleId === 'ppus') {
-                    maxScorePerQuestion = 6; // PPUS是0-5分制,实际range是6
-                  } else if (scaleId === 'ess') {
-                    maxScorePerQuestion = 4; // ESS是0-3分制
+                  // 使用正确的归一化函数计算百分比，传入量表的分值范围
+                  const dimPercentage = normalizeDimensionScore(
+                    dimScore,
+                    dimension.questionIds.length,
+                    scoreRange.min,
+                    scoreRange.max
+                  );
+
+                  // 根据分数确定颜色
+                  let barColor = 'from-green-500 to-emerald-600';
+                  let bgColor = 'from-green-50 to-emerald-50';
+                  if (dimPercentage >= 67) {
+                    barColor = 'from-red-500 to-rose-600';
+                    bgColor = 'from-red-50 to-rose-50';
+                  } else if (dimPercentage >= 34) {
+                    barColor = 'from-amber-500 to-orange-600';
+                    bgColor = 'from-amber-50 to-orange-50';
                   }
-                  const maxScore = dimension.questionIds.length * maxScorePerQuestion;
-                  const dimPercentage = (dimScore / maxScore) * 100;
 
                   return (
-                    <div key={dimension.id}>
-                      <div className="flex items-center justify-between mb-2">
+                    <div
+                      key={dimension.id}
+                      className="group p-6 rounded-2xl bg-gradient-to-br from-neutral-50/50 to-purple-50/30 border border-neutral-100 hover:shadow-soft transition-all duration-300"
+                      style={{ animationDelay: `${index * 50}ms` }}
+                    >
+                      <div className="flex items-center justify-between mb-4">
                         <div className="flex-1">
-                          <h3 className="font-semibold text-gray-900">
+                          <h3 className="font-bold text-neutral-900 text-lg mb-1">
                             {dimension.name}
                           </h3>
-                          <p className="text-sm text-gray-600">
+                          <p className="text-sm text-neutral-600">
                             {dimension.description}
                           </p>
                         </div>
-                        <span className="text-2xl font-bold text-primary ml-4">
-                          {Math.round(dimPercentage)}%
-                        </span>
+                        <div className={`ml-6 px-5 py-3 rounded-xl bg-gradient-to-br ${bgColor} border border-neutral-200/50 shadow-soft`}>
+                          <span className={`text-3xl font-black bg-gradient-to-br ${barColor} bg-clip-text text-transparent`}>
+                            {Math.round(dimPercentage)}
+                          </span>
+                          <span className="text-sm text-neutral-600 font-medium">%</span>
+                        </div>
                       </div>
 
-                      <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-primary transition-all duration-1000"
-                          style={{ width: `${dimPercentage}%` }}
-                        />
-                      </div>
+                      {/* 3D进度条 */}
+                      <div className="relative">
+                        {/* 底层阴影 */}
+                        <div className={`absolute inset-x-0 top-1 h-6 bg-gradient-to-r ${barColor} opacity-10 rounded-full blur-sm`}></div>
 
-                      <div className="flex justify-between text-xs text-gray-500 mt-1">
-                        <span>0%</span>
-                        <span>100%</span>
+                        {/* 背景轨道 */}
+                        <div className="relative h-6 bg-neutral-100 rounded-full overflow-hidden shadow-inner">
+                          {/* 进度条 */}
+                          <div
+                            className={`h-full bg-gradient-to-r ${barColor} transition-all duration-1000 ease-out group-hover:brightness-110 relative overflow-hidden`}
+                            style={{ width: `${dimPercentage}%` }}
+                          >
+                            {/* 高光效果 */}
+                            <div className="absolute inset-0 bg-gradient-to-b from-white/30 to-transparent"></div>
+                            {/* 动画光波 */}
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
+                          </div>
+                        </div>
+
+                        {/* 刻度标记 */}
+                        <div className="flex justify-between text-xs text-neutral-400 mt-2 font-medium">
+                          <span>0</span>
+                          <span>25</span>
+                          <span>50</span>
+                          <span>75</span>
+                          <span>100</span>
+                        </div>
                       </div>
                     </div>
                   );
@@ -382,24 +434,26 @@ export default function ResultPage() {
 
           {/* References */}
           {scale.references && scale.references.length > 0 && (
-            <div className="bg-white rounded-2xl shadow-lg p-8 mb-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <span className="text-2xl">📚</span>
-                科学依据
-              </h2>
-              <div className="space-y-3">
+            <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-soft-lg p-10 mb-8 border border-neutral-100">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-soft">
+                  <span className="text-2xl">📚</span>
+                </div>
+                <h2 className="text-2xl font-bold text-neutral-900">科学依据</h2>
+              </div>
+              <div className="space-y-4">
                 {scale.references.map((ref, index) => {
                   // 检查是否为学术参考文献格式
                   if ('authors' in ref && 'year' in ref && 'journal' in ref) {
                     return (
-                      <div key={index} className="text-sm text-gray-700 leading-relaxed">
-                        <p>
+                      <div key={index} className="p-5 bg-gradient-to-br from-neutral-50 to-purple-50/30 rounded-xl border border-neutral-200/50">
+                        <p className="text-sm text-neutral-700 leading-relaxed">
                           {ref.authors} ({ref.year}). <em>{ref.title}</em>.{' '}
                           <span className="font-semibold">{ref.journal}</span>
                           {ref.volume && `, ${ref.volume}`}
                           {ref.pages && `, ${ref.pages}`}.
                           {ref.doi && (
-                            <span className="block mt-1 text-gray-500">
+                            <span className="block mt-2 text-neutral-500 text-xs">
                               DOI: {ref.doi}
                             </span>
                           )}
@@ -409,9 +463,9 @@ export default function ResultPage() {
                   } else {
                     // 简化的参考信息格式
                     return (
-                      <div key={index} className="mb-3 last:mb-0">
-                        <p className="text-sm font-semibold text-gray-800">{ref.title}</p>
-                        <p className="text-sm text-gray-600 leading-relaxed mt-1">{ref.content}</p>
+                      <div key={index} className="p-5 bg-gradient-to-br from-neutral-50 to-purple-50/30 rounded-xl border border-neutral-200/50">
+                        <p className="text-sm font-semibold text-neutral-900 mb-2">{ref.title}</p>
+                        <p className="text-sm text-neutral-600 leading-relaxed">{ref.content}</p>
                       </div>
                     );
                   }
@@ -420,27 +474,38 @@ export default function ResultPage() {
             </div>
           )}
 
-          {/* Action Buttons */}
-          <div className="flex flex-wrap gap-4 justify-center">
+          {/* Action Buttons - 精美设计 */}
+          <div className="flex flex-wrap gap-4 justify-center animate-fade-in animation-delay-300">
             <button
               onClick={() => router.push(`/scales/${scaleId}/quiz`)}
-              className="px-6 py-3 bg-white border-2 border-primary text-primary rounded-lg font-semibold hover:bg-primary hover:text-white transition"
+              className="group relative px-8 py-4 bg-white border-2 border-primary text-primary rounded-2xl font-bold hover:bg-primary hover:text-white transition-all duration-300 shadow-soft hover:shadow-soft-lg hover:scale-105 overflow-hidden"
             >
-              重新测评
+              <span className="relative z-10 flex items-center gap-2">
+                <span>🔄</span>
+                重新测评
+              </span>
+              <div className="absolute inset-0 bg-gradient-to-r from-primary to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </button>
 
             <Link
               href="/history"
-              className="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg font-semibold hover:bg-gray-200 transition inline-block"
+              className="group relative px-8 py-4 bg-gradient-to-br from-neutral-100 to-neutral-50 border-2 border-neutral-200 text-neutral-700 rounded-2xl font-bold hover:border-neutral-300 transition-all duration-300 shadow-soft hover:shadow-soft-lg hover:scale-105 inline-block overflow-hidden"
             >
-              查看历史记录
+              <span className="relative z-10 flex items-center gap-2">
+                <span>📜</span>
+                查看历史记录
+              </span>
             </Link>
 
             <Link
               href="/"
-              className="px-6 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-primary-dark transition inline-block"
+              className="group relative px-8 py-4 bg-gradient-to-r from-primary via-purple-500 to-pink-500 text-white rounded-2xl font-bold hover:shadow-glow-lg transition-all duration-300 shadow-soft hover:scale-105 inline-block overflow-hidden"
             >
-              返回首页
+              <span className="relative z-10 flex items-center gap-2">
+                <span>🏠</span>
+                返回首页
+              </span>
+              <div className="absolute inset-0 bg-gradient-to-r from-primary-light to-purple-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </Link>
           </div>
         </div>

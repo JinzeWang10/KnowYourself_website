@@ -18,7 +18,7 @@ export const ani: QuizTemplate = {
   description: '综合评估色情使用对生活的影响程度，科学判断是否需要开始戒断',
   category: '综合评估',
   purpose: '从负面后果、功能损害、戒断困难、心理冲突4个维度综合评估戒断必要性',
-  duration: 12,
+  duration: '9-11分钟',
   questionCount: 33,
 
   instructions: '本测评包含4个部分，请根据你的实际情况如实回答。测评结果将帮助你了解是否需要开始戒断计划。',

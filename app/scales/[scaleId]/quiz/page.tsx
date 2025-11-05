@@ -244,20 +244,20 @@ export default function QuizPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50/30 via-white to-purple-50/30">
       {/* Header */}
-      <header className="bg-white shadow-sm sticky top-0 z-10">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between mb-3">
-            <Link href="/" className="flex items-center gap-2 hover:opacity-90 transition">
+      <header className="glass-effect border-b border-neutral-200/50 sticky top-0 z-10 backdrop-blur-xl">
+        <div className="container mx-auto px-4 py-5">
+          <div className="flex items-center justify-between mb-4">
+            <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition group">
               <div>
-                <div className="text-xs text-primary font-semibold">KnowYourself</div>
-                <div className="text-xs text-gray-600">{scale.title}</div>
+                <div className="text-xs font-semibold gradient-text">KnowYourself</div>
+                <div className="text-xs text-neutral-600 font-light">{scale.title}</div>
               </div>
             </Link>
             <Link
               href={`/scales/${scaleId}`}
-              className="text-sm text-gray-600 hover:text-gray-900"
+              className="text-sm text-neutral-600 hover:text-primary transition-colors font-medium"
             >
               退出测评
             </Link>
@@ -265,17 +265,17 @@ export default function QuizPage() {
 
           {/* Progress Bar */}
           <div>
-            <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+            <div className="h-2.5 bg-neutral-100 rounded-full overflow-hidden shadow-inner">
               <div
-                className="h-full bg-primary transition-all duration-300"
+                className="h-full bg-gradient-to-r from-primary to-primary-light transition-all duration-500 ease-out shadow-glow"
                 style={{ width: `${progress}%` }}
               />
             </div>
-            <div className="flex items-center justify-between mt-2">
-              <p className="text-sm text-gray-600">
+            <div className="flex items-center justify-between mt-2.5">
+              <p className="text-sm text-neutral-600 font-medium">
                 第 {currentIndex + 1} / {scale.questions.length} 题
               </p>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-primary font-semibold">
                 {Math.round(progress)}% 完成
               </p>
             </div>
@@ -284,50 +284,50 @@ export default function QuizPage() {
       </header>
 
       {/* Question */}
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-10">
         <div className="max-w-3xl mx-auto">
-          <div className="bg-white rounded-2xl shadow-lg p-8 mb-6">
+          <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-soft-lg p-10 mb-8 border border-neutral-100 animate-slide-up">
             {/* Question Number & Text */}
-            <div className="mb-8">
-              <div className="text-sm text-gray-500 mb-2">
+            <div className="mb-10">
+              <div className="text-sm text-neutral-500 mb-3 font-medium">
                 问题 {currentIndex + 1}
               </div>
-              <h2 className="text-xl font-semibold text-gray-900 leading-relaxed">
+              <h2 className="text-2xl font-semibold text-neutral-900 leading-relaxed">
                 {currentQuestion.question}
               </h2>
             </div>
 
             {/* Options */}
-            <div className="space-y-3">
+            <div className="space-y-4">
               {currentQuestion.options?.map((option) => {
                 const isSelected = answers[currentQuestion.id] === option.value;
                 return (
                   <button
                     key={option.value}
                     onClick={() => handleAnswer(option.value)}
-                    className={`w-full text-left p-5 rounded-xl border-2 transition-all ${
+                    className={`group w-full text-left p-6 rounded-2xl border-2 transition-all duration-300 ${
                       isSelected
-                        ? 'border-primary bg-primary/5 shadow-md'
-                        : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                        ? 'border-primary bg-gradient-to-r from-primary-50 to-purple-50 shadow-soft-lg scale-[1.02]'
+                        : 'border-neutral-200 hover:border-primary/50 hover:bg-neutral-50 hover:shadow-soft'
                     }`}
                   >
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-4">
                       <div
-                        className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                        className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
                           isSelected
-                            ? 'border-primary bg-primary'
-                            : 'border-gray-300'
+                            ? 'border-primary bg-primary shadow-glow'
+                            : 'border-neutral-300 group-hover:border-primary/50'
                         }`}
                       >
                         {isSelected && (
-                          <div className="w-2 h-2 bg-white rounded-full" />
+                          <div className="w-2.5 h-2.5 bg-white rounded-full" />
                         )}
                       </div>
                       <span
-                        className={`text-base ${
+                        className={`text-base leading-relaxed transition-colors ${
                           isSelected
-                            ? 'text-gray-900 font-medium'
-                            : 'text-gray-700'
+                            ? 'text-neutral-900 font-semibold'
+                            : 'text-neutral-700 group-hover:text-neutral-900'
                         }`}
                       >
                         {option.label}
@@ -344,19 +344,19 @@ export default function QuizPage() {
             <button
               onClick={handlePrev}
               disabled={currentIndex === 0}
-              className="px-6 py-3 rounded-lg border-2 border-gray-300 text-gray-700 font-medium disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50 transition"
+              className="px-8 py-3.5 rounded-xl border-2 border-neutral-300 text-neutral-700 font-semibold disabled:opacity-40 disabled:cursor-not-allowed hover:bg-neutral-50 hover:border-neutral-400 transition-all shadow-soft hover:shadow-soft-lg"
             >
               ← 上一题
             </button>
 
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-neutral-600 font-medium bg-neutral-50 px-5 py-2 rounded-full border border-neutral-200">
               {Object.keys(answers).length} / {scale.questions.length} 已回答
             </div>
 
             <button
               onClick={handleNext}
               disabled={!isAnswered || isSubmitting}
-              className="px-6 py-3 rounded-lg bg-primary text-white font-medium disabled:opacity-40 disabled:cursor-not-allowed hover:bg-primary-dark transition"
+              className="px-8 py-3.5 rounded-xl bg-gradient-to-r from-primary to-primary-light text-white font-semibold disabled:opacity-40 disabled:cursor-not-allowed hover:shadow-glow-lg transition-all shadow-soft btn-glow"
             >
               {currentIndex === scale.questions.length - 1
                 ? isSubmitting
@@ -367,10 +367,10 @@ export default function QuizPage() {
           </div>
 
           {/* Helper Text */}
-          <p className="text-center text-sm text-gray-500 mt-4">
+          <p className="text-center text-sm text-neutral-500 mt-6 font-light">
             {!isAnswered
-              ? '请选择一个选项，将自动进入下一题'
-              : '已选择，可点击"上一题"返回修改'}
+              ? '✨ 请选择一个选项，将自动进入下一题'
+              : '✓ 已选择，可点击"上一题"返回修改'}
           </p>
         </div>
       </main>
