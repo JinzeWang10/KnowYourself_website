@@ -106,7 +106,7 @@ export default function DimensionRadarChart({
 
       {/* 雷达图容器 - 添加渐变背景 */}
       <div className={compact ? "relative" : "relative p-3 sm:p-6 bg-gradient-to-br from-purple-50/50 via-pink-50/30 to-blue-50/50 rounded-2xl"}>
-        <ResponsiveContainer width="100%" height={compact ? 250 : 450}>
+        <ResponsiveContainer width="100%" height={compact ? 320 : 450}>
           <RadarChart data={data}>
             {/* 网格 - 更精致的样式 */}
             <PolarGrid

@@ -229,32 +229,34 @@ export default function ResultPage() {
             );
           })()}
 
-          {/* 下载分享卡片按钮 */}
-          <div className="text-center mb-6 sm:mb-8 animate-fade-in animation-delay-100">
-            <button
-              onClick={handleExportImage}
-              disabled={isExporting}
-              className="group relative inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-primary via-purple-500 to-pink-500 text-white rounded-xl sm:rounded-2xl font-bold hover:shadow-glow-lg transition-all duration-300 shadow-soft hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 text-sm sm:text-base overflow-hidden"
-            >
-              <span className="relative z-10 flex items-center gap-2">
-                {isExporting ? (
-                  <>
-                    <span className="animate-spin">⏳</span>
-                    生成中...
-                  </>
-                ) : (
-                  <>
-                    <span>📸</span>
-                    下载分享图片
-                  </>
-                )}
-              </span>
-              <div className="absolute inset-0 bg-gradient-to-r from-primary-light to-purple-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            </button>
-            <p className="text-xs sm:text-sm text-neutral-500 mt-2 sm:mt-3">
-              💡 点击按钮生成精美分享图片，或截图此卡片分享至社交平台
-            </p>
-          </div>
+          {/* 下载分享卡片按钮 - 暂时隐藏 */}
+          {false && (
+            <div className="text-center mb-6 sm:mb-8 animate-fade-in animation-delay-100">
+              <button
+                onClick={handleExportImage}
+                disabled={isExporting}
+                className="group relative inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-primary via-purple-500 to-pink-500 text-white rounded-xl sm:rounded-2xl font-bold hover:shadow-glow-lg transition-all duration-300 shadow-soft hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 text-sm sm:text-base overflow-hidden"
+              >
+                <span className="relative z-10 flex items-center gap-2">
+                  {isExporting ? (
+                    <>
+                      <span className="animate-spin">⏳</span>
+                      生成中...
+                    </>
+                  ) : (
+                    <>
+                      <span>📸</span>
+                      下载分享图片
+                    </>
+                  )}
+                </span>
+                <div className="absolute inset-0 bg-gradient-to-r from-primary-light to-purple-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              </button>
+              <p className="text-xs sm:text-sm text-neutral-500 mt-2 sm:mt-3">
+                💡 点击按钮生成精美分享图片，或截图此卡片分享至社交平台
+              </p>
+            </div>
+          )}
 
           {/* Detailed Interpretation - 详细解读区 */}
           <div className="bg-white/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-soft-xl p-5 sm:p-10 mb-6 sm:mb-8 border border-neutral-100/50 animate-slide-up">

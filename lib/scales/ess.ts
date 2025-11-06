@@ -37,6 +37,7 @@ export const essScale: QuizTemplate = {
         { value: 5, label: '强烈同意' },
       ],
       required: true,
+      reversed: true, // 负向题目，需要反向计分
     },
     {
       id: 'ess_2',
@@ -51,6 +52,7 @@ export const essScale: QuizTemplate = {
         { value: 5, label: '强烈同意' },
       ],
       required: true,
+      reversed: true, // 负向题目，需要反向计分
     },
     {
       id: 'ess_3',
@@ -65,6 +67,7 @@ export const essScale: QuizTemplate = {
         { value: 5, label: '强烈同意' },
       ],
       required: true,
+      reversed: true, // 负向题目，需要反向计分
     },
     {
       id: 'ess_4',
@@ -79,6 +82,7 @@ export const essScale: QuizTemplate = {
         { value: 5, label: '强烈同意' },
       ],
       required: true,
+      reversed: true, // 负向题目，需要反向计分
     },
     {
       id: 'ess_5',
@@ -93,6 +97,7 @@ export const essScale: QuizTemplate = {
         { value: 5, label: '强烈同意' },
       ],
       required: true,
+      reversed: true, // 负向题目，需要反向计分
     },
 
     // 维度二：情绪调节能力（Emotional Regulation）- 题目6-10
@@ -109,7 +114,7 @@ export const essScale: QuizTemplate = {
         { value: 5, label: '强烈同意' },
       ],
       required: true,
-      reversed: true, // 反向计分
+      // 正向题目，不需要反向计分
     },
     {
       id: 'ess_7',
@@ -124,7 +129,7 @@ export const essScale: QuizTemplate = {
         { value: 5, label: '强烈同意' },
       ],
       required: true,
-      reversed: true,
+      // 正向题目，不需要反向计分
     },
     {
       id: 'ess_8',
@@ -139,7 +144,7 @@ export const essScale: QuizTemplate = {
         { value: 5, label: '强烈同意' },
       ],
       required: true,
-      reversed: true,
+      // 正向题目，不需要反向计分
     },
     {
       id: 'ess_9',
@@ -154,7 +159,7 @@ export const essScale: QuizTemplate = {
         { value: 5, label: '强烈同意' },
       ],
       required: true,
-      reversed: true,
+      // 正向题目，不需要反向计分
     },
     {
       id: 'ess_10',
@@ -169,7 +174,7 @@ export const essScale: QuizTemplate = {
         { value: 5, label: '强烈同意' },
       ],
       required: true,
-      reversed: true,
+      // 正向题目，不需要反向计分
     },
 
     // 维度三：压力应对（Stress Coping）- 题目11-15
@@ -186,7 +191,7 @@ export const essScale: QuizTemplate = {
         { value: 5, label: '强烈同意' },
       ],
       required: true,
-      reversed: true,
+      // 正向题目，不需要反向计分
     },
     {
       id: 'ess_12',
@@ -201,7 +206,7 @@ export const essScale: QuizTemplate = {
         { value: 5, label: '强烈同意' },
       ],
       required: true,
-      reversed: true,
+      // 正向题目，不需要反向计分
     },
     {
       id: 'ess_13',
@@ -216,7 +221,7 @@ export const essScale: QuizTemplate = {
         { value: 5, label: '强烈同意' },
       ],
       required: true,
-      reversed: true,
+      // 正向题目，不需要反向计分
     },
     {
       id: 'ess_14',
@@ -231,7 +236,7 @@ export const essScale: QuizTemplate = {
         { value: 5, label: '强烈同意' },
       ],
       required: true,
-      reversed: true,
+      // 正向题目，不需要反向计分
     },
     {
       id: 'ess_15',
@@ -246,7 +251,7 @@ export const essScale: QuizTemplate = {
         { value: 5, label: '强烈同意' },
       ],
       required: true,
-      reversed: true,
+      // 正向题目，不需要反向计分
     },
 
     // 维度四：情绪回归速度（Emotional Recovery）- 题目16-20
@@ -263,7 +268,7 @@ export const essScale: QuizTemplate = {
         { value: 5, label: '强烈同意' },
       ],
       required: true,
-      reversed: true,
+      // 正向题目，不需要反向计分
     },
     {
       id: 'ess_17',
@@ -278,7 +283,7 @@ export const essScale: QuizTemplate = {
         { value: 5, label: '强烈同意' },
       ],
       required: true,
-      reversed: true,
+      // 正向题目，不需要反向计分
     },
     {
       id: 'ess_18',
@@ -293,7 +298,7 @@ export const essScale: QuizTemplate = {
         { value: 5, label: '强烈同意' },
       ],
       required: true,
-      reversed: true,
+      // 正向题目，不需要反向计分
     },
     {
       id: 'ess_19',
@@ -308,7 +313,7 @@ export const essScale: QuizTemplate = {
         { value: 5, label: '强烈同意' },
       ],
       required: true,
-      reversed: true,
+      // 正向题目，不需要反向计分
     },
     {
       id: 'ess_20',
@@ -323,7 +328,7 @@ export const essScale: QuizTemplate = {
         { value: 5, label: '强烈同意' },
       ],
       required: true,
-      reversed: true,
+      // 正向题目，不需要反向计分
     },
   ],
 

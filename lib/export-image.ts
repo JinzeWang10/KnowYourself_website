@@ -17,20 +17,29 @@ export async function exportComponentAsImage(
   }
 ): Promise<boolean> {
   try {
+    // 获取元素的实际尺寸
+    const rect = element.getBoundingClientRect();
+
     // 配置 html2canvas 选项
     const canvas = await html2canvas(element, {
-      scale: options?.scale || window.devicePixelRatio || 2, // 使用设备像素比或2倍提高清晰度
+      scale: options?.scale || 3, // 使用3倍缩放提高清晰度
       useCORS: true, // 允许跨域图片
       allowTaint: true, // 允许跨域图片污染canvas
-      backgroundColor: options?.backgroundColor || '#ffffff',
+      backgroundColor: options?.backgroundColor || '#f8f9fa',
       logging: false, // 关闭日志
       imageTimeout: 15000, // 图片加载超时时间
       // 提高渲染质量
       removeContainer: true,
       scrollY: -window.scrollY,
       scrollX: -window.scrollX,
-      windowWidth: element.scrollWidth,
-      windowHeight: element.scrollHeight,
+      width: Math.ceil(rect.width),
+      height: Math.ceil(rect.height),
+      windowWidth: Math.ceil(rect.width),
+      windowHeight: Math.ceil(rect.height),
+      // 确保SVG正确渲染
+      foreignObjectRendering: true,
+      // 提高字体渲染质量
+      letterRendering: true,
     });
 
     // 转换为 Blob
