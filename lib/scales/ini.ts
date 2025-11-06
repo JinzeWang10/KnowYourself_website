@@ -449,32 +449,16 @@ export const ini: QuizTemplate = {
 
   references: [
     {
-      title: '依恋理论（Attachment Theory）',
-      content: '依恋理论是由英国精神分析学家约翰·鲍尔比（John Bowlby）在20世纪50年代提出的，是理解个体对亲密关系需求的重要理论框架。该理论认为,早期的依恋经验会影响个体一生的情感模式和人际关系质量。依恋类型（如焦虑型、回避型、安全型）对个体在情感和亲密关系中的需求和依赖性具有决定性影响。INI量表中的"情感需求"、"依赖性"、"孤独感"维度直接反映了不同依恋类型个体在亲密关系中的行为模式和情感体验。\n\n参考文献：Bowlby, J. (1988). A Secure Base: Parent-Child Attachment and Healthy Human Development. Basic Books. | Ainsworth, M. D. S., et al. (1978). Patterns of Attachment. Lawrence Erlbaum. | Bartholomew, K., & Horowitz, L. M. (1991). Attachment styles among young adults. Journal of Personality and Social Psychology, 61(2), 226-244.',
+      title: '依恋理论',
+      content: '由约翰·鲍尔比提出，认为早期依恋经验影响个体一生的情感模式和人际关系。依恋类型（焦虑型、回避型、安全型）决定个体在亲密关系中的需求和依赖性。',
     },
     {
-      title: '成人依恋理论（Adult Attachment Theory）',
-      content: '成人依恋理论由辛迪·哈赞（Cindy Hazan）和菲利普·夏沃（Phillip Shaver）在1987年提出，将鲍尔比的依恋理论应用于成人浪漫关系中。研究发现，成人在恋爱关系中的行为模式与儿童对照顾者的依恋模式高度相似。成人的浪漫关系本质上是一种依恋关系，伴侣之间寻求情感联结、安全基地和避风港。INI量表的"依赖性"和"安全感需求"维度直接测量个体在成人亲密关系中的情感依赖程度和对关系稳定性的需求。\n\n参考文献：Hazan, C., & Shaver, P. (1987). Romantic love conceptualized as an attachment process. Journal of Personality and Social Psychology, 52(3), 511-524. | Brennan, K. A., et al. (1998). Self-report measurement of adult attachment. Guilford Press.',
+      title: '成人依恋理论',
+      content: '将依恋理论应用于成人浪漫关系，发现成人恋爱行为模式与儿童依恋高度相似。伴侣之间寻求情感联结、安全基地和避风港。',
     },
     {
-      title: '孤独感理论（Loneliness Theory）',
-      content: '孤独感是个体对社会联结缺失的主观感受，由丹尼尔·罗素（Daniel Russell）、莱蒂西亚·佩普劳（Letitia Peplau）等学者系统研究。孤独感理论区分了社交孤独（缺乏社交网络）和情感孤独（缺乏亲密情感联结）。情感孤独源于缺乏深层次的亲密关系，对个体的心理健康影响更为深远。孤独感强的个体对亲密关系有更高的渴望，缺乏亲密关系会导致情感空虚、抑郁和焦虑等负面情绪。INI量表的"孤独感"维度专门评估个体在缺乏亲密关系时的情感空虚和孤独体验。\n\n参考文献：Russell, D., Peplau, L. A., & Cutrona, C. E. (1980). The revised UCLA Loneliness Scale. Journal of Personality and Social Psychology, 39(3), 472-480. | Weiss, R. S. (1973). Loneliness: The Experience of Emotional and Social Isolation. MIT Press. | Cacioppo, J. T., & Patrick, W. (2008). Loneliness: Human Nature and the Need for Social Connection. W. W. Norton.',
-    },
-    {
-      title: '亲密关系过程理论（Intimacy Process Theory）',
-      content: '由哈里·雷斯（Harry Reis）和菲利普·夏沃（Phillip Shaver）提出的亲密关系过程理论，强调亲密感是通过人际互动过程产生的，包括自我揭露、伴侣回应和感知到的理解。亲密感不是静态的特质，而是通过持续的互动过程动态产生的。个体对亲密互动的需求包括情感分享、身体接触、深层对话等，这些互动是维持亲密关系的重要纽带。INI量表的"亲密互动需求"维度测量个体对情感分享、身体接触等亲密互动行为的渴望程度。\n\n参考文献：Reis, H. T., & Shaver, P. (1988). Intimacy as an interpersonal process. Handbook of Personal Relationships, 367-389. | Reis, H. T., et al. (2004). Perceived partner responsiveness. Handbook of Closeness and Intimacy, 201-225.',
-    },
-    {
-      title: '自我决定理论（Self-Determination Theory）',
-      content: '由爱德华·德西（Edward Deci）和理查德·瑞安（Richard Ryan）提出的自我决定理论认为，人类有三种基本心理需求：自主性、胜任感和关系需求（relatedness）。人类有与他人建立亲密、有意义的情感联结的内在需求。满足关系需求能够促进心理健康和幸福感。不同个体对关系需求的强度存在差异，长期的关系需求挫败会导致心理困扰。INI量表整体评估个体的关系需求强度，特别是"情感需求"和"安全感需求"维度。\n\n参考文献：Deci, E. L., & Ryan, R. M. (2000). The "what" and "why" of goal pursuits. Psychological Inquiry, 11(4), 227-268. | Ryan, R. M., & Deci, E. L. (2017). Self-Determination Theory. Guilford Press.',
-    },
-    {
-      title: '依恋需求与情感调节理论',
-      content: '依恋系统不仅影响个体的关系模式，还与情感调节能力密切相关。安全依恋的个体通常具有更好的情感调节能力，而不安全依恋（焦虑型和回避型）的个体在情感调节上存在困难。亲密关系可以作为个体的情感调节资源。焦虑型依恋个体倾向于通过寻求他人的安慰来调节负面情绪（超度激活策略），而回避型个体则压抑情绪、回避寻求支持（去激活策略）。INI量表的"依赖性"和"安全感需求"维度反映了个体在情感调节中对他人支持的依赖程度。\n\n参考文献：Mikulincer, M., & Shaver, P. R. (2007). Attachment in Adulthood: Structure, Dynamics, and Change. Guilford Press. | Cassidy, J. (1994). Emotion regulation. Monographs of the Society for Research in Child Development, 59(2-3), 228-249.',
-    },
-    {
-      title: '社会支持理论（Social Support Theory）',
-      content: '社会支持理论强调，个体从社会关系中获得的情感、信息和工具支持对心理健康至关重要。亲密关系是社会支持的核心来源。情感支持（如关怀、理解、认可）是亲密关系中最重要的支持类型，能够缓冲压力、提升幸福感。个体对社会支持的需求存在差异，高亲密关系需求的个体更倾向于主动寻求社会支持。INI量表的"情感需求"和"依赖性"维度测量个体对亲密关系中情感支持的需求和依赖程度。\n\n参考文献：Cohen, S., & Wills, T. A. (1985). Stress, social support, and the buffering hypothesis. Psychological Bulletin, 98(2), 310-357. | Sarason, I. G., et al. (1990). Social support: The search for theory. Journal of Social and Clinical Psychology, 9(1), 133-147.',
+      title: '孤独感理论',
+      content: '区分社交孤独和情感孤独。情感孤独源于缺乏深层亲密关系，影响更深远。孤独感强的个体对亲密关系有更高渴望。',
     },
   ],
 };

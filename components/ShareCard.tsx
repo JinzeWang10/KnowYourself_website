@@ -189,7 +189,7 @@ const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(function ShareCard(
               {radarData && radarData.length > 0 && (
                 <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-soft border border-neutral-100" style={{ padding: '32px 24px' }}>
                   <h3 className="text-center font-bold text-neutral-900 mb-4" style={{ fontSize: '18px' }}>维度分析</h3>
-                  <div style={{ width: '100%', height: '380px' }}>
+                  <div style={{ width: '100%', height: '550px' }}>
                     <DimensionRadarChart data={radarData} showLegend={false} compact={true} />
                   </div>
                 </div>
