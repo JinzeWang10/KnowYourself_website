@@ -6,7 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import { getScaleById, calculateDimensionScores, normalizeScore, normalizeDimensionScore, getScaleScoreRange } from '@/lib/scales';
-import { getPercentileRank } from '@/lib/api-client';
+// import { getPercentileRank } from '@/lib/api-client';
 import { exportWithFeedback } from '@/lib/export-image';
 import type { QuizResult } from '@/types/quiz';
 import type { RadarDataPoint } from '@/components/DimensionRadarChart';
@@ -18,11 +18,11 @@ const DimensionRadarChart = dynamic(
   { ssr: false }
 );
 
-// 动态导入百分位图组件（仅客户端）
-const PercentileChart = dynamic(
-  () => import('@/components/PercentileChart'),
-  { ssr: false }
-);
+// 动态导入百分位图组件（仅客户端） - 暂时不使用
+// const PercentileChart = dynamic(
+//   () => import('@/components/PercentileChart'),
+//   { ssr: false }
+// );
 
 // 动态设置页面标题
 function usePageTitle(title: string) {
@@ -38,14 +38,14 @@ export default function ResultPage() {
   const resultId = params.resultId as string;
 
   const [result, setResult] = useState<QuizResult | null>(null);
-  const [percentileData, setPercentileData] = useState<{
-    percentile: number | null;
-    totalCount: number;
-    higherCount?: number;
-    lowerCount?: number;
-    message?: string;
-  } | null>(null);
-  const [isLoadingPercentile, setIsLoadingPercentile] = useState(true);
+  // const [percentileData, setPercentileData] = useState<{
+  //   percentile: number | null;
+  //   totalCount: number;
+  //   higherCount?: number;
+  //   lowerCount?: number;
+  //   message?: string;
+  // } | null>(null);
+  // const [isLoadingPercentile, setIsLoadingPercentile] = useState(true);
   const [isExporting, setIsExporting] = useState(false);
   const shareCardRef = useRef<HTMLDivElement>(null);
   const scale = getScaleById(scaleId);
@@ -60,29 +60,29 @@ export default function ResultPage() {
 
     if (foundResult) {
       setResult(foundResult);
-      // 获取百分位数据
-      fetchPercentileData(foundResult.score);
+      // 获取百分位数据 - 暂时不使用
+      // fetchPercentileData(foundResult.score);
     } else {
       // 如果找不到结果，跳转回量表介绍页
       router.push(`/scales/${scaleId}`);
     }
   }, [resultId, scaleId, router]);
 
-  // 获取百分位数据
-  const fetchPercentileData = async (score: number) => {
-    try {
-      setIsLoadingPercentile(true);
-      const response = await getPercentileRank(scaleId, score);
-      if (response.success && response.data) {
-        setPercentileData(response.data);
-      }
-    } catch (error) {
-      console.error('Failed to fetch percentile data:', error);
-      // 即使失败也不影响主要功能，只是不显示百分位
-    } finally {
-      setIsLoadingPercentile(false);
-    }
-  };
+  // 获取百分位数据 - 暂时不使用
+  // const fetchPercentileData = async (score: number) => {
+  //   try {
+  //     setIsLoadingPercentile(true);
+  //     const response = await getPercentileRank(scaleId, score);
+  //     if (response.success && response.data) {
+  //       setPercentileData(response.data);
+  //     }
+  //   } catch (error) {
+  //     console.error('Failed to fetch percentile data:', error);
+  //     // 即使失败也不影响主要功能，只是不显示百分位
+  //   } finally {
+  //     setIsLoadingPercentile(false);
+  //   }
+  // };
 
   // 导出分享卡片为图片
   const handleExportImage = async () => {
@@ -223,7 +223,7 @@ export default function ResultPage() {
                 levelColor={scoreLevel?.color || '#6366F1'}
                 description={scoreLevel?.description || ''}
                 completedAt={typeof result.completedAt === 'string' ? result.completedAt : new Date(result.completedAt).toISOString()}
-                percentile={percentileData?.percentile}
+                percentile={undefined}
                 radarData={radarData}
               />
             );
@@ -349,8 +349,8 @@ export default function ResultPage() {
             </div>
           )}
 
-          {/* Percentile Chart - 百分位分析 - 暂时隐藏 */}
-          {false && !isLoadingPercentile && percentileData && (
+          {/* Percentile Chart - 百分位分析 - 暂时隐藏
+          {!isLoadingPercentile && percentileData && (
             <PercentileChart
               percentile={percentileData.percentile}
               totalCount={percentileData.totalCount}
@@ -358,8 +358,7 @@ export default function ResultPage() {
             />
           )}
 
-          {/* Loading state for percentile - 暂时隐藏 */}
-          {false && isLoadingPercentile && (
+          {isLoadingPercentile && (
             <div className="bg-white rounded-2xl shadow-lg p-8">
               <div className="flex items-center gap-3 mb-4">
                 <span className="text-2xl">📊</span>
@@ -371,6 +370,7 @@ export default function ResultPage() {
               </div>
             </div>
           )}
+          */}
 
           {/* Radar Chart for Dimensions */}
           {scale.dimensions && scale.dimensions.length > 0 && (
