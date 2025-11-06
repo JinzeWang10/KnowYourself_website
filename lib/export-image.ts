@@ -38,8 +38,6 @@ export async function exportComponentAsImage(
       windowHeight: Math.ceil(rect.height),
       // 确保SVG正确渲染
       foreignObjectRendering: true,
-      // 提高字体渲染质量
-      letterRendering: true,
     });
 
     // 转换为 Blob
