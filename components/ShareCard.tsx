@@ -75,7 +75,7 @@ const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(function ShareCard(
   const colorScheme = getColorScheme(levelColor);
 
   return (
-    <div ref={ref} className="relative mx-auto mb-6 animate-slide-up" style={{ width: '800px', maxWidth: '100%' }}>
+    <div ref={ref} className="relative mx-auto mb-6 animate-slide-up" style={{ width: '1000px', maxWidth: '100%' }}>
       {/* 装饰性背景光晕 - 使用动态颜色 */}
       <div className={`absolute -inset-1 bg-gradient-to-r ${colorScheme.glow} rounded-3xl blur-2xl`}></div>
 
@@ -174,21 +174,22 @@ const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(function ShareCard(
               )}
 
               {/* 简短解读 */}
-              <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-soft border border-neutral-100 mb-6" style={{ padding: '24px' }}>
-                <p className="text-neutral-700 leading-relaxed text-center text-sm" style={{
-                  lineHeight: '1.6',
-                  maxHeight: '120px',
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-soft border border-neutral-100 mb-6" style={{ padding: '32px' }}>
+                <p className="text-neutral-700 leading-relaxed text-center" style={{
+                  lineHeight: '1.8',
+                  fontSize: '15px',
+                  maxHeight: '180px',
                   overflow: 'hidden'
                 }}>
-                  {description.length > 150 ? description.substring(0, 147) + '...' : description}
+                  {description.length > 200 ? description.substring(0, 197) + '...' : description}
                 </p>
               </div>
 
               {/* 雷达图 - 维度分析 */}
               {radarData && radarData.length > 0 && (
-                <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-soft border border-neutral-100" style={{ padding: '20px' }}>
-                  <h3 className="text-center text-base font-bold text-neutral-900 mb-2">维度分析</h3>
-                  <div style={{ width: '100%', height: '320px' }}>
+                <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-soft border border-neutral-100" style={{ padding: '32px 24px' }}>
+                  <h3 className="text-center font-bold text-neutral-900 mb-4" style={{ fontSize: '18px' }}>维度分析</h3>
+                  <div style={{ width: '100%', height: '380px' }}>
                     <DimensionRadarChart data={radarData} showLegend={false} compact={true} />
                   </div>
                 </div>

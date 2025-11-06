@@ -108,54 +108,54 @@ export default function UserInfoForm({
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-12">
+      <main className="container mx-auto px-4 py-8 sm:py-12">
         <div className="max-w-2xl mx-auto">
-          <div className="bg-white rounded-2xl shadow-lg p-8">
-            <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">基本信息</h1>
-              <p className="text-gray-600">{scaleTitle}</p>
-              <p className="text-sm text-gray-500 mt-2">
+          <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-8">
+            <div className="text-center mb-6 sm:mb-8">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">基本信息</h1>
+              <p className="text-sm sm:text-base text-gray-600">{scaleTitle}</p>
+              <p className="text-xs sm:text-sm text-gray-500 mt-2">
                 为了提供更准确的评估结果，请填写以下信息
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-8">
+            <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
               {/* 性别选择 */}
               <div>
-                <label className="block text-lg font-semibold text-gray-900 mb-4">
+                <label className="block text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">
                   您的性别 <span className="text-red-500">*</span>
                 </label>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-3 sm:gap-4">
                   <button
                     type="button"
                     onClick={() => setGender('male')}
-                    className={`p-6 rounded-xl border-2 transition-all ${
+                    className={`p-4 sm:p-6 rounded-xl border-2 transition-all ${
                       gender === 'male'
                         ? 'border-primary bg-primary/5 shadow-md'
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
                   >
-                    <div className="text-4xl mb-2">👨</div>
-                    <div className="text-lg font-medium text-gray-900">男性</div>
+                    <div className="text-3xl sm:text-4xl mb-1 sm:mb-2">👨</div>
+                    <div className="text-base sm:text-lg font-medium text-gray-900">男性</div>
                   </button>
                   <button
                     type="button"
                     onClick={() => setGender('female')}
-                    className={`p-6 rounded-xl border-2 transition-all ${
+                    className={`p-4 sm:p-6 rounded-xl border-2 transition-all ${
                       gender === 'female'
                         ? 'border-primary bg-primary/5 shadow-md'
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
                   >
-                    <div className="text-4xl mb-2">👩</div>
-                    <div className="text-lg font-medium text-gray-900">女性</div>
+                    <div className="text-3xl sm:text-4xl mb-1 sm:mb-2">👩</div>
+                    <div className="text-base sm:text-lg font-medium text-gray-900">女性</div>
                   </button>
                 </div>
               </div>
 
               {/* 年龄输入 */}
               <div>
-                <label htmlFor="age" className="block text-lg font-semibold text-gray-900 mb-4">
+                <label htmlFor="age" className="block text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">
                   您的年龄 <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -166,24 +166,24 @@ export default function UserInfoForm({
                   placeholder="请输入您的年龄"
                   min="12"
                   max="100"
-                  className={`w-full px-4 py-3 text-lg border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition ${
+                  className={`w-full px-4 py-3 text-base sm:text-lg border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition ${
                     ageError
                       ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
                       : 'border-gray-200 focus:border-primary'
                   }`}
                 />
                 {ageError && (
-                  <p className="mt-2 text-sm text-red-600">{ageError}</p>
+                  <p className="mt-2 text-xs sm:text-sm text-red-600">{ageError}</p>
                 )}
-                <p className="mt-2 text-sm text-gray-500">
+                <p className="mt-2 text-xs sm:text-sm text-gray-500">
                   年龄范围：12-100岁
                 </p>
               </div>
 
               {/* 隐私说明 */}
-              <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg">
-                <p className="text-sm text-gray-700 flex items-start gap-2">
-                  <span className="text-lg">🔒</span>
+              <div className="bg-blue-50 border-l-4 border-blue-500 p-3 sm:p-4 rounded-lg">
+                <p className="text-xs sm:text-sm text-gray-700 flex items-start gap-2">
+                  <span className="text-base sm:text-lg flex-shrink-0">🔒</span>
                   <span>
                     您的个人信息将仅保存在本地设备，用于提供更准确的评估结果。
                     我们不会收集或上传任何个人信息到服务器。
@@ -192,17 +192,17 @@ export default function UserInfoForm({
               </div>
 
               {/* 提交按钮 */}
-              <div className="flex gap-4 justify-center pt-4">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center pt-4">
                 <Link
                   href={`/scales/${scaleId}/consent`}
-                  className="px-8 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition"
+                  className="px-6 sm:px-8 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition text-center text-sm sm:text-base"
                 >
                   返回
                 </Link>
                 <button
                   type="submit"
                   disabled={!canProceed}
-                  className={`px-8 py-3 rounded-lg font-semibold transition ${
+                  className={`px-6 sm:px-8 py-3 rounded-lg font-semibold transition text-sm sm:text-base ${
                     canProceed
                       ? 'bg-primary hover:bg-primary-dark text-white shadow-lg transform hover:scale-105'
                       : 'bg-gray-300 text-gray-500 cursor-not-allowed'

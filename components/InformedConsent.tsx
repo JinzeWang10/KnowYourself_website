@@ -68,19 +68,19 @@ export default function InformedConsent({
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-12">
+      <main className="container mx-auto px-4 py-8 sm:py-12">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-2xl shadow-lg p-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">知情同意书</h1>
-            <p className="text-lg text-gray-600 mb-8">{scaleTitle}</p>
+          <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-8">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">知情同意书</h1>
+            <p className="text-base sm:text-lg text-gray-600 mb-6 sm:mb-8">{scaleTitle}</p>
 
             {/* 隐私保护 */}
-            <section className="mb-8">
-              <h2 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
-                <span className="text-2xl">🔒</span>
+            <section className="mb-6 sm:mb-8">
+              <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3 flex items-center gap-2">
+                <span className="text-xl sm:text-2xl">🔒</span>
                 隐私保护
               </h2>
-              <p className="text-gray-700 leading-relaxed">
+              <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
                 您的所有回答将完全匿名化处理，仅保存在您的设备本地，不会上传到任何服务器。
                 我们不收集任何可识别个人身份的信息。您可以随时清除浏览器缓存来删除本地保存的数据，
                 也可以选择将结果截图保存用于个人记录。您的隐私和数据安全是我们的首要关注。
@@ -88,12 +88,12 @@ export default function InformedConsent({
             </section>
 
             {/* 自愿参与 */}
-            <section className="mb-8">
-              <h2 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
-                <span className="text-2xl">✋</span>
+            <section className="mb-6 sm:mb-8">
+              <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3 flex items-center gap-2">
+                <span className="text-xl sm:text-2xl">✋</span>
                 自愿参与
               </h2>
-              <p className="text-gray-700 leading-relaxed">
+              <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
                 参与本评估完全基于自愿原则。您可以在任何时候退出评估，无需说明理由。
                 对于任何让您感到不适的问题，您都可以选择跳过或中止评估。
                 评估过程中如果您感到不适，请立即停止并考虑寻求专业心理健康服务的帮助。
@@ -101,12 +101,12 @@ export default function InformedConsent({
             </section>
 
             {/* 非诊断性质 */}
-            <section className="mb-8">
-              <h2 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
-                <span className="text-2xl">⚕️</span>
+            <section className="mb-6 sm:mb-8">
+              <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3 flex items-center gap-2">
+                <span className="text-xl sm:text-2xl">⚕️</span>
                 非诊断性质
               </h2>
-              <p className="text-gray-700 leading-relaxed">
+              <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
                 本评估结果仅供自我了解和反思使用，不能替代专业的心理健康诊断或治疗。
                 如果您在心理健康方面有困扰或疑问，强烈建议咨询合格的心理健康专业人士（如心理咨询师、临床心理学家或精神科医生）。
                 评估结果不应被用于医疗决策或自我诊断。
@@ -114,12 +114,12 @@ export default function InformedConsent({
             </section>
 
             {/* 重要提醒 */}
-            <div className="bg-red-50 border-l-4 border-red-500 p-6 rounded-lg mb-8">
-              <h3 className="text-lg font-bold text-red-900 mb-2 flex items-center gap-2">
-                <span className="text-2xl">⚠️</span>
+            <div className="bg-red-50 border-l-4 border-red-500 p-4 sm:p-6 rounded-lg mb-6 sm:mb-8">
+              <h3 className="text-base sm:text-lg font-bold text-red-900 mb-2 flex items-center gap-2">
+                <span className="text-xl sm:text-2xl">⚠️</span>
                 重要提醒
               </h3>
-              <p className="text-red-800 leading-relaxed">
+              <p className="text-sm sm:text-base text-red-800 leading-relaxed">
                 如果您目前正在经历严重的心理困扰、抑郁、焦虑或有自伤、自杀倾向，
                 请立即寻求专业心理健康服务的帮助或拨打心理危机热线（如：全国心理援助热线 400-161-9995）。
                 本评估不适合处于急性心理危机状态的人群。
@@ -127,15 +127,15 @@ export default function InformedConsent({
             </div>
 
             {/* 统一确认框 */}
-            <div className="mb-8">
-              <label className="flex items-start gap-3 p-6 bg-blue-50 border-2 border-blue-200 rounded-lg cursor-pointer hover:bg-blue-100 transition">
+            <div className="mb-6 sm:mb-8">
+              <label className="flex items-start gap-3 p-4 sm:p-6 bg-blue-50 border-2 border-blue-200 rounded-lg cursor-pointer hover:bg-blue-100 transition">
                 <input
                   type="checkbox"
                   checked={agreed}
                   onChange={(e) => setAgreed(e.target.checked)}
-                  className="mt-1 w-6 h-6 text-primary rounded focus:ring-2 focus:ring-primary"
+                  className="mt-1 w-5 h-5 sm:w-6 sm:h-6 text-primary rounded focus:ring-2 focus:ring-primary flex-shrink-0"
                 />
-                <span className="text-gray-900 font-medium">
+                <span className="text-sm sm:text-base text-gray-900 font-medium">
                   我已仔细阅读并理解上述所有内容，包括隐私保护政策、自愿参与原则、非诊断性质以及重要提醒。
                   我同意遵守
                   <Link href="/terms" target="_blank" className="text-primary hover:underline mx-1">《用户协议》</Link>
@@ -149,17 +149,17 @@ export default function InformedConsent({
             </div>
 
             {/* 操作按钮 */}
-            <div className="flex gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
               <Link
                 href={`/scales/${scaleId}`}
-                className="px-8 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition"
+                className="px-6 sm:px-8 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition text-center text-sm sm:text-base"
               >
                 返回
               </Link>
               <button
                 onClick={handleProceed}
                 disabled={!agreed}
-                className={`px-8 py-3 rounded-lg font-semibold transition ${
+                className={`px-6 sm:px-8 py-3 rounded-lg font-semibold transition text-sm sm:text-base ${
                   agreed
                     ? 'bg-primary hover:bg-primary-dark text-white shadow-lg transform hover:scale-105'
                     : 'bg-gray-300 text-gray-500 cursor-not-allowed'

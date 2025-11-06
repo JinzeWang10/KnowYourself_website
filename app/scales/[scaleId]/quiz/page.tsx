@@ -18,6 +18,7 @@ export default function QuizPage() {
   const [answers, setAnswers] = useState<Record<string, number | string>>({});
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [hasSubmitted, setHasSubmitted] = useState(false);
 
   // 从 localStorage 恢复答案
   useEffect(() => {
@@ -100,7 +101,14 @@ export default function QuizPage() {
   };
 
   const handleSubmitWithAnswers = async (answersToSubmit: Record<string, number | string>) => {
+    // 防止重复提交
+    if (hasSubmitted || isSubmitting) {
+      console.log('已提交或正在提交中，忽略重复请求');
+      return;
+    }
+
     setIsSubmitting(true);
+    setHasSubmitted(true);
 
     // 获取用户信息
     const userInfoStr = localStorage.getItem('userInfo');
@@ -165,10 +173,16 @@ export default function QuizPage() {
         });
       }
 
-      // 保存到历史记录
+      // 保存到历史记录（检查是否已存在相同ID的记录）
       const history = JSON.parse(localStorage.getItem('quiz-history') || '[]');
-      history.push(result);
-      localStorage.setItem('quiz-history', JSON.stringify(history));
+      const existingIndex = history.findIndex((r: QuizResult) => r.id === result.id);
+      if (existingIndex === -1) {
+        // 只有不存在时才添加
+        history.push(result);
+        localStorage.setItem('quiz-history', JSON.stringify(history));
+      } else {
+        console.log('记录已存在，跳过添加');
+      }
 
       // 清除进度
       localStorage.removeItem(`quiz-progress-${scaleId}`);
@@ -231,10 +245,16 @@ export default function QuizPage() {
       });
     }
 
-    // 保存到历史记录
+    // 保存到历史记录（检查是否已存在相同ID的记录）
     const history = JSON.parse(localStorage.getItem('quiz-history') || '[]');
-    history.push(result);
-    localStorage.setItem('quiz-history', JSON.stringify(history));
+    const existingIndex = history.findIndex((r: QuizResult) => r.id === result.id);
+    if (existingIndex === -1) {
+      // 只有不存在时才添加
+      history.push(result);
+      localStorage.setItem('quiz-history', JSON.stringify(history));
+    } else {
+      console.log('记录已存在，跳过添加');
+    }
 
     // 清除进度
     localStorage.removeItem(`quiz-progress-${scaleId}`);
@@ -292,11 +312,11 @@ export default function QuizPage() {
         <div className="max-w-3xl mx-auto">
           <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-soft-lg p-10 mb-8 border border-neutral-100 animate-slide-up">
             {/* Question Number & Text */}
-            <div className="mb-10">
-              <div className="text-sm text-neutral-500 mb-3 font-medium">
+            <div className="mb-8 sm:mb-10">
+              <div className="text-xs sm:text-sm text-neutral-500 mb-2 sm:mb-3 font-medium">
                 问题 {currentIndex + 1}
               </div>
-              <h2 className="text-2xl font-semibold text-neutral-900 leading-relaxed">
+              <h2 className="text-lg sm:text-2xl font-semibold text-neutral-900 leading-relaxed">
                 {currentQuestion.question}
               </h2>
             </div>
@@ -415,29 +435,29 @@ export default function QuizPage() {
           </div>
 
           {/* Navigation */}
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center gap-2">
             <button
               onClick={handlePrev}
               disabled={currentIndex === 0}
-              className="px-8 py-3.5 rounded-xl border-2 border-neutral-300 text-neutral-700 font-semibold disabled:opacity-40 disabled:cursor-not-allowed hover:bg-neutral-50 hover:border-neutral-400 transition-all shadow-soft hover:shadow-soft-lg"
+              className="px-4 sm:px-8 py-3.5 rounded-xl border-2 border-neutral-300 text-neutral-700 font-semibold disabled:opacity-40 disabled:cursor-not-allowed hover:bg-neutral-50 hover:border-neutral-400 transition-all shadow-soft hover:shadow-soft-lg whitespace-nowrap"
             >
-              ← 上一题
+              ← <span className="hidden xs:inline">上一题</span><span className="xs:hidden">上题</span>
             </button>
 
-            <div className="text-sm text-neutral-600 font-medium bg-neutral-50 px-5 py-2 rounded-full border border-neutral-200">
-              {Object.keys(answers).length} / {scale.questions.length} 已回答
+            <div className="text-xs sm:text-sm text-neutral-600 font-medium bg-neutral-50 px-3 sm:px-5 py-2 rounded-full border border-neutral-200 whitespace-nowrap">
+              {Object.keys(answers).length} / {scale.questions.length} <span className="hidden xs:inline">已回答</span>
             </div>
 
             <button
               onClick={handleNext}
               disabled={!isAnswered || isSubmitting}
-              className="px-8 py-3.5 rounded-xl bg-gradient-to-r from-primary to-primary-light text-white font-semibold disabled:opacity-40 disabled:cursor-not-allowed hover:shadow-glow-lg transition-all shadow-soft btn-glow"
+              className="px-4 sm:px-8 py-3.5 rounded-xl bg-gradient-to-r from-primary to-primary-light text-white font-semibold disabled:opacity-40 disabled:cursor-not-allowed hover:shadow-glow-lg transition-all shadow-soft btn-glow whitespace-nowrap"
             >
               {currentIndex === scale.questions.length - 1
                 ? isSubmitting
                   ? '提交中...'
-                  : '提交 →'
-                : '下一题 →'}
+                  : <><span className="hidden xs:inline">提交</span><span className="xs:hidden">交</span> →</>
+                : <><span className="hidden xs:inline">下一题</span><span className="xs:hidden">下题</span> →</>}
             </button>
           </div>
 
