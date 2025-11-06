@@ -101,7 +101,7 @@ export default function UserInfoForm({
               <span className="text-xs text-gray-600">知己</span>
             </div>
           </Link>
-          <Link href={`/scales/${scaleId}/consent`} className="text-gray-600 hover:text-primary transition text-sm">
+          <Link href={`/scales/${scaleId}`} className="text-gray-600 hover:text-primary transition text-sm">
             返回 →
           </Link>
         </div>
@@ -194,7 +194,7 @@ export default function UserInfoForm({
               {/* 提交按钮 */}
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center pt-4">
                 <Link
-                  href={`/scales/${scaleId}/consent`}
+                  href={`/scales/${scaleId}`}
                   className="px-6 sm:px-8 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition text-center text-sm sm:text-base"
                 >
                   返回

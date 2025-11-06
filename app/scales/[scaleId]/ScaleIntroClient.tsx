@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -12,6 +13,7 @@ interface ScaleIntroClientProps {
 
 export default function ScaleIntroClient({ scale, scaleId }: ScaleIntroClientProps) {
   const router = useRouter();
+  const [agreed, setAgreed] = useState(false);
 
   // JSON-LD 结构化数据
   const jsonLd = {
@@ -98,7 +100,7 @@ export default function ScaleIntroClient({ scale, scaleId }: ScaleIntroClientPro
                 <span className="text-xl sm:text-2xl">⏱️</span>
                 <div>
                   <div className="text-xs sm:text-sm text-gray-500">预计时间</div>
-                  <div className="text-sm sm:text-base font-semibold">{scale.duration} 分钟</div>
+                  <div className="text-sm sm:text-base font-semibold">{scale.duration}</div>
                 </div>
               </div>
               <div className="flex items-center gap-2 text-gray-600">
@@ -189,19 +191,70 @@ export default function ScaleIntroClient({ scale, scaleId }: ScaleIntroClientPro
             </div>
           )}
 
+          {/* 同意条款 */}
+          <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 mb-4 sm:mb-6">
+            <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg mb-4">
+              <h3 className="text-base sm:text-lg font-bold text-blue-900 mb-2 flex items-center gap-2">
+                <span className="text-xl sm:text-2xl">⚠️</span>
+                重要提示
+              </h3>
+              <div className="text-xs sm:text-sm text-blue-800 leading-relaxed space-y-2">
+                <p>• 本测评结果仅供参考，不具备临床诊断效力</p>
+                <p>• 您的数据将完全匿名化处理，仅保存在本地设备</p>
+                <p>• 如有心理健康疑虑，请咨询专业心理咨询师或医疗机构</p>
+              </div>
+            </div>
+
+            <label className="flex items-start gap-3 p-4 bg-gray-50 border-2 border-gray-200 rounded-lg cursor-pointer hover:bg-gray-100 transition">
+              <input
+                type="checkbox"
+                checked={agreed}
+                onChange={(e) => setAgreed(e.target.checked)}
+                className="mt-1 w-5 h-5 sm:w-6 sm:h-6 text-primary rounded focus:ring-2 focus:ring-primary flex-shrink-0"
+              />
+              <span className="text-xs sm:text-sm text-gray-900">
+                我已阅读并理解上述提示，同意遵守
+                <Link href="/terms" target="_blank" className="text-primary hover:underline mx-1">《用户协议》</Link>
+                和
+                <Link href="/privacy" target="_blank" className="text-primary hover:underline mx-1">《隐私政策》</Link>
+                ，并接受
+                <Link href="/disclaimer" target="_blank" className="text-primary hover:underline mx-1">《免责声明》</Link>
+                的全部条款
+              </span>
+            </label>
+          </div>
+
           {/* Start Button */}
           <div className="flex justify-center">
             <button
-              onClick={() => router.push(`/scales/${scaleId}/consent`)}
-              className="px-8 sm:px-12 py-3 sm:py-4 bg-primary hover:bg-primary-dark text-white text-base sm:text-lg font-semibold rounded-xl shadow-lg transition transform hover:scale-105"
+              onClick={() => {
+                if (!agreed) {
+                  alert('请先同意用户协议和隐私政策');
+                  return;
+                }
+                // 保存同意记录
+                localStorage.setItem(`consent_${scaleId}`, JSON.stringify({
+                  agreed: true,
+                  timestamp: new Date().toISOString(),
+                }));
+                // 检查是否已经填写过用户信息
+                const savedUserInfo = localStorage.getItem('userInfo');
+                if (savedUserInfo) {
+                  router.push(`/scales/${scaleId}/quiz`);
+                } else {
+                  router.push(`/scales/${scaleId}/userinfo`);
+                }
+              }}
+              disabled={!agreed}
+              className={`px-8 sm:px-12 py-3 sm:py-4 rounded-xl text-base sm:text-lg font-semibold shadow-lg transition transform ${
+                agreed
+                  ? 'bg-primary hover:bg-primary-dark text-white hover:scale-105'
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              }`}
             >
-              开始测评
+              {agreed ? '开始测评' : '请先同意协议'}
             </button>
           </div>
-
-          <p className="text-center text-xs sm:text-sm text-gray-500 mt-3 sm:mt-4">
-            点击后您将进入知情同意书页面
-          </p>
         </div>
       </main>
       </div>
