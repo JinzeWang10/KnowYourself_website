@@ -66,6 +66,10 @@ export default function QuizPage() {
   const progress = ((currentIndex + 1) / scale.questions.length) * 100;
   const isAnswered = answers[currentQuestion.id] !== undefined;
 
+  // 检测是否为4点或5点Likert量表（选项数量为4或5且为数字）
+  const isLikertScale = (currentQuestion.options?.length === 4 || currentQuestion.options?.length === 5) &&
+    currentQuestion.options.every(opt => typeof opt.value === 'number');
+
   const handleAnswer = (value: number | string) => {
     const newAnswers = { ...answers, [currentQuestion.id]: value };
     setAnswers(newAnswers);
@@ -298,45 +302,116 @@ export default function QuizPage() {
             </div>
 
             {/* Options */}
-            <div className="space-y-4">
-              {currentQuestion.options?.map((option) => {
-                const isSelected = answers[currentQuestion.id] === option.value;
-                return (
-                  <button
-                    key={option.value}
-                    onClick={() => handleAnswer(option.value)}
-                    className={`group w-full text-left p-6 rounded-2xl border-2 transition-all duration-300 ${
-                      isSelected
-                        ? 'border-primary bg-gradient-to-r from-primary-50 to-purple-50 shadow-soft-lg scale-[1.02]'
-                        : 'border-neutral-200 hover:border-primary/50 hover:bg-neutral-50 hover:shadow-soft'
-                    }`}
-                  >
-                    <div className="flex items-center gap-4">
-                      <div
-                        className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
+            {isLikertScale ? (
+              // 横向Likert量表样式
+              <div className="space-y-6">
+                {/* 标签行 */}
+                <div className="flex items-center justify-between px-2">
+                  <span className="text-sm font-medium text-red-600">
+                    {currentQuestion.options![0].label}
+                  </span>
+                  <span className="text-sm font-medium text-green-600">
+                    {currentQuestion.options![currentQuestion.options!.length - 1].label}
+                  </span>
+                </div>
+
+                {/* 按钮条 */}
+                <div className="flex items-center justify-between gap-3 px-4 py-6 bg-gradient-to-r from-red-50/50 via-yellow-50/30 to-green-50/50 rounded-2xl border-2 border-neutral-200">
+                  {currentQuestion.options?.map((option, idx) => {
+                    const isSelected = answers[currentQuestion.id] === option.value;
+                    const totalOptions = currentQuestion.options!.length;
+                    // 计算颜色：从红色过渡到绿色
+                    const colorProgress = idx / (totalOptions - 1);
+
+                    return (
+                      <button
+                        key={option.value}
+                        onClick={() => handleAnswer(option.value)}
+                        className={`group relative flex-1 aspect-square rounded-full border-3 transition-all duration-300 ${
                           isSelected
-                            ? 'border-primary bg-primary shadow-glow'
-                            : 'border-neutral-300 group-hover:border-primary/50'
+                            ? 'scale-125 shadow-lg'
+                            : 'hover:scale-110 hover:shadow-md'
                         }`}
+                        style={{
+                          backgroundColor: isSelected
+                            ? `hsl(${colorProgress * 120}, 70%, 50%)`
+                            : 'white',
+                          borderColor: `hsl(${colorProgress * 120}, 60%, ${isSelected ? '40%' : '70%'})`,
+                          borderWidth: isSelected ? '3px' : '2px',
+                        }}
+                        title={option.label}
                       >
                         {isSelected && (
-                          <div className="w-2.5 h-2.5 bg-white rounded-full" />
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <div className="w-3 h-3 bg-white rounded-full" />
+                          </div>
                         )}
-                      </div>
-                      <span
-                        className={`text-base leading-relaxed transition-colors ${
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* 选项标签（可选，显示所有选项文字） */}
+                <div className="flex items-start justify-between gap-2 px-2">
+                  {currentQuestion.options?.map((option, idx) => {
+                    const isSelected = answers[currentQuestion.id] === option.value;
+                    return (
+                      <div
+                        key={option.value}
+                        className={`flex-1 text-center text-xs transition-all ${
                           isSelected
-                            ? 'text-neutral-900 font-semibold'
-                            : 'text-neutral-700 group-hover:text-neutral-900'
+                            ? 'font-bold text-neutral-900'
+                            : 'text-neutral-500'
                         }`}
                       >
                         {option.label}
-                      </span>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : (
+              // 传统垂直选项样式
+              <div className="space-y-4">
+                {currentQuestion.options?.map((option) => {
+                  const isSelected = answers[currentQuestion.id] === option.value;
+                  return (
+                    <button
+                      key={option.value}
+                      onClick={() => handleAnswer(option.value)}
+                      className={`group w-full text-left p-6 rounded-2xl border-2 transition-all duration-300 ${
+                        isSelected
+                          ? 'border-primary bg-gradient-to-r from-primary-50 to-purple-50 shadow-soft-lg scale-[1.02]'
+                          : 'border-neutral-200 hover:border-primary/50 hover:bg-neutral-50 hover:shadow-soft'
+                      }`}
+                    >
+                      <div className="flex items-center gap-4">
+                        <div
+                          className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
+                            isSelected
+                              ? 'border-primary bg-primary shadow-glow'
+                              : 'border-neutral-300 group-hover:border-primary/50'
+                          }`}
+                        >
+                          {isSelected && (
+                            <div className="w-2.5 h-2.5 bg-white rounded-full" />
+                          )}
+                        </div>
+                        <span
+                          className={`text-base leading-relaxed transition-colors ${
+                            isSelected
+                              ? 'text-neutral-900 font-semibold'
+                              : 'text-neutral-700 group-hover:text-neutral-900'
+                          }`}
+                        >
+                          {option.label}
+                        </span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           {/* Navigation */}

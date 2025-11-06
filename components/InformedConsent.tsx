@@ -74,30 +74,6 @@ export default function InformedConsent({
             <h1 className="text-3xl font-bold text-gray-900 mb-2">知情同意书</h1>
             <p className="text-lg text-gray-600 mb-8">{scaleTitle}</p>
 
-            {/* 评估目的 */}
-            <section className="mb-8">
-              <h2 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
-                <span className="text-2xl">🎯</span>
-                评估目的
-              </h2>
-              <p className="text-gray-700 leading-relaxed mb-4">
-                {scaleDescription}本评估基于科学研究和标准化量表，旨在帮助您进行自我探索和了解，
-                促进您对自身心理健康状态的认知和理解。
-              </p>
-              {references && references.length > 0 && (
-                <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-                  <p className="text-sm font-semibold text-gray-700 mb-2">量表来源：</p>
-                  {references.map((ref, index) => (
-                    <p key={index} className="text-sm text-gray-600 leading-relaxed mb-1">
-                      {ref.authors} ({ref.year}). <em>{ref.title}</em>
-                      {ref.journal && `. ${ref.journal}`}
-                      {ref.doi && ` doi: ${ref.doi}`}
-                    </p>
-                  ))}
-                </div>
-              )}
-            </section>
-
             {/* 隐私保护 */}
             <section className="mb-8">
               <h2 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
@@ -160,7 +136,7 @@ export default function InformedConsent({
                   className="mt-1 w-6 h-6 text-primary rounded focus:ring-2 focus:ring-primary"
                 />
                 <span className="text-gray-900 font-medium">
-                  我已仔细阅读并理解上述所有内容，包括评估目的、隐私保护政策、自愿参与原则、非诊断性质以及重要提醒。
+                  我已仔细阅读并理解上述所有内容，包括隐私保护政策、自愿参与原则、非诊断性质以及重要提醒。
                   我同意遵守
                   <Link href="/terms" target="_blank" className="text-primary hover:underline mx-1">《用户协议》</Link>
                   和

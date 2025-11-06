@@ -21,18 +21,16 @@ export default function ScalesPage() {
   };
 
   // 量表主题色配置
-  const scaleThemes: Record<string, { gradient: string; border: string; glow: string; badge?: string }> = {
+  const scaleThemes: Record<string, { gradient: string; border: string; glow: string }> = {
     'ani': {
       gradient: 'from-indigo-50/80 via-purple-50/60 to-white/80',
       border: 'from-indigo-400 via-purple-400 to-pink-400',
       glow: 'group-hover:shadow-[0_0_40px_rgba(129,140,248,0.25)]',
-      badge: '推荐'
     },
     'scl90': {
       gradient: 'from-emerald-50/80 via-teal-50/60 to-white/80',
       border: 'from-emerald-400 via-teal-400 to-cyan-400',
       glow: 'group-hover:shadow-[0_0_40px_rgba(16,185,129,0.25)]',
-      badge: '热门'
     },
     'ess': {
       gradient: 'from-amber-50/80 via-orange-50/60 to-white/80',
@@ -92,27 +90,18 @@ export default function ScalesPage() {
                 `}>
                   <div className="relative z-10 p-8">
                     {/* 顶部：图标 + 标题区域 */}
-                    <div className="flex items-start justify-between mb-6">
-                      <div className="flex items-start gap-4">
-                        <div className="text-5xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
-                          {scaleIcons[scale.id] || '📝'}
-                        </div>
-                        <div>
-                          <h4 className="text-xl font-bold text-neutral-900 mb-1 group-hover:text-primary transition-colors duration-300">
-                            {scale.title}
-                          </h4>
-                          <p className="text-xs text-neutral-500 font-medium uppercase tracking-wider">
-                            {scale.titleEn || ''}
-                          </p>
-                        </div>
+                    <div className="flex items-start gap-4 mb-6">
+                      <div className="text-5xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                        {scaleIcons[scale.id] || '📝'}
                       </div>
-
-                      {/* 状态标签 */}
-                      {theme.badge && (
-                        <span className="px-3 py-1 bg-white/80 backdrop-blur-sm text-xs font-bold rounded-full text-primary shadow-sm border border-primary/20">
-                          {theme.badge}
-                        </span>
-                      )}
+                      <div>
+                        <h4 className="text-xl font-bold text-neutral-900 mb-1 group-hover:text-primary transition-colors duration-300">
+                          {scale.title}
+                        </h4>
+                        <p className="text-xs text-neutral-500 font-medium uppercase tracking-wider">
+                          {scale.titleEn || ''}
+                        </p>
+                      </div>
                     </div>
 
                     {/* 中部：描述 */}
