@@ -12,8 +12,6 @@ export const scl90: QuizTemplate = {
   duration: '23-30分钟',
   questionCount: 90,
 
-  instructions: '根据最近一周(包括今天)您的实际感觉，选择最符合的答案。请注意：1=没有，2=很轻，3=中等，4=偏重，5=严重',
-
   dimensions: [
     {
       id: 'somatization',

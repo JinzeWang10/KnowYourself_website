@@ -31,8 +31,6 @@ export const pat: QuizTemplate = {
   duration: '10-15分钟',
   questionCount: 40,
 
-  instructions: '请根据你的日常行为和心理状态选择最符合的选项。1 = 完全不符合，2 = 较不符合，3 = 一般，4 = 较符合，5 = 非常符合。请尽量凭直觉回答，无需过多思考。没有"对"或"错"的答案。',
-
   questions: [
     // ========== 维度A：情绪成熟度（Emotional Maturity）7题 ==========
     {

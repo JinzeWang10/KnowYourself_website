@@ -21,8 +21,6 @@ export const ani: QuizTemplate = {
   duration: '9-11分钟',
   questionCount: 33,
 
-  instructions: '本测评包含4个部分，请根据你的实际情况如实回答。测评结果将帮助你了解是否需要开始戒断计划。',
-
   questions: [
     // ========== 第一部分：负面后果 (HBI, 5题) ==========
     {
