@@ -47,10 +47,10 @@ export async function POST(request: NextRequest) {
         totalScore: data.totalScore,
         normalizedScore: data.normalizedScore,
         level: data.level,
-        dimensionScores: data.dimensionScores || null,
+        dimensionScores: data.dimensionScores ? data.dimensionScores : undefined,
         completedAt: new Date(data.completedAt),
-        duration: data.duration,
-        region: data.region,
+        duration: data.duration || undefined,
+        region: data.region || undefined,
       },
     });
 
