@@ -33,7 +33,8 @@
 - **语言**: TypeScript
 - **样式**: Tailwind CSS
 - **图表**: Recharts
-- **存储**: LocalStorage
+- **数据库**: PostgreSQL + Prisma ORM
+- **本地存储**: LocalStorage（用户历史记录）
 
 ## 开始使用
 
@@ -56,6 +57,21 @@ npm run dev
 ```bash
 npm run build
 npm start
+```
+
+### 数据库部署（生产环境）
+
+如果需要在服务器上部署数据库存储测评统计数据：
+
+- **快速部署**: 查看 [QUICK_DEPLOY.md](./QUICK_DEPLOY.md)（5分钟快速配置）
+- **详细说明**: 查看 [DATABASE_DEPLOYMENT.md](./DATABASE_DEPLOYMENT.md)（完整部署文档）
+
+```bash
+# 初始化数据库
+npm run db:push
+
+# 查看数据库数据（可选）
+npm run db:studio
 ```
 
 ## 项目结构
@@ -135,21 +151,38 @@ const scales: QuizTemplate[] = [
 
 ## 数据存储
 
-所有用户数据存储在浏览器的 LocalStorage 中：
+### 用户本地数据（LocalStorage）
+
+以下数据仅保存在用户浏览器本地：
 
 - `userInfo`: 用户基本信息（性别、年龄）
-- `consent_{scaleId}`: 知情同意记录
 - `quiz-progress-{scaleId}`: 测评进度
 - `quiz-history`: 所有测评结果历史
 
 用户可以随时清除浏览器缓存来删除这些数据。
 
+### 后台统计数据（可选，PostgreSQL）
+
+为了提供百分位排名和统计分析功能，系统会收集**匿名化的测评统计数据**到服务器数据库：
+
+**收集的数据：**
+- ✅ 量表ID、性别、年龄
+- ✅ 总分、归一化分数、等级
+- ✅ 维度分数、完成时间
+
+**不收集的数据：**
+- ❌ 具体答题内容
+- ❌ 个人身份信息（姓名、邮箱、电话等）
+- ❌ IP 地址或设备标识
+
+详见 [BACKEND_ANALYTICS.md](./BACKEND_ANALYTICS.md)
+
 ## 隐私说明
 
-- ✅ 所有数据仅保存在用户设备本地
-- ✅ 不收集任何可识别个人身份的信息
-- ✅ 不上传数据到任何服务器
-- ✅ 完全匿名化处理
+- ✅ 用户历史记录仅保存在本地设备
+- ✅ 后台仅收集匿名统计数据（无法追溯个人）
+- ✅ 不记录具体答题内容
+- ✅ 完全透明的数据使用政策
 
 ## 免责声明
 

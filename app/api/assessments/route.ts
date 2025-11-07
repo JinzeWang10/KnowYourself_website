@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import type { AssessmentRecord } from '@/types/analytics';
-
-// 临时使用内存存储（生产环境应使用数据库）
-// 这里仅作为示例，实际应连接数据库（如 PostgreSQL, MongoDB 等）
-let assessmentRecords: AssessmentRecord[] = [];
+import { prisma } from '@/lib/prisma';
 
 /**
  * POST /api/assessments
@@ -39,19 +36,30 @@ export async function POST(request: NextRequest) {
       data.id = `record-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     }
 
-    // 存储记录
-    // TODO: 替换为数据库存储
-    assessmentRecords.push(data);
+    // 保存到数据库
+    const record = await prisma.assessmentRecord.create({
+      data: {
+        id: data.id,
+        scaleId: data.scaleId,
+        scaleTitle: data.scaleTitle,
+        gender: data.gender,
+        age: data.age,
+        totalScore: data.totalScore,
+        normalizedScore: data.normalizedScore,
+        level: data.level,
+        dimensionScores: data.dimensionScores || null,
+        completedAt: new Date(data.completedAt),
+        duration: data.duration,
+        region: data.region,
+      },
+    });
 
-    // 可选：异步写入到文件或数据库
-    // await saveToDatabase(data);
-
-    console.log(`[Analytics] 新测评记录: ${data.scaleId}, 性别: ${data.gender}, 年龄: ${data.age}, 得分: ${data.totalScore}`);
+    console.log(`[Analytics] 新测评记录已保存到数据库: ${data.scaleId}, 性别: ${data.gender}, 年龄: ${data.age}, 得分: ${data.totalScore}`);
 
     return NextResponse.json({
       success: true,
       message: '测评记录已保存',
-      recordId: data.id,
+      recordId: record.id,
     });
   } catch (error) {
     console.error('[Analytics] 保存测评记录失败:', error);
@@ -78,8 +86,11 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // 筛选指定量表的记录
-    const records = assessmentRecords.filter(r => r.scaleId === scaleId);
+    // 从数据库查询指定量表的记录
+    const records = await prisma.assessmentRecord.findMany({
+      where: { scaleId },
+      orderBy: { createdAt: 'desc' },
+    });
 
     if (records.length === 0) {
       return NextResponse.json({
@@ -88,7 +99,9 @@ export async function GET(request: NextRequest) {
           scaleId,
           totalCount: 0,
           avgScore: 0,
-          records: [],
+          genderDistribution: [],
+          ageDistribution: [],
+          latestRecords: [],
         },
       });
     }
@@ -97,7 +110,7 @@ export async function GET(request: NextRequest) {
     const totalScore = records.reduce((sum, r) => sum + r.totalScore, 0);
     const avgScore = totalScore / records.length;
 
-    // 性别分布
+    // 性别分布统计
     const genderStats = records.reduce((acc, r) => {
       if (!acc[r.gender]) {
         acc[r.gender] = { count: 0, totalScore: 0 };
@@ -113,7 +126,7 @@ export async function GET(request: NextRequest) {
       avgScore: Math.round(stats.totalScore / stats.count * 10) / 10,
     }));
 
-    // 年龄分布（分组）
+    // 年龄分布统计（分组）
     const ageGroups = ['<18', '18-25', '26-35', '36-45', '46-60', '>60'];
     const ageStats: Record<string, { count: number; totalScore: number }> = {};
 
@@ -140,6 +153,22 @@ export async function GET(request: NextRequest) {
         avgScore: Math.round(ageStats[group].totalScore / ageStats[group].count * 10) / 10,
       }));
 
+    // 转换最近10条记录格式
+    const latestRecords = records.slice(0, 10).map(r => ({
+      id: r.id,
+      scaleId: r.scaleId,
+      scaleTitle: r.scaleTitle,
+      gender: r.gender,
+      age: r.age,
+      totalScore: r.totalScore,
+      normalizedScore: r.normalizedScore,
+      level: r.level,
+      dimensionScores: r.dimensionScores as Record<string, number> | undefined,
+      completedAt: r.completedAt.toISOString(),
+      duration: r.duration || undefined,
+      region: r.region || undefined,
+    }));
+
     return NextResponse.json({
       success: true,
       data: {
@@ -148,7 +177,7 @@ export async function GET(request: NextRequest) {
         avgScore: Math.round(avgScore * 10) / 10,
         genderDistribution,
         ageDistribution,
-        latestRecords: records.slice(-10).reverse(), // 最近10条记录
+        latestRecords,
       },
     });
   } catch (error) {

@@ -1,0 +1,52 @@
+// Prisma Schema for Assessment Records Database
+// 测评记录数据库模型定义
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql" // 生产环境使用 PostgreSQL，本地开发可以改为 "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// 测评记录表
+model AssessmentRecord {
+  // 基本标识
+  id               String   @id
+
+  // 量表信息
+  scaleId          String
+  scaleTitle       String
+
+  // 用户信息（匿名化）
+  gender           String   // 'male' | 'female' | 'other' | 'prefer_not_to_say'
+  age              Int
+
+  // 测评结果
+  totalScore       Float
+  normalizedScore  Float
+  level            String
+
+  // 维度分数（JSON格式，可选）
+  dimensionScores  Json?
+
+  // 时间信息
+  completedAt      DateTime
+  createdAt        DateTime @default(now())
+
+  // 可选：测评用时（秒）
+  duration         Int?
+
+  // 可选：地理位置（仅国家/地区级别）
+  region           String?
+
+  // 索引优化查询性能
+  @@index([scaleId])
+  @@index([gender])
+  @@index([age])
+  @@index([completedAt])
+  @@index([scaleId, totalScore])
+
+  @@map("assessment_records")
+}
