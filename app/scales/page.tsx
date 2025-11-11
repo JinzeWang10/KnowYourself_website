@@ -14,6 +14,7 @@ export default function ScalesPage() {
 
   // 量表图标映射
   const scaleIcons: Record<string, string> = {
+    'zhz': '🌹',
     'ani': '🎯',
     'scl90': '🧠',
     'ess': '💭',
@@ -22,6 +23,11 @@ export default function ScalesPage() {
 
   // 量表主题色配置
   const scaleThemes: Record<string, { gradient: string; border: string; glow: string }> = {
+    'zhz': {
+      gradient: 'from-rose-50/80 via-pink-50/60 to-white/80',
+      border: 'from-rose-400 via-pink-400 to-fuchsia-400',
+      glow: 'group-hover:shadow-[0_0_40px_rgba(244,114,182,0.25)]',
+    },
     'ani': {
       gradient: 'from-indigo-50/80 via-purple-50/60 to-white/80',
       border: 'from-indigo-400 via-purple-400 to-pink-400',
@@ -53,7 +59,7 @@ export default function ScalesPage() {
       <section className="container mx-auto px-4 pt-12 pb-8 text-center">
         <div className="animate-fade-in">
           <h1 className="text-4xl md:text-5xl font-bold text-neutral-900 mb-4 leading-tight">
-            选择您的测评量表
+            了解自己，从一个测评开始
           </h1>
         </div>
       </section>

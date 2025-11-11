@@ -103,15 +103,17 @@ export default function ScaleIntroClient({ scale, scaleId }: ScaleIntroClientPro
                   <div className="text-sm sm:text-base font-semibold">{scale.duration}</div>
                 </div>
               </div>
-              <div className="flex items-center gap-2 text-gray-600">
-                <span className="text-xl sm:text-2xl">📊</span>
-                <div>
-                  <div className="text-xs sm:text-sm text-gray-500">评分范围</div>
-                  <div className="text-sm sm:text-base font-semibold">
-                    {scale.scoring.scaleRange.min}-{scale.scoring.scaleRange.max} 分
+              {scale.scoring && (
+                <div className="flex items-center gap-2 text-gray-600">
+                  <span className="text-xl sm:text-2xl">📊</span>
+                  <div>
+                    <div className="text-xs sm:text-sm text-gray-500">评分范围</div>
+                    <div className="text-sm sm:text-base font-semibold">
+                      {scale.scoring.scaleRange.min}-{scale.scoring.scaleRange.max} 分
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
 

@@ -208,7 +208,7 @@ export default function QuizPage() {
       quizId: scale.id,
       quizTitle: scale.title,
       score: totalScore,
-      level: scoreLevel.level,
+      level: scoreLevel?.level || '未知',
       completedAt: new Date(),
       answers: Object.entries(answersToSubmit).map(([questionId, answer]) => ({
         questionId,
@@ -217,14 +217,14 @@ export default function QuizPage() {
       })),
       dimensionScores: dimensionScores,
       report: {
-        summary: scoreLevel.description,
+        summary: scoreLevel?.description || '测评完成',
         details: [],
-        recommendations: scoreLevel.suggestions || [],
+        recommendations: scoreLevel?.suggestions || [],
       },
     };
 
     // 提交到后台（如果有用户信息）
-    if (userInfo) {
+    if (userInfo && scoreLevel) {
       const normalizedScore = normalizeScore(scale, totalScore);
       const record: AssessmentRecord = {
         id: result.id,

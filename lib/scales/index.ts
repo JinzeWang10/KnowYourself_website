@@ -4,9 +4,11 @@ import { ani } from './ani';
 import { essScale } from './ess';
 import { ini } from './ini';
 import { pat } from './pat';
+import { zhz } from './zhz';
 
 // 所有可用的量表
 const scales: QuizTemplate[] = [
+  zhz,
   pat,
   essScale,
   ini,
@@ -76,12 +78,14 @@ export function calculateDimensionScores(
 
 // 归一化分数到0-100范围
 export function normalizeScore(scale: QuizTemplate, rawScore: number): number {
+  if (!scale.scoring) return rawScore;
   const { min, max } = scale.scoring.scaleRange;
   return Math.round(((rawScore - min) / (max - min)) * 100);
 }
 
 // 获取分数对应的等级
 export function getScoreLevel(scale: QuizTemplate, score: number) {
+  if (!scale.scoring) return undefined;
   const range = scale.scoring.ranges.find(r => score >= r.min && score <= r.max);
   return range || scale.scoring.ranges[0];
 }

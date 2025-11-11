@@ -13,6 +13,7 @@ export interface QuizQuestion {
 export interface QuizOption {
   value: number;
   label: string;
+  [key: string]: any; // 允许扩展字段，如 scores 等
 }
 
 // 量表维度
@@ -60,7 +61,7 @@ export interface QuizTemplate {
   questionCount: number;
   questions: QuizQuestion[];
   dimensions?: ScaleDimension[];
-  scoring: {
+  scoring?: {
     method?: 'sum' | 'average' | 'dimension' | 'custom';
     scaleRange: {
       min: number;
@@ -71,6 +72,14 @@ export interface QuizTemplate {
   };
   references?: Reference[];
   instructions?: string;
+  // 自定义计算函数（可选）
+  calculateResults?: (answers: Record<string, number>) => {
+    totalScore: number;
+    dimensionScores?: Array<{ dimension: string; score: number }>;
+    interpretation: string;
+    recommendations?: string[];
+    metadata?: any;
+  };
 }
 
 // 用户答案

@@ -138,11 +138,11 @@ export default function ResultPage() {
   ) as Record<string, number>;
 
   const dimensionScores = calculateDimensionScores(scale, numericAnswers);
-  const scoreLevel = scale.scoring.ranges.find(
+  const scoreLevel = scale.scoring?.ranges.find(
     (r) => result.score >= r.min && result.score <= r.max
   );
 
-  const normalizedScore = normalizeScore(scale, result.score);
+  const normalizedScore = scale.scoring ? normalizeScore(scale, result.score) : result.score;
   const scorePercentage = normalizedScore;
 
   // 获取量表的分值范围，用于维度归一化
