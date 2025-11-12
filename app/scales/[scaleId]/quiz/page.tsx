@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { getScaleById, calculateScore, calculateDimensionScores, getScoreLevel, normalizeScore } from '@/lib/scales';
 import { calculateANI } from '@/lib/calculateANI';
+import { calculateZHZResults } from '@/lib/scales/zhz';
 import { submitAssessmentRecord } from '@/lib/api-client';
 import type { QuizResult, UserInfo } from '@/types/quiz';
 import type { AssessmentRecord } from '@/types/analytics';
@@ -119,6 +120,74 @@ export default function QuizPage() {
       } catch (e) {
         console.error('解析用户信息失败');
       }
+    }
+
+    // ZHZ量表使用自定义计算
+    if (scaleId === 'zhz') {
+      const numericAnswers: Record<string, number> = Object.fromEntries(
+        Object.entries(answersToSubmit).map(([k, v]) => [k, typeof v === 'number' ? v : Number(v)])
+      );
+
+      const zhzResult = calculateZHZResults(numericAnswers);
+
+      // 创建结果对象
+      const result: QuizResult = {
+        id: `result-${Date.now()}`,
+        quizId: scale.id,
+        quizTitle: scale.title,
+        score: zhzResult.totalScore,
+        level: '分析完成',
+        completedAt: new Date(),
+        answers: Object.entries(answersToSubmit).map(([questionId, answer]) => ({
+          questionId,
+          answer: typeof answer === 'number' ? answer : Number(answer),
+        })),
+        dimensionScores: zhzResult.dimensionScores.reduce((acc, item) => {
+          acc[item.dimension] = item.score;
+          return acc;
+        }, {} as Record<string, number>),
+        report: {
+          summary: zhzResult.interpretation,
+          details: [],
+          recommendations: zhzResult.recommendations,
+        },
+        metadata: zhzResult.metadata,
+      };
+
+      // 提交到后台（如果有用户信息）
+      if (userInfo) {
+        const record: AssessmentRecord = {
+          id: result.id,
+          scaleId: scale.id,
+          scaleTitle: scale.title,
+          gender: userInfo.gender,
+          age: userInfo.age,
+          totalScore: zhzResult.totalScore,
+          normalizedScore: zhzResult.totalScore,
+          level: '分析完成',
+          dimensionScores: result.dimensionScores,
+          completedAt: new Date().toISOString(),
+        };
+
+        submitAssessmentRecord(record).catch(err => {
+          console.error('提交测评记录失败:', err);
+        });
+      }
+
+      // 保存到历史记录
+      const history = JSON.parse(localStorage.getItem('quiz-history') || '[]');
+      const existingIndex = history.findIndex((r: QuizResult) => r.id === result.id);
+      if (existingIndex === -1) {
+        history.push(result);
+        localStorage.setItem('quiz-history', JSON.stringify(history));
+      }
+
+      // 清除进度
+      localStorage.removeItem(`quiz-progress-${scaleId}`);
+
+      // 跳转到结果页
+      router.push(`/scales/${scaleId}/result/${result.id}`);
+      return;
     }
 
     // ANI量表使用自定义计算

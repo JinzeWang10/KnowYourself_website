@@ -55,5 +55,8 @@ export default async function ScaleIntroPage({
     notFound();
   }
 
-  return <ScaleIntroClient scale={scale} scaleId={scaleId} />;
+  // 移除 calculateResults 函数，因为函数不能传递到客户端组件
+  const { calculateResults, ...scaleWithoutFunctions } = scale;
+
+  return <ScaleIntroClient scale={scaleWithoutFunctions} scaleId={scaleId} />;
 }

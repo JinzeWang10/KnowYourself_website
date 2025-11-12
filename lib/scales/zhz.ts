@@ -676,9 +676,10 @@ export const zhz: QuizTemplate = {
       required: true,
     },
   ],
+};
 
-  // 自定义计算逻辑（使用加权欧式距离）
-  calculateResults: (answers: Record<string, number>) => {
+// 自定义计算逻辑（使用加权欧式距离）
+export function calculateZHZResults(answers: Record<string, number>) {
     // 1. 计算用户的八维度平均分
     const userScores = {
       emotional: 0,
@@ -753,8 +754,7 @@ export const zhz: QuizTemplate = {
         userVector: userScores,
       }
     };
-  },
-};
+  }
 
 // 加权欧式距离计算
 function weightedEuclideanDistance(
