@@ -104,6 +104,7 @@ export interface QuizResult {
     details: string[];
     recommendations: string[];
   };
+  metadata?: any; // 用于存储量表特定的额外数据（如ZHZ的角色匹配信息）
 }
 
 // 用户信息
