@@ -1,7 +1,7 @@
 // 量表问题类型
 export interface QuizQuestion {
   id: string;
-  type: 'single' | 'multiple' | 'scale' | 'text';
+  type: 'single' | 'multiple' | 'scale' | 'text' | 'likert';
   question: string;
   dimension?: string;
   options: QuizOption[];
