@@ -24,7 +24,11 @@ export interface AssessmentRecord {
   // 可选：地理位置（仅国家/地区级别）
   region?: string;
 
-  // 不包含具体答案内容，保护隐私
+  // 答题记录
+  answers: Array<{
+    questionId: string;
+    answer: number | string;
+  }>;
 }
 
 // 统计数据响应

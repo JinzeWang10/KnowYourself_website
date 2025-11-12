@@ -166,6 +166,10 @@ export default function QuizPage() {
           level: '分析完成',
           dimensionScores: result.dimensionScores,
           completedAt: new Date().toISOString(),
+          answers: Object.entries(answersToSubmit).map(([questionId, answer]) => ({
+            questionId,
+            answer: typeof answer === 'number' ? answer : Number(answer),
+          })),
         };
 
         submitAssessmentRecord(record).catch(err => {
@@ -233,6 +237,10 @@ export default function QuizPage() {
           level: aniResult.level,
           dimensionScores: result.dimensionScores,
           completedAt: new Date().toISOString(),
+          answers: Object.entries(answersToSubmit).map(([questionId, answer]) => ({
+            questionId,
+            answer: typeof answer === 'number' ? answer : Number(answer),
+          })),
         };
 
         // 异步提交，不阻塞用户
@@ -305,6 +313,10 @@ export default function QuizPage() {
         level: scoreLevel.level,
         dimensionScores,
         completedAt: new Date().toISOString(),
+        answers: Object.entries(answersToSubmit).map(([questionId, answer]) => ({
+          questionId,
+          answer: typeof answer === 'number' ? answer : Number(answer),
+        })),
       };
 
       // 异步提交，不阻塞用户

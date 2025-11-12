@@ -11,9 +11,17 @@ export async function POST(request: NextRequest) {
     const data: AssessmentRecord = await request.json();
 
     // 数据验证
-    if (!data.scaleId || !data.gender || !data.age || data.totalScore === undefined) {
+    if (!data.scaleId || !data.gender || !data.age || data.totalScore === undefined || !data.answers) {
       return NextResponse.json(
         { success: false, error: '缺少必要字段' },
+        { status: 400 }
+      );
+    }
+
+    // 验证 answers 格式
+    if (!Array.isArray(data.answers) || data.answers.length === 0) {
+      return NextResponse.json(
+        { success: false, error: 'answers 必须是非空数组' },
         { status: 400 }
       );
     }
@@ -48,6 +56,7 @@ export async function POST(request: NextRequest) {
         normalizedScore: data.normalizedScore,
         level: data.level,
         dimensionScores: data.dimensionScores ? data.dimensionScores : undefined,
+        answers: data.answers,
         completedAt: new Date(data.completedAt),
         duration: data.duration || undefined,
         region: data.region || undefined,
