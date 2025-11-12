@@ -12,7 +12,9 @@
       "Bash(npm run build:*)",
       "Bash(npm install:*)",
       "Bash(tree:*)",
-      "Bash(npx prisma:*)"
+      "Bash(npx prisma:*)",
+      "Bash(curl:*)",
+      "Bash(node:*)"
     ],
     "deny": [],
     "ask": []

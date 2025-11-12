@@ -68,9 +68,8 @@ export default function QuizPage() {
   const progress = ((currentIndex + 1) / scale.questions.length) * 100;
   const isAnswered = answers[currentQuestion.id] !== undefined;
 
-  // 检测是否为4点或5点Likert量表（选项数量为4或5且为数字）
-  const isLikertScale = (currentQuestion.options?.length === 4 || currentQuestion.options?.length === 5) &&
-    currentQuestion.options.every(opt => typeof opt.value === 'number');
+  // 检测是否为Likert量表（需要question.type明确标记为'likert'）
+  const isLikertScale = currentQuestion.type === 'likert';
 
   const handleAnswer = (value: number | string) => {
     const newAnswers = { ...answers, [currentQuestion.id]: value };
