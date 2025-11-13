@@ -21,6 +21,7 @@ interface ShareCardProps {
   completedAt: string;
   percentile?: number | null;
   radarData?: RadarDataPoint[];
+  isZHZ?: boolean; // ZHZ 量表特殊标记
 }
 
 const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(function ShareCard({
@@ -32,6 +33,7 @@ const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(function ShareCard(
   completedAt,
   percentile,
   radarData,
+  isZHZ = false,
 }, ref) {
   // 根据levelColor生成统一的配色方案
   const getColorScheme = (color: string) => {
@@ -137,7 +139,7 @@ const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(function ShareCard(
                         <div className={`font-black bg-gradient-to-br ${colorScheme.gradient} bg-clip-text text-transparent`} style={{ fontSize: '64px', lineHeight: '1' }}>
                           {score}
                         </div>
-                        <div className="text-sm text-neutral-500 font-medium mt-2">分</div>
+                        <div className="text-sm text-neutral-500 font-medium mt-2">{isZHZ ? '%' : '分'}</div>
                       </div>
                     </div>
                   </div>
@@ -175,14 +177,21 @@ const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(function ShareCard(
 
               {/* 简短解读 */}
               <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-soft border border-neutral-100 mb-6" style={{ padding: '20px 10px' }}>
-                <p className="text-neutral-700 leading-relaxed text-center" style={{
+                <div className={`text-neutral-700 leading-relaxed ${isZHZ ? 'text-left' : 'text-center'} whitespace-pre-wrap`} style={{
                   lineHeight: '1.8',
-                  fontSize: '15px',
-                  maxHeight: '180px',
+                  fontSize: '14px',
+                  maxHeight: '200px',
                   overflow: 'hidden'
                 }}>
-                  {description.length > 200 ? description.substring(0, 197) + '...' : description}
-                </p>
+                  {/* 对于 ZHZ，只显示前几行 */}
+                  {isZHZ ? (
+                    description.split('\n').slice(0, 4).map((line, i) => (
+                      <div key={i}>{line || '\u00A0'}</div>
+                    ))
+                  ) : (
+                    description.length > 200 ? description.substring(0, 197) + '...' : description
+                  )}
+                </div>
               </div>
 
               {/* 雷达图 - 维度分析 */}

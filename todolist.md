@@ -21,6 +21,10 @@ https://www.arealme.com/cn
 
 动物人格-选项有时候没有一个想选的
 
-Reading the Mind in the Eyes Test 仅看眼睛部分，猜情绪 极具吸引力，常用于心理课程
-Emotion Recognition Test 看人脸判断情绪 可结合 AI 生成头像实现
+Reading the Mind in the Eyes Test 仅看眼睛部分，猜情绪 极具吸引力，常用于心理课程  
+Emotion Recognition Test 看人脸判断情绪 可结合 AI 生成头像实现--https://kdef.se/
 Empathy Quotient (EQ) 测共情能力 有短版/长版公开问卷
+
+ICP 备案号要加在页面上
+
+现在/scales/zhz/result 页面，只有一个评分，这应该改成相似度。而且没有说是哪个人物，而且核心解读是空的。请修改。

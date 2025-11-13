@@ -148,6 +148,10 @@ export default function ResultPage() {
   // 获取量表的分值范围，用于维度归一化
   const scoreRange = getScaleScoreRange(scale);
 
+  // 检查是否是 ZHZ 量表，需要特殊处理
+  const isZHZ = scaleId === 'zhz';
+  const zhzMetadata = isZHZ && result.metadata ? result.metadata : null;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-purple-50/30 to-pink-50/30">
       {/* Header */}
@@ -195,6 +199,93 @@ export default function ResultPage() {
             </p>
           </div>
 
+          {/* ZHZ Character Hero Section - 人物角色展示区 */}
+          {isZHZ && zhzMetadata && zhzMetadata.topCharacters && zhzMetadata.topCharacters.length > 0 && (() => {
+            const topChar = zhzMetadata.topCharacters[0];
+            return (
+              <div className="mb-6 sm:mb-8 animate-slide-up">
+                <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl shadow-soft-xl overflow-hidden border border-neutral-100/50">
+                  {/* 装饰性渐变背景 */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-pink-50 to-amber-50 opacity-60"></div>
+
+                  {/* 内容区 */}
+                  <div className="relative p-6 sm:p-10">
+                    <div className="flex flex-col md:flex-row items-center gap-6 sm:gap-8">
+                      {/* 左侧：人物形象 */}
+                      <div className="flex-shrink-0">
+                        <div className="relative">
+                          {/* 装饰光晕 */}
+                          <div className="absolute -inset-4 bg-gradient-to-br from-primary/20 via-purple-500/20 to-pink-500/20 rounded-3xl blur-2xl"></div>
+
+                          {/* 人物图片 */}
+                          <div className="relative w-40 h-40 sm:w-56 sm:h-56 rounded-2xl overflow-hidden shadow-glow-lg border-4 border-white bg-gradient-to-br from-purple-50 via-pink-50 to-amber-50">
+                            <Image
+                              src={`/characters/zhz/${topChar.id}.jpg`}
+                              alt={topChar.name}
+                              fill
+                              className="object-cover"
+                              onError={(e) => {
+                                // 如果图片加载失败，使用占位图
+                                const target = e.target as HTMLImageElement;
+                                target.src = '/characters/placeholder.svg';
+                              }}
+                            />
+                          </div>
+
+                          {/* 相似度徽章 */}
+                          <div className="absolute -bottom-3 -right-3 bg-gradient-to-br from-primary via-purple-500 to-pink-500 text-white rounded-2xl shadow-glow-lg px-4 py-2">
+                            <div className="text-center">
+                              <div className="text-2xl font-black">{topChar.similarity}%</div>
+                              <div className="text-xs font-medium">相似度</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 右侧：人物信息 */}
+                      <div className="flex-1 text-center md:text-left">
+                        {/* 标签 */}
+                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary/10 to-purple-500/10 rounded-full border border-primary/20 mb-4">
+                          <span className="text-lg">👑</span>
+                          <span className="text-sm font-semibold text-primary">你最像的角色</span>
+                        </div>
+
+                        {/* 人物名称 */}
+                        <h2 className="text-3xl sm:text-4xl font-black text-neutral-900 mb-3 bg-gradient-to-r from-primary via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                          {topChar.name}
+                        </h2>
+
+                        {/* 其他匹配角色 */}
+                        {zhzMetadata.topCharacters.length > 1 && (
+                          <div className="mb-4">
+                            <p className="text-sm text-neutral-600 mb-2">其他相似角色：</p>
+                            <div className="flex flex-wrap gap-2 justify-center md:justify-start">
+                              {zhzMetadata.topCharacters.slice(1, 3).map((char: any) => (
+                                <div
+                                  key={char.id}
+                                  className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/80 backdrop-blur-sm rounded-full border border-neutral-200 shadow-soft"
+                                >
+                                  <span className="text-sm font-semibold text-neutral-700">{char.name}</span>
+                                  <span className="text-xs font-bold text-primary">{char.similarity}%</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* 简短说明 */}
+                        <p className="text-sm text-neutral-600 leading-relaxed">
+                          根据你的答题结果，你的性格特征与《甄嬛传》中的 <span className="font-bold text-primary">{topChar.name}</span> 最为相似，
+                          相似度高达 <span className="font-bold text-primary">{topChar.similarity}%</span>。
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
+
           {/* ShareCard - 精美分享卡片置顶 */}
           {(() => {
             // 准备雷达图数据（如果有维度）
@@ -213,6 +304,25 @@ export default function ResultPage() {
                 fullMark: 100,
               };
             });
+
+            // 对于 ZHZ 量表，使用特殊的显示逻辑
+            if (isZHZ && zhzMetadata && zhzMetadata.topCharacters && zhzMetadata.topCharacters.length > 0) {
+              const topChar = zhzMetadata.topCharacters[0];
+              return (
+                <ShareCard
+                  ref={shareCardRef}
+                  scaleTitle={scale.title}
+                  score={topChar.similarity}
+                  level={topChar.name}
+                  levelColor="#6366F1"
+                  description={result.interpretation || ''}
+                  completedAt={typeof result.completedAt === 'string' ? result.completedAt : new Date(result.completedAt).toISOString()}
+                  percentile={undefined}
+                  radarData={radarData}
+                  isZHZ={true}
+                />
+              );
+            }
 
             return (
               <ShareCard
@@ -273,9 +383,15 @@ export default function ResultPage() {
                 <span className="text-xl sm:text-2xl">🎯</span>
                 核心解读
               </h3>
-              <p className="text-sm sm:text-base text-neutral-700 leading-relaxed">
-                {scoreLevel?.description}
-              </p>
+              {isZHZ ? (
+                <div className="text-sm sm:text-base text-neutral-700 leading-relaxed whitespace-pre-wrap">
+                  {result.interpretation}
+                </div>
+              ) : (
+                <p className="text-sm sm:text-base text-neutral-700 leading-relaxed">
+                  {scoreLevel?.description}
+                </p>
+              )}
             </div>
 
             {/* Psychological Traits - 心理特征 */}

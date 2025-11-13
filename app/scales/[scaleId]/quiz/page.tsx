@@ -351,36 +351,36 @@ export default function QuizPage() {
     <div className="min-h-screen bg-gradient-to-br from-primary-50/30 via-white to-purple-50/30">
       {/* Header */}
       <header className="glass-effect border-b border-neutral-200/50 sticky top-0 z-10 backdrop-blur-xl">
-        <div className="container mx-auto px-4 py-5">
-          <div className="flex items-center justify-between mb-4">
+        <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-5">
+          <div className="flex items-center justify-between mb-2 sm:mb-4">
             <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition group">
               <div>
                 <div className="text-xs font-semibold gradient-text">KnowYourself</div>
-                <div className="text-xs text-neutral-600 font-light">{scale.title}</div>
+                <div className="text-[10px] sm:text-xs text-neutral-600 font-light line-clamp-1">{scale.title}</div>
               </div>
             </Link>
             <Link
               href={`/scales/${scaleId}`}
-              className="text-sm text-neutral-600 hover:text-primary transition-colors font-medium"
+              className="text-xs sm:text-sm text-neutral-600 hover:text-primary transition-colors font-medium"
             >
-              退出测评
+              退出
             </Link>
           </div>
 
           {/* Progress Bar */}
           <div>
-            <div className="h-2.5 bg-neutral-100 rounded-full overflow-hidden shadow-inner">
+            <div className="h-1.5 sm:h-2.5 bg-neutral-100 rounded-full overflow-hidden shadow-inner">
               <div
                 className="h-full bg-gradient-to-r from-primary to-primary-light transition-all duration-500 ease-out shadow-glow"
                 style={{ width: `${progress}%` }}
               />
             </div>
-            <div className="flex items-center justify-between mt-2.5">
-              <p className="text-sm text-neutral-600 font-medium">
+            <div className="flex items-center justify-between mt-1.5 sm:mt-2.5">
+              <p className="text-xs sm:text-sm text-neutral-600 font-medium">
                 第 {currentIndex + 1} / {scale.questions.length} 题
               </p>
-              <p className="text-sm text-primary font-semibold">
-                {Math.round(progress)}% 完成
+              <p className="text-xs sm:text-sm text-primary font-semibold">
+                {Math.round(progress)}%
               </p>
             </div>
           </div>
@@ -388,15 +388,15 @@ export default function QuizPage() {
       </header>
 
       {/* Question */}
-      <main className="container mx-auto px-4 py-10">
+      <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-10">
         <div className="max-w-3xl mx-auto">
-          <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-soft-lg p-10 mb-8 border border-neutral-100 animate-slide-up">
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-soft-lg p-4 sm:p-10 mb-4 sm:mb-8 border border-neutral-100 animate-slide-up">
             {/* Question Number & Text */}
-            <div className="mb-8 sm:mb-10">
-              <div className="text-xs sm:text-sm text-neutral-500 mb-2 sm:mb-3 font-medium">
+            <div className="mb-4 sm:mb-10">
+              <div className="text-xs sm:text-sm text-neutral-500 mb-1.5 sm:mb-3 font-medium">
                 问题 {currentIndex + 1}
               </div>
-              <h2 className="text-lg sm:text-2xl font-semibold text-neutral-900 leading-relaxed">
+              <h2 className="text-base sm:text-2xl font-semibold text-neutral-900 leading-relaxed">
                 {currentQuestion.question}
               </h2>
             </div>
@@ -404,19 +404,19 @@ export default function QuizPage() {
             {/* Options */}
             {isLikertScale ? (
               // 横向Likert量表样式
-              <div className="space-y-6">
+              <div className="space-y-3 sm:space-y-6">
                 {/* 标签行 */}
-                <div className="flex items-center justify-between px-2">
-                  <span className="text-sm font-medium text-red-600">
+                <div className="flex items-center justify-between px-1 sm:px-2">
+                  <span className="text-xs sm:text-sm font-medium text-red-600">
                     {currentQuestion.options![0].label}
                   </span>
-                  <span className="text-sm font-medium text-green-600">
+                  <span className="text-xs sm:text-sm font-medium text-green-600">
                     {currentQuestion.options![currentQuestion.options!.length - 1].label}
                   </span>
                 </div>
 
                 {/* 按钮条 */}
-                <div className="flex items-center justify-between gap-3 px-4 py-6 bg-gradient-to-r from-red-50/50 via-yellow-50/30 to-green-50/50 rounded-2xl border-2 border-neutral-200">
+                <div className="flex items-center justify-between gap-2 sm:gap-3 px-2 sm:px-4 py-4 sm:py-6 bg-gradient-to-r from-red-50/50 via-yellow-50/30 to-green-50/50 rounded-xl sm:rounded-2xl border-2 border-neutral-200">
                   {currentQuestion.options?.map((option, idx) => {
                     const isSelected = answers[currentQuestion.id] === option.value;
                     const totalOptions = currentQuestion.options!.length;
@@ -443,7 +443,7 @@ export default function QuizPage() {
                       >
                         {isSelected && (
                           <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="w-3 h-3 bg-white rounded-full" />
+                            <div className="w-2 h-2 sm:w-3 sm:h-3 bg-white rounded-full" />
                           </div>
                         )}
                       </button>
@@ -452,13 +452,13 @@ export default function QuizPage() {
                 </div>
 
                 {/* 选项标签（可选，显示所有选项文字） */}
-                <div className="flex items-start justify-between gap-2 px-2">
+                <div className="flex items-start justify-between gap-1 sm:gap-2 px-1 sm:px-2">
                   {currentQuestion.options?.map((option, idx) => {
                     const isSelected = answers[currentQuestion.id] === option.value;
                     return (
                       <div
                         key={option.value}
-                        className={`flex-1 text-center text-xs transition-all ${
+                        className={`flex-1 text-center text-[10px] sm:text-xs transition-all ${
                           isSelected
                             ? 'font-bold text-neutral-900'
                             : 'text-neutral-500'
@@ -472,33 +472,33 @@ export default function QuizPage() {
               </div>
             ) : (
               // 传统垂直选项样式
-              <div className="space-y-4">
+              <div className="space-y-2 sm:space-y-4">
                 {currentQuestion.options?.map((option) => {
                   const isSelected = answers[currentQuestion.id] === option.value;
                   return (
                     <button
                       key={option.value}
                       onClick={() => handleAnswer(option.value)}
-                      className={`group w-full text-left p-6 rounded-2xl border-2 transition-all duration-300 ${
+                      className={`group w-full text-left p-3 sm:p-6 rounded-xl sm:rounded-2xl border-2 transition-all duration-300 ${
                         isSelected
                           ? 'border-primary bg-gradient-to-r from-primary-50 to-purple-50 shadow-soft-lg scale-[1.02]'
                           : 'border-neutral-200 hover:border-primary/50 hover:bg-neutral-50 hover:shadow-soft'
                       }`}
                     >
-                      <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-2 sm:gap-4">
                         <div
-                          className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
+                          className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 flex items-center justify-center transition-all flex-shrink-0 ${
                             isSelected
                               ? 'border-primary bg-primary shadow-glow'
                               : 'border-neutral-300 group-hover:border-primary/50'
                           }`}
                         >
                           {isSelected && (
-                            <div className="w-2.5 h-2.5 bg-white rounded-full" />
+                            <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 bg-white rounded-full" />
                           )}
                         </div>
                         <span
-                          className={`text-base leading-relaxed transition-colors ${
+                          className={`text-sm sm:text-base leading-relaxed transition-colors ${
                             isSelected
                               ? 'text-neutral-900 font-semibold'
                               : 'text-neutral-700 group-hover:text-neutral-900'
@@ -519,19 +519,19 @@ export default function QuizPage() {
             <button
               onClick={handlePrev}
               disabled={currentIndex === 0}
-              className="px-4 sm:px-8 py-3.5 rounded-xl border-2 border-neutral-300 text-neutral-700 font-semibold disabled:opacity-40 disabled:cursor-not-allowed hover:bg-neutral-50 hover:border-neutral-400 transition-all shadow-soft hover:shadow-soft-lg whitespace-nowrap"
+              className="px-3 sm:px-8 py-2.5 sm:py-3.5 rounded-xl border-2 border-neutral-300 text-neutral-700 text-sm sm:text-base font-semibold disabled:opacity-40 disabled:cursor-not-allowed hover:bg-neutral-50 hover:border-neutral-400 transition-all shadow-soft hover:shadow-soft-lg whitespace-nowrap"
             >
               ← <span className="hidden xs:inline">上一题</span><span className="xs:hidden">上题</span>
             </button>
 
-            <div className="text-xs sm:text-sm text-neutral-600 font-medium bg-neutral-50 px-3 sm:px-5 py-2 rounded-full border border-neutral-200 whitespace-nowrap">
+            <div className="text-[10px] sm:text-sm text-neutral-600 font-medium bg-neutral-50 px-2 sm:px-5 py-1.5 sm:py-2 rounded-full border border-neutral-200 whitespace-nowrap">
               {Object.keys(answers).length} / {scale.questions.length} <span className="hidden xs:inline">已回答</span>
             </div>
 
             <button
               onClick={handleNext}
               disabled={!isAnswered || isSubmitting}
-              className="px-4 sm:px-8 py-3.5 rounded-xl bg-gradient-to-r from-primary to-primary-light text-white font-semibold disabled:opacity-40 disabled:cursor-not-allowed hover:shadow-glow-lg transition-all shadow-soft btn-glow whitespace-nowrap"
+              className="px-3 sm:px-8 py-2.5 sm:py-3.5 rounded-xl bg-gradient-to-r from-primary to-primary-light text-white text-sm sm:text-base font-semibold disabled:opacity-40 disabled:cursor-not-allowed hover:shadow-glow-lg transition-all shadow-soft btn-glow whitespace-nowrap"
             >
               {currentIndex === scale.questions.length - 1
                 ? isSubmitting
@@ -542,7 +542,7 @@ export default function QuizPage() {
           </div>
 
           {/* Helper Text */}
-          <p className="text-center text-sm text-neutral-500 mt-6 font-light">
+          <p className="text-center text-xs sm:text-sm text-neutral-500 mt-3 sm:mt-6 font-light">
             {!isAnswered
               ? '✨ 请选择一个选项，将自动进入下一题'
               : '✓ 已选择，可点击"上一题"返回修改'}
