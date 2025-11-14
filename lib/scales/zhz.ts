@@ -958,7 +958,17 @@ export function calculateZHZResults(answers: Record<string, number>) {
       novelty: 0,
     };
 
-    let totalQuestions = 0;
+    // 统计每个维度被累加的次数
+    const dimensionCounts = {
+      emotional: 0,
+      strategy: 0,
+      energy: 0,
+      idealism: 0,
+      stability: 0,
+      ambition: 0,
+      authenticity: 0,
+      novelty: 0,
+    };
 
     // 遍历所有答案，累加各维度分数
     zhz.questions.forEach((question) => {
@@ -968,16 +978,22 @@ export function calculateZHZResults(answers: Record<string, number>) {
         if (selectedOption && 'scores' in selectedOption) {
           const scores = selectedOption.scores as Record<string, number>;
           Object.keys(userScores).forEach((dim) => {
-            userScores[dim as keyof typeof userScores] += scores[dim] || 0;
+            const score = scores[dim] || 0;
+            if (score !== 0) {
+              userScores[dim as keyof typeof userScores] += score;
+              dimensionCounts[dim as keyof typeof dimensionCounts]++;
+            }
           });
-          totalQuestions++;
         }
       }
     });
 
-    // 计算平均值
+    // 计算平均值（用每个维度实际被累加的次数）
     Object.keys(userScores).forEach((dim) => {
-      userScores[dim as keyof typeof userScores] /= totalQuestions;
+      const count = dimensionCounts[dim as keyof typeof dimensionCounts];
+      if (count > 0) {
+        userScores[dim as keyof typeof userScores] /= count;
+      }
     });
 
     // 2. 计算与每个角色的加权欧式距离
