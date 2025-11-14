@@ -19,19 +19,7 @@ export const ZHZ_DIMENSIONS = {
   novelty: '求新倾向',        // 拥抱变化、探索欲望 vs 偏好稳定熟悉
 } as const;
 
-// 维度权重（用于加权欧式距离计算）
-export const DIMENSION_WEIGHTS = {
-  emotional: 1.0,      // 重要维度
-  strategy: 1.3,       // 核心维度
-  energy: 1.0,         // 重要维度
-  idealism: 0.8,       // 辅助维度
-  stability: 0.8,      // 辅助维度
-  ambition: 1.2,       // 核心维度
-  authenticity: 1.2,   // 核心维度
-  novelty: 1.0,        // 重要维度
-} as const;
-
-// 12个角色的八维度坐标（极端化版本）
+// 12个角色的八维度坐标（0-1范围）
 export const CHARACTER_PROFILES = {
   'zhenhuan_early': {
     name: '甄嬛（前期）',
@@ -944,22 +932,125 @@ export const zhz: QuizTemplate = {
   ],
 };
 
-// 自定义计算逻辑（使用加权欧式距离）
-export function calculateZHZResults(answers: Record<string, number>) {
-    // 1. 计算用户的八维度平均分
-    const userScores = {
-      emotional: 0,
-      strategy: 0,
-      energy: 0,
-      idealism: 0,
-      stability: 0,
-      ambition: 0,
-      authenticity: 0,
-      novelty: 0,
-    };
+/**
+ * 计算每个维度的理论最大得分
+ * 遍历所有题目，每题选择该维度的最大增量
+ */
+function calculateDimensionMaxScores() {
+  const maxScores = {
+    emotional: 0,
+    strategy: 0,
+    energy: 0,
+    idealism: 0,
+    stability: 0,
+    ambition: 0,
+    authenticity: 0,
+    novelty: 0,
+  };
 
-    // 统计每个维度被累加的次数
-    const dimensionCounts = {
+  zhz.questions.forEach((question) => {
+    // 对每个维度，找到该题中最大的增量
+    Object.keys(maxScores).forEach((dim) => {
+      const dimKey = dim as keyof typeof maxScores;
+      let maxIncrementForDim = 0;
+
+      question.options.forEach((option) => {
+        if ('scores' in option) {
+          const scores = option.scores as Record<string, number>;
+          const increment = scores[dim] || 0;
+          maxIncrementForDim = Math.max(maxIncrementForDim, increment);
+        }
+      });
+
+      maxScores[dimKey] += maxIncrementForDim;
+    });
+  });
+
+  return maxScores;
+}
+
+/**
+ * Softmax平滑校准
+ * 使用 softmax 函数使维度分布更自然，避免零和博弈
+ *
+ * @param scores 归一化后的得分（0-1范围）
+ * @param alpha 温度参数，控制差异度（3-5）
+ * @returns 平滑后的得分向量
+ */
+function softmaxSmoothing(
+  scores: Record<string, number>,
+  alpha: number
+): Record<string, number> {
+  const keys = Object.keys(scores);
+
+  // 计算 exp(score * alpha)
+  const expScores: Record<string, number> = {};
+  let sumExp = 0;
+
+  keys.forEach((key) => {
+    const expValue = Math.exp(scores[key] * alpha);
+    expScores[key] = expValue;
+    sumExp += expValue;
+  });
+
+  // 归一化
+  const smoothed: Record<string, number> = {};
+  keys.forEach((key) => {
+    smoothed[key] = expScores[key] / sumExp;
+  });
+
+  return smoothed;
+}
+
+/**
+ * 余弦相似度计算
+ * similarity = (u · r) / (||u|| * ||r||)
+ *
+ * @param vec1 用户向量
+ * @param vec2 角色向量
+ * @returns 相似度 [0, 1]
+ */
+function cosineSimilarity(
+  vec1: Record<string, number>,
+  vec2: Record<string, number>
+): number {
+  const keys = Object.keys(vec1);
+
+  // 计算点积
+  let dotProduct = 0;
+  keys.forEach((key) => {
+    dotProduct += vec1[key] * vec2[key];
+  });
+
+  // 计算模长
+  let norm1 = 0;
+  let norm2 = 0;
+  keys.forEach((key) => {
+    norm1 += vec1[key] ** 2;
+    norm2 += vec2[key] ** 2;
+  });
+  norm1 = Math.sqrt(norm1);
+  norm2 = Math.sqrt(norm2);
+
+  // 防止除以0
+  if (norm1 === 0 || norm2 === 0) {
+    return 0;
+  }
+
+  return dotProduct / (norm1 * norm2);
+}
+
+/**
+ * 三阶段向量建模方法
+ *
+ * 阶段1：维度得分累加（Raw Score Accumulation）
+ * 阶段2：Min-Max归一化（Normalization）
+ * 阶段3：Softmax平滑校准（Smoothing）
+ * 阶段4：余弦相似度匹配（Cosine Similarity）
+ */
+export function calculateZHZResults(answers: Record<string, number>) {
+    // ============ 阶段1：维度得分累加 ============
+    const rawScores = {
       emotional: 0,
       strategy: 0,
       energy: 0,
@@ -977,36 +1068,51 @@ export function calculateZHZResults(answers: Record<string, number>) {
         const selectedOption = question.options.find(opt => opt.value === answerId);
         if (selectedOption && 'scores' in selectedOption) {
           const scores = selectedOption.scores as Record<string, number>;
-          Object.keys(userScores).forEach((dim) => {
+          Object.keys(rawScores).forEach((dim) => {
             const score = scores[dim] || 0;
-            if (score !== 0) {
-              userScores[dim as keyof typeof userScores] += score;
-              dimensionCounts[dim as keyof typeof dimensionCounts]++;
-            }
+            rawScores[dim as keyof typeof rawScores] += score;
           });
         }
       }
     });
 
-    // 计算平均值（用每个维度实际被累加的次数）
-    Object.keys(userScores).forEach((dim) => {
-      const count = dimensionCounts[dim as keyof typeof dimensionCounts];
-      if (count > 0) {
-        userScores[dim as keyof typeof userScores] /= count;
+    // ============ 阶段2：Min-Max归一化 ============
+    // 计算每个维度的理论最大值
+    const maxPossible = calculateDimensionMaxScores();
+
+    const normalizedScores = {
+      emotional: 0,
+      strategy: 0,
+      energy: 0,
+      idealism: 0,
+      stability: 0,
+      ambition: 0,
+      authenticity: 0,
+      novelty: 0,
+    };
+
+    Object.keys(rawScores).forEach((dim) => {
+      const dimKey = dim as keyof typeof rawScores;
+      const max = maxPossible[dimKey];
+      if (max > 0) {
+        // 归一化到 0-1 范围
+        normalizedScores[dimKey] = Math.max(0, Math.min(1, rawScores[dimKey] / max));
       }
     });
 
-    // 2. 计算与每个角色的加权欧式距离
+    // ============ 阶段3：Softmax平滑校准 ============
+    const alpha = 4.0; // 控制差异度的参数，范围3-5
+    const userScores = softmaxSmoothing(normalizedScores, alpha);
+
+    // ============ 阶段4：余弦相似度匹配 ============
     const similarities: Array<{ character: string; similarity: number }> = [];
 
     Object.entries(CHARACTER_PROFILES).forEach(([charId, charData]) => {
-      const distance = weightedEuclideanDistance(userScores, charData.scores);
-      // 将距离转换为相似度（距离越小，相似度越高）
-      const similarity = 1 / (1 + distance);
+      const similarity = cosineSimilarity(userScores, charData.scores);
       similarities.push({ character: charId, similarity });
     });
 
-    // 3. 按相似度排序，取前3
+    // 按相似度排序，取前3
     similarities.sort((a, b) => b.similarity - a.similarity);
     const topMatches = similarities.slice(0, 3);
 
@@ -1037,23 +1143,6 @@ export function calculateZHZResults(answers: Record<string, number>) {
       }
     };
   }
-
-// 加权欧式距离计算
-function weightedEuclideanDistance(
-  vec1: Record<string, number>,
-  vec2: Record<string, number>
-): number {
-  const keys = Object.keys(vec1);
-  let sumSquaredDiff = 0;
-
-  keys.forEach(key => {
-    const weight = DIMENSION_WEIGHTS[key as keyof typeof DIMENSION_WEIGHTS] || 1.0;
-    const diff = vec1[key] - vec2[key];
-    sumSquaredDiff += weight * (diff ** 2);
-  });
-
-  return Math.sqrt(sumSquaredDiff);
-}
 
 // 生成个性化解读
 function generateInterpretation(
