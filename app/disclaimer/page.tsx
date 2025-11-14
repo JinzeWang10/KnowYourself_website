@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 export default function DisclaimerPage() {
   return (
@@ -180,6 +181,8 @@ export default function DisclaimerPage() {
           </div>
         </div>
       </main>
+
+      <Footer />
     </div>
   );
 }

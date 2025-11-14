@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from "next/link";
 import { getScaleList } from '@/lib/scales';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
   title: "选择测评量表 - KnowYourself 知己",
@@ -172,6 +173,9 @@ export default function ScalesPage() {
           </Link>
         </div>
       </section>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

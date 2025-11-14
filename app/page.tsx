@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from "next/link";
 import { getScaleList } from '@/lib/scales';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
   title: "KnowYourself 知己 - 了解更真实的自己",
@@ -164,25 +165,7 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-neutral-900 text-neutral-400 py-12">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-6">
-            <p className="text-neutral-300 font-medium">&copy; 2025 KnowYourself 知己. All rights reserved.</p>
-            <p className="mt-3 text-sm font-light">了解更真实的自己 · 专注于心理健康与自我认知</p>
-          </div>
-          <div className="flex justify-center gap-8 text-sm">
-            <Link href="/terms" className="hover:text-white transition-colors font-medium">
-              用户协议
-            </Link>
-            <Link href="/privacy" className="hover:text-white transition-colors font-medium">
-              隐私政策
-            </Link>
-            <Link href="/disclaimer" className="hover:text-white transition-colors font-medium">
-              免责声明
-            </Link>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
