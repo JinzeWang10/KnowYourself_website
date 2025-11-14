@@ -129,13 +129,16 @@ export default function QuizPage() {
 
       const zhzResult = calculateZHZResults(numericAnswers);
 
+      // 获取最相似的角色名称
+      const topCharacterName = zhzResult.metadata?.topCharacters?.[0]?.name || '未知角色';
+
       // 创建结果对象
       const result: QuizResult = {
         id: `result-${Date.now()}`,
         quizId: scale.id,
         quizTitle: scale.title,
         score: zhzResult.totalScore,
-        level: '分析完成',
+        level: topCharacterName,
         completedAt: new Date(),
         answers: Object.entries(answersToSubmit).map(([questionId, answer]) => ({
           questionId,
@@ -163,7 +166,7 @@ export default function QuizPage() {
           age: userInfo.age,
           totalScore: zhzResult.totalScore,
           normalizedScore: zhzResult.totalScore,
-          level: '分析完成',
+          level: topCharacterName,
           dimensionScores: result.dimensionScores,
           completedAt: new Date().toISOString(),
           answers: Object.entries(answersToSubmit).map(([questionId, answer]) => ({

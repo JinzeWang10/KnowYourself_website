@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import type { QuizResult } from '@/types/quiz';
+import Footer from '@/components/Footer';
 
 export default function HistoryPage() {
   const router = useRouter();
@@ -172,17 +173,38 @@ export default function HistoryPage() {
 
                       {/* Score & Level */}
                       <div className="flex items-center gap-4 mb-3">
-                        <div className="flex items-center gap-2">
-                          <span className="text-3xl font-bold text-primary">
-                            {item.score}
-                          </span>
-                          <span className="text-sm text-gray-600">分</span>
-                        </div>
-                        <div className="px-3 py-1 bg-gray-100 rounded-full">
-                          <span className="text-sm font-semibold text-gray-700">
-                            {item.level}
-                          </span>
-                        </div>
+                        {item.quizId === 'zhz' ? (
+                          // ZHZ 量表：显示角色相似度
+                          <>
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm text-gray-600">与</span>
+                              <span className="text-2xl font-bold text-primary">
+                                {item.level}
+                              </span>
+                              <span className="text-sm text-gray-600">相似度</span>
+                            </div>
+                            <div className="px-3 py-1 bg-gradient-to-r from-primary/10 to-purple-500/10 rounded-full">
+                              <span className="text-xl font-bold text-primary">
+                                {item.score}%
+                              </span>
+                            </div>
+                          </>
+                        ) : (
+                          // 其他量表：显示分数和等级
+                          <>
+                            <div className="flex items-center gap-2">
+                              <span className="text-3xl font-bold text-primary">
+                                {item.score}
+                              </span>
+                              <span className="text-sm text-gray-600">分</span>
+                            </div>
+                            <div className="px-3 py-1 bg-gray-100 rounded-full">
+                              <span className="text-sm font-semibold text-gray-700">
+                                {item.level}
+                              </span>
+                            </div>
+                          </>
+                        )}
                       </div>
 
                       {/* Date */}
@@ -215,6 +237,8 @@ export default function HistoryPage() {
           )}
         </div>
       </main>
+
+      <Footer />
     </div>
   );
 }
