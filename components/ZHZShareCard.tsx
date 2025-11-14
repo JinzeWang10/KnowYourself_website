@@ -153,13 +153,7 @@ const ZHZShareCard = forwardRef<HTMLDivElement, ZHZShareCardProps>(function ZHZS
                 maxWidth: '100%',
                 width: '100%'
               }}>
-                <div className="text-base text-neutral-700 leading-relaxed text-left" style={{
-                  display: '-webkit-box',
-                  WebkitLineClamp: 4,
-                  WebkitBoxOrient: 'vertical',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis'
-                }}>
+                <div className="text-base text-neutral-700 leading-relaxed text-left">
                   {mainCharacter.coreTrait}
                 </div>
               </div>
