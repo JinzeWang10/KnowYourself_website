@@ -215,20 +215,20 @@ export const CHARACTER_PROFILES = {
   },
 } as const;
 
-// 角色ID到图片文件名的映射
+// 角色ID到图片文件名的映射（使用优化后的WebP格式）
 export const CHARACTER_IMAGE_MAP: Record<string, string> = {
-  'zhenhuan_early': '甄嬛前期.JPG',
-  'zhenhuan_late': '甄嬛后期.JPG',
-  'anlingrong': '安陵容.JPG',
-  'queen': '皇后.JPG',
-  'huafei': '华妃.JPG',
-  'shenmeizhuang': '沈眉庄.JPG',
-  'huanbi': '浣碧.JPG',
-  'supeisheng': '苏培盛.JPG',
-  'guojunwang': '果郡王.JPG',
-  'wentaiyi': '温太医.JPG',
-  'emperor': '皇上.JPG',
-  'ningguiren': '宁贵人.JPG',
+  'zhenhuan_early': '甄嬛前期.webp',
+  'zhenhuan_late': '甄嬛后期.webp',
+  'anlingrong': '安陵容.webp',
+  'queen': '皇后.webp',
+  'huafei': '华妃.webp',
+  'shenmeizhuang': '沈眉庄.webp',
+  'huanbi': '浣碧.webp',
+  'supeisheng': '苏培盛.webp',
+  'guojunwang': '果郡王.webp',
+  'wentaiyi': '温太医.webp',
+  'emperor': '皇上.webp',
+  'ningguiren': '宁贵人.webp',
 } as const;
 
 // 角色核心特质（用于分享卡片）
