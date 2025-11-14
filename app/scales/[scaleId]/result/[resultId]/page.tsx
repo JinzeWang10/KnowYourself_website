@@ -6,11 +6,13 @@ import Link from 'next/link';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import { getScaleById, calculateDimensionScores, normalizeScore, normalizeDimensionScore, getScaleScoreRange } from '@/lib/scales';
+import { getCharacterImagePath, getCharacterCoreTrait, getCharacterSubtitle, getCharacterEmoji, getCharacterDetailedTraits } from '@/lib/scales/zhz';
 // import { getPercentileRank } from '@/lib/api-client';
 import { exportWithFeedback } from '@/lib/export-image';
 import type { QuizResult } from '@/types/quiz';
 import type { RadarDataPoint } from '@/components/DimensionRadarChart';
 import ShareCard from '@/components/ShareCard';
+import ZHZShareCard from '@/components/ZHZShareCard';
 
 // 动态导入雷达图组件（仅客户端）
 const DimensionRadarChart = dynamic(
@@ -47,6 +49,7 @@ export default function ResultPage() {
   // } | null>(null);
   // const [isLoadingPercentile, setIsLoadingPercentile] = useState(true);
   const [isExporting, setIsExporting] = useState(false);
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
   const shareCardRef = useRef<HTMLDivElement>(null);
   const scale = getScaleById(scaleId);
 
@@ -99,7 +102,10 @@ export default function ResultPage() {
         onComplete: (success) => {
           setIsExporting(false);
           if (success) {
-            // 可以添加成功提示，这里暂时不做UI提示
+            // 显示成功提示
+            setShowSuccessToast(true);
+            // 3秒后自动隐藏
+            setTimeout(() => setShowSuccessToast(false), 3000);
           } else {
             alert('图片生成失败，请重试');
           }
@@ -154,6 +160,21 @@ export default function ResultPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-purple-50/30 to-pink-50/30">
+      {/* 成功提示Toast */}
+      {showSuccessToast && (
+        <div className="fixed top-20 right-4 sm:right-8 z-[60] animate-slide-in-right">
+          <div className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-6 py-4 rounded-2xl shadow-glow-lg flex items-center gap-3">
+            <svg className="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div>
+              <p className="font-bold">图片已保存！</p>
+              <p className="text-sm opacity-90">可在下载文件夹中查看</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <header className="glass-effect border-b border-neutral-200/50 backdrop-blur-xl sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
@@ -185,9 +206,6 @@ export default function ResultPage() {
               <span className="text-xl sm:text-2xl">🎯</span>
               <span className="text-xs sm:text-sm font-medium text-neutral-600">测评完成</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-neutral-900 mb-2 px-4">
-              {scale.title}
-            </h1>
             <p className="text-sm text-neutral-500 font-light">
               {new Date(result.completedAt).toLocaleString('zh-CN', {
                 year: 'numeric',
@@ -200,126 +218,72 @@ export default function ResultPage() {
           </div>
 
           {/* ZHZ Character Hero Section - 人物角色展示区 */}
-          {isZHZ && zhzMetadata && zhzMetadata.topCharacters && zhzMetadata.topCharacters.length > 0 && (() => {
-            const topChar = zhzMetadata.topCharacters[0];
-            return (
-              <div className="mb-6 sm:mb-8 animate-slide-up">
-                <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl shadow-soft-xl overflow-hidden border border-neutral-100/50">
-                  {/* 装饰性渐变背景 */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-pink-50 to-amber-50 opacity-60"></div>
-
-                  {/* 内容区 */}
-                  <div className="relative p-6 sm:p-10">
-                    <div className="flex flex-col md:flex-row items-center gap-6 sm:gap-8">
-                      {/* 左侧：人物形象 */}
-                      <div className="flex-shrink-0">
-                        <div className="relative">
-                          {/* 装饰光晕 */}
-                          <div className="absolute -inset-4 bg-gradient-to-br from-primary/20 via-purple-500/20 to-pink-500/20 rounded-3xl blur-2xl"></div>
-
-                          {/* 人物图片 */}
-                          <div className="relative w-40 h-40 sm:w-56 sm:h-56 rounded-2xl overflow-hidden shadow-glow-lg border-4 border-white bg-gradient-to-br from-purple-50 via-pink-50 to-amber-50">
-                            <Image
-                              src={`/characters/zhz/${topChar.id}.jpg`}
-                              alt={topChar.name}
-                              fill
-                              className="object-cover"
-                              onError={(e) => {
-                                // 如果图片加载失败，使用占位图
-                                const target = e.target as HTMLImageElement;
-                                target.src = '/characters/placeholder.svg';
-                              }}
-                            />
-                          </div>
-
-                          {/* 相似度徽章 */}
-                          <div className="absolute -bottom-3 -right-3 bg-gradient-to-br from-primary via-purple-500 to-pink-500 text-white rounded-2xl shadow-glow-lg px-4 py-2">
-                            <div className="text-center">
-                              <div className="text-2xl font-black">{topChar.similarity}%</div>
-                              <div className="text-xs font-medium">相似度</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* 右侧：人物信息 */}
-                      <div className="flex-1 text-center md:text-left">
-                        {/* 标签 */}
-                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary/10 to-purple-500/10 rounded-full border border-primary/20 mb-4">
-                          <span className="text-lg">👑</span>
-                          <span className="text-sm font-semibold text-primary">你最像的角色</span>
-                        </div>
-
-                        {/* 人物名称 */}
-                        <h2 className="text-3xl sm:text-4xl font-black text-neutral-900 mb-3 bg-gradient-to-r from-primary via-purple-600 to-pink-600 bg-clip-text text-transparent">
-                          {topChar.name}
-                        </h2>
-
-                        {/* 其他匹配角色 */}
-                        {zhzMetadata.topCharacters.length > 1 && (
-                          <div className="mb-4">
-                            <p className="text-sm text-neutral-600 mb-2">其他相似角色：</p>
-                            <div className="flex flex-wrap gap-2 justify-center md:justify-start">
-                              {zhzMetadata.topCharacters.slice(1, 3).map((char: any) => (
-                                <div
-                                  key={char.id}
-                                  className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/80 backdrop-blur-sm rounded-full border border-neutral-200 shadow-soft"
-                                >
-                                  <span className="text-sm font-semibold text-neutral-700">{char.name}</span>
-                                  <span className="text-xs font-bold text-primary">{char.similarity}%</span>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-
-                        {/* 简短说明 */}
-                        <p className="text-sm text-neutral-600 leading-relaxed">
-                          根据你的答题结果，你的性格特征与《甄嬛传》中的 <span className="font-bold text-primary">{topChar.name}</span> 最为相似，
-                          相似度高达 <span className="font-bold text-primary">{topChar.similarity}%</span>。
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            );
-          })()}
+          
 
           {/* ShareCard - 精美分享卡片置顶 */}
           {(() => {
             // 准备雷达图数据（如果有维度）
-            const radarData: RadarDataPoint[] | undefined = scale.dimensions?.map((dimension) => {
-              const dimScore = dimensionScores[dimension.id] || 0;
-              const normalizedValue = normalizeDimensionScore(
-                dimScore,
-                dimension.questionIds.length,
-                scoreRange.min,
-                scoreRange.max
-              );
+            let radarData: RadarDataPoint[] | undefined;
 
-              return {
+            // 对于 ZHZ 量表，使用 metadata 中的 userVector
+            if (isZHZ && zhzMetadata && zhzMetadata.userVector) {
+              radarData = scale.dimensions?.map((dimension) => ({
                 dimension: dimension.name,
-                value: Math.round(normalizedValue * 10) / 10,
+                value: Math.round((zhzMetadata.userVector[dimension.id] || 0) * 100 * 10) / 10,
                 fullMark: 100,
-              };
-            });
+              }));
+            } else {
+              // 其他量表使用标准计算
+              radarData = scale.dimensions?.map((dimension) => {
+                const dimScore = dimensionScores[dimension.id] || 0;
+                const normalizedValue = normalizeDimensionScore(
+                  dimScore,
+                  dimension.questionIds.length,
+                  scoreRange.min,
+                  scoreRange.max
+                );
 
-            // 对于 ZHZ 量表，使用特殊的显示逻辑
+                return {
+                  dimension: dimension.name,
+                  value: Math.round(normalizedValue * 10) / 10,
+                  fullMark: 100,
+                };
+              });
+            }
+
+            // 对于 ZHZ 量表，使用专属的 ZHZShareCard
             if (isZHZ && zhzMetadata && zhzMetadata.topCharacters && zhzMetadata.topCharacters.length > 0) {
               const topChar = zhzMetadata.topCharacters[0];
+
+              // 提取核心关键词（从解读文本中提取）
+              const coreKeywords: string[] = [];
+              const descriptionMatch = result.interpretation?.match(/\*\*关键词[：:](.*?)\*\*/);
+              if (descriptionMatch) {
+                const keywordsText = descriptionMatch[1].trim();
+                coreKeywords.push(...keywordsText.split(/[、，,]/).map(k => k.trim()).slice(0, 3));
+              }
+
               return (
-                <ShareCard
+                <ZHZShareCard
                   ref={shareCardRef}
                   scaleTitle={scale.title}
-                  score={topChar.similarity}
-                  level={topChar.name}
-                  levelColor="#6366F1"
-                  description={result.interpretation || ''}
+                  mainCharacter={{
+                    id: topChar.id,
+                    name: topChar.name,
+                    similarity: topChar.similarity,
+                    imagePath: getCharacterImagePath(topChar.id),
+                    coreTrait: getCharacterCoreTrait(topChar.id)
+                  }}
+                  otherCharacters={zhzMetadata.topCharacters.slice(1, 3).map((char: any) => ({
+                    id: char.id,
+                    name: char.name,
+                    similarity: char.similarity,
+                    imagePath: getCharacterImagePath(char.id),
+                    coreTrait: getCharacterCoreTrait(char.id)
+                  }))}
                   completedAt={typeof result.completedAt === 'string' ? result.completedAt : new Date(result.completedAt).toISOString()}
-                  percentile={undefined}
                   radarData={radarData}
-                  isZHZ={true}
+                  coreKeywords={coreKeywords}
                 />
               );
             }
@@ -339,34 +303,43 @@ export default function ResultPage() {
             );
           })()}
 
-          {/* 下载分享卡片按钮 - 暂时隐藏 */}
-          {false && (
-            <div className="text-center mb-6 sm:mb-8 animate-fade-in animation-delay-100">
-              <button
-                onClick={handleExportImage}
-                disabled={isExporting}
-                className="group relative inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-primary via-purple-500 to-pink-500 text-white rounded-xl sm:rounded-2xl font-bold hover:shadow-glow-lg transition-all duration-300 shadow-soft hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 text-sm sm:text-base overflow-hidden"
-              >
-                <span className="relative z-10 flex items-center gap-2">
-                  {isExporting ? (
-                    <>
-                      <span className="animate-spin">⏳</span>
-                      生成中...
-                    </>
-                  ) : (
-                    <>
-                      <span>📸</span>
-                      下载分享图片
-                    </>
-                  )}
-                </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-primary-light to-purple-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              </button>
-              <p className="text-xs sm:text-sm text-neutral-500 mt-2 sm:mt-3">
-                💡 点击按钮生成精美分享图片，或截图此卡片分享至社交平台
+          {/* 下载分享卡片按钮 */}
+          <div className="text-center mb-6 sm:mb-8 animate-fade-in animation-delay-100">
+            <button
+              onClick={handleExportImage}
+              disabled={isExporting}
+              className="group relative inline-flex items-center justify-center gap-2 sm:gap-3 px-8 sm:px-10 py-4 sm:py-5 bg-gradient-to-r from-primary via-purple-500 to-pink-500 text-white rounded-2xl font-bold hover:shadow-glow-xl transition-all duration-300 shadow-soft-lg hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 text-base sm:text-lg overflow-hidden min-w-[280px] sm:min-w-[320px]"
+            >
+              {/* 光效背景 */}
+              <div className="absolute inset-0 bg-gradient-to-r from-primary-light/50 via-purple-400/50 to-pink-400/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-pulse"></div>
+
+              {/* 按钮内容 */}
+              <span className="relative z-10 flex items-center gap-2 sm:gap-3">
+                {isExporting ? (
+                  <>
+                    <svg className="animate-spin h-5 w-5 sm:h-6 sm:w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span className="font-bold">正在生成图片...</span>
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-5 h-5 sm:w-6 sm:h-6 group-hover:rotate-12 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <span className="font-bold">一键保存分享图</span>
+                  </>
+                )}
+              </span>
+            </button>
+            <div className="flex items-center justify-center gap-2 mt-3 sm:mt-4">
+              <span className="inline-block w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+              <p className="text-xs sm:text-sm text-neutral-600 font-medium">
+                高清图片 · 一键下载 · 直接分享
               </p>
             </div>
-          )}
+          </div>
 
           {/* Detailed Interpretation - 详细解读区 */}
           <div className="bg-white/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-soft-xl p-5 sm:p-10 mb-6 sm:mb-8 border border-neutral-100/50 animate-slide-up">
@@ -377,56 +350,115 @@ export default function ResultPage() {
               <h2 className="text-xl sm:text-2xl font-bold text-neutral-900">详细解读</h2>
             </div>
 
-            {/* Score Description */}
-            <div className="p-5 sm:p-8 bg-gradient-to-br from-neutral-50 to-purple-50/30 rounded-xl sm:rounded-2xl border border-neutral-200/30 shadow-soft mb-4 sm:mb-6">
-              <h3 className="font-bold text-neutral-900 mb-3 sm:mb-4 text-base sm:text-lg flex items-center gap-2">
-                <span className="text-xl sm:text-2xl">🎯</span>
-                核心解读
-              </h3>
-              {isZHZ ? (
-                <div className="text-sm sm:text-base text-neutral-700 leading-relaxed whitespace-pre-wrap">
-                  {result.interpretation}
+            {/* ZHZ 测评专属解读 */}
+            {isZHZ && zhzMetadata && zhzMetadata.topCharacters && zhzMetadata.topCharacters.length > 0 ? (
+              <>
+                {/* 核心特质 */}
+                <div className="p-5 sm:p-8 bg-gradient-to-br from-neutral-50 to-purple-50/30 rounded-xl sm:rounded-2xl border border-neutral-200/30 shadow-soft mb-4 sm:mb-6">
+                  <h3 className="font-bold text-neutral-900 mb-3 sm:mb-4 text-base sm:text-lg flex items-center gap-2">
+                    <span className="text-xl sm:text-2xl">🎯</span>
+                    核心特质
+                  </h3>
+                  <p className="text-sm sm:text-base text-neutral-700 leading-relaxed">
+                    {getCharacterCoreTrait(zhzMetadata.topCharacters[0].id)}
+                  </p>
                 </div>
-              ) : (
-                <p className="text-sm sm:text-base text-neutral-700 leading-relaxed">
-                  {scoreLevel?.description}
-                </p>
-              )}
-            </div>
 
-            {/* Psychological Traits - 心理特征 */}
-            {scoreLevel?.psychologicalTraits && (
-              <div className="p-5 sm:p-8 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl sm:rounded-2xl border border-purple-200/30 shadow-soft mb-4 sm:mb-6">
-                <h3 className="font-bold text-neutral-900 mb-3 sm:mb-4 text-base sm:text-lg flex items-center gap-2">
-                  <span className="text-xl sm:text-2xl">🧠</span>
-                  心理特征
-                </h3>
-                <p className="text-sm sm:text-base text-neutral-700 leading-relaxed">
-                  {scoreLevel.psychologicalTraits}
-                </p>
-              </div>
-            )}
+                {(() => {
+                  const detailedTraits = getCharacterDetailedTraits(zhzMetadata.topCharacters[0].id);
+                  return detailedTraits ? (
+                    <>
+                      {/* 性格优势 */}
+                      <div className="p-5 sm:p-8 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl sm:rounded-2xl border border-green-200/30 shadow-soft mb-4 sm:mb-6">
+                        <h3 className="font-bold text-neutral-900 mb-4 sm:mb-6 text-base sm:text-lg flex items-center gap-2">
+                          <span className="text-xl sm:text-2xl">✨</span>
+                          性格优势
+                        </h3>
+                        <div className="space-y-3 sm:space-y-4">
+                          {detailedTraits.advantages.map((advantage, index) => (
+                            <div key={index} className="flex items-start gap-3 sm:gap-4 group hover:translate-x-1 transition-transform">
+                              <span className="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 text-white text-xs sm:text-sm flex items-center justify-center font-bold shadow-soft group-hover:shadow-glow transition-shadow">
+                                {index + 1}
+                              </span>
+                              <span className="text-sm sm:text-base text-neutral-700 leading-relaxed flex-1 pt-0.5">
+                                {advantage}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
 
-            {/* Suggestions - 建议 */}
-            {scoreLevel?.suggestions && scoreLevel.suggestions.length > 0 && (
-              <div className="p-5 sm:p-8 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-xl sm:rounded-2xl border border-blue-200/30 shadow-soft">
-                <h3 className="font-bold text-neutral-900 mb-4 sm:mb-6 text-base sm:text-lg flex items-center gap-2">
-                  <span className="text-xl sm:text-2xl">💡</span>
-                  改善建议
-                </h3>
-                <div className="space-y-3 sm:space-y-4">
-                  {scoreLevel.suggestions.map((suggestion, index) => (
-                    <div key={index} className="flex items-start gap-3 sm:gap-4 group hover:translate-x-1 transition-transform">
-                      <span className="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-gradient-to-br from-primary via-purple-500 to-pink-500 text-white text-xs sm:text-sm flex items-center justify-center font-bold shadow-soft group-hover:shadow-glow transition-shadow">
-                        {index + 1}
-                      </span>
-                      <span className="text-sm sm:text-base text-neutral-700 leading-relaxed flex-1 pt-0.5">
-                        {suggestion}
-                      </span>
+                      {/* 潜在风险 */}
+                      <div className="p-5 sm:p-8 bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl sm:rounded-2xl border border-amber-200/30 shadow-soft">
+                        <h3 className="font-bold text-neutral-900 mb-4 sm:mb-6 text-base sm:text-lg flex items-center gap-2">
+                          <span className="text-xl sm:text-2xl">⚠️</span>
+                          潜在风险
+                        </h3>
+                        <div className="space-y-3 sm:space-y-4">
+                          {detailedTraits.risks.map((risk, index) => (
+                            <div key={index} className="flex items-start gap-3 sm:gap-4 group hover:translate-x-1 transition-transform">
+                              <span className="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 text-white text-xs sm:text-sm flex items-center justify-center font-bold shadow-soft group-hover:shadow-glow transition-shadow">
+                                {index + 1}
+                              </span>
+                              <span className="text-sm sm:text-base text-neutral-700 leading-relaxed flex-1 pt-0.5">
+                                {risk}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </>
+                  ) : null;
+                })()}
+              </>
+            ) : (
+              <>
+                {/* 其他测评的原有解读 */}
+                <div className="p-5 sm:p-8 bg-gradient-to-br from-neutral-50 to-purple-50/30 rounded-xl sm:rounded-2xl border border-neutral-200/30 shadow-soft mb-4 sm:mb-6">
+                  <h3 className="font-bold text-neutral-900 mb-3 sm:mb-4 text-base sm:text-lg flex items-center gap-2">
+                    <span className="text-xl sm:text-2xl">🎯</span>
+                    核心解读
+                  </h3>
+                  <p className="text-sm sm:text-base text-neutral-700 leading-relaxed">
+                    {scoreLevel?.description}
+                  </p>
+                </div>
+
+                {/* Psychological Traits - 心理特征 */}
+                {scoreLevel?.psychologicalTraits && (
+                  <div className="p-5 sm:p-8 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl sm:rounded-2xl border border-purple-200/30 shadow-soft mb-4 sm:mb-6">
+                    <h3 className="font-bold text-neutral-900 mb-3 sm:mb-4 text-base sm:text-lg flex items-center gap-2">
+                      <span className="text-xl sm:text-2xl">🧠</span>
+                      心理特征
+                    </h3>
+                    <p className="text-sm sm:text-base text-neutral-700 leading-relaxed">
+                      {scoreLevel.psychologicalTraits}
+                    </p>
+                  </div>
+                )}
+
+                {/* Suggestions - 建议 */}
+                {scoreLevel?.suggestions && scoreLevel.suggestions.length > 0 && (
+                  <div className="p-5 sm:p-8 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-xl sm:rounded-2xl border border-blue-200/30 shadow-soft">
+                    <h3 className="font-bold text-neutral-900 mb-4 sm:mb-6 text-base sm:text-lg flex items-center gap-2">
+                      <span className="text-xl sm:text-2xl">💡</span>
+                      改善建议
+                    </h3>
+                    <div className="space-y-3 sm:space-y-4">
+                      {scoreLevel.suggestions.map((suggestion, index) => (
+                        <div key={index} className="flex items-start gap-3 sm:gap-4 group hover:translate-x-1 transition-transform">
+                          <span className="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-gradient-to-br from-primary via-purple-500 to-pink-500 text-white text-xs sm:text-sm flex items-center justify-center font-bold shadow-soft group-hover:shadow-glow transition-shadow">
+                            {index + 1}
+                          </span>
+                          <span className="text-sm sm:text-base text-neutral-700 leading-relaxed flex-1 pt-0.5">
+                            {suggestion}
+                          </span>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              </div>
+                  </div>
+                )}
+              </>
             )}
 
             {/* 免责声明和参考提示 */}
@@ -442,28 +474,6 @@ export default function ResultPage() {
             </div>
           </div>
 
-          {/* 心理援助信息（异常结果时显示） */}
-          {normalizedScore >= 70 && (
-            <div className="bg-red-50 border-l-4 border-red-500 rounded-2xl shadow-lg p-6 mb-6">
-              <div className="flex items-start gap-3">
-                <span className="text-3xl">🆘</span>
-                <div className="flex-1">
-                  <h3 className="text-xl font-bold text-red-900 mb-3">需要帮助？</h3>
-                  <p className="text-red-800 leading-relaxed mb-4">
-                    您的测评结果显示可能存在需要关注的情况。请不要过度担心，但建议您寻求专业帮助。
-                  </p>
-                  <div className="bg-white p-4 rounded-lg">
-                    <p className="text-gray-900 font-semibold mb-2">心理援助热线：</p>
-                    <ul className="list-none text-gray-800 space-y-2 text-sm">
-                      <li>🇨🇳 全国心理援助热线: <strong>400-161-9995</strong></li>
-                      <li>🇭🇰 香港撒玛利亚防止自杀会: <strong>2389-2222</strong></li>
-                      <li>🌏 国际心理援助: <a href="https://findahelpline.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">findahelpline.com</a></li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
 
           {/* Percentile Chart - 百分位分析 - 暂时隐藏
           {!isLoadingPercentile && percentileData && (
@@ -488,8 +498,8 @@ export default function ResultPage() {
           )}
           */}
 
-          {/* Radar Chart for Dimensions */}
-          {scale.dimensions && scale.dimensions.length > 0 && (
+          {/* Radar Chart for Dimensions - ZHZ测评不显示雷达图 */}
+          {!isZHZ && scale.dimensions && scale.dimensions.length > 0 && (
             <div className="bg-white/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-soft-lg p-5 sm:p-10 mb-6 sm:mb-8 border border-neutral-100/50 animate-slide-up animation-delay-100">
               <div className="flex items-center gap-2 sm:gap-3 mb-6 sm:mb-8">
                 <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center shadow-soft">
@@ -534,14 +544,21 @@ export default function ResultPage() {
 
               <div className="space-y-4 sm:space-y-6">
                 {scale.dimensions.map((dimension, index) => {
-                  const dimScore = dimensionScores[dimension.id] || 0;
-                  // 使用正确的归一化函数计算百分比，传入量表的分值范围
-                  const dimPercentage = normalizeDimensionScore(
-                    dimScore,
-                    dimension.questionIds.length,
-                    scoreRange.min,
-                    scoreRange.max
-                  );
+                  // 对于 ZHZ 量表，使用 metadata 中的 userVector
+                  let dimPercentage: number;
+                  if (isZHZ && zhzMetadata && zhzMetadata.userVector) {
+                    // ZHZ 的 userVector 已经是 0-1 的值，直接转换为百分比
+                    dimPercentage = (zhzMetadata.userVector[dimension.id] || 0) * 100;
+                  } else {
+                    // 其他量表使用标准计算
+                    const dimScore = dimensionScores[dimension.id] || 0;
+                    dimPercentage = normalizeDimensionScore(
+                      dimScore,
+                      dimension.questionIds.length,
+                      scoreRange.min,
+                      scoreRange.max
+                    );
+                  }
 
                   // 根据分数确定颜色
                   let barColor = 'from-green-500 to-emerald-600';
