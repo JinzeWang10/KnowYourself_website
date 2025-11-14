@@ -13,7 +13,8 @@ export interface QuizQuestion {
 export interface QuizOption {
   value: number;
   label: string;
-  [key: string]: any; // 允许扩展字段，如 scores 等
+  scores?: Record<string, number>; // 部分维度的贡献值（0-1之间），只定义选项影响的维度
+  [key: string]: any; // 允许其他扩展字段
 }
 
 // 量表维度
@@ -99,6 +100,7 @@ export interface QuizResult {
   completedAt: Date;
   answers: UserAnswer[];
   dimensionScores?: Record<string, number>;
+  interpretation?: string; // 结果解读（用于自定义计算的量表）
   report?: {
     summary: string;
     details: string[];
