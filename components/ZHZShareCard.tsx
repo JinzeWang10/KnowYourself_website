@@ -66,7 +66,7 @@ const ZHZShareCard = forwardRef<HTMLDivElement, ZHZShareCardProps>(function ZHZS
           </svg>
         </div>
 
-        <div className="relative" style={{ padding: '48px' }}>
+        <div className="relative" style={{ padding: '8px' }}>
           {/* Logo和标题 */}
           <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
             <div className="flex items-center gap-3">
@@ -94,7 +94,7 @@ const ZHZShareCard = forwardRef<HTMLDivElement, ZHZShareCardProps>(function ZHZS
           </div>
 
           {/* 主角色展示区 - 核心视觉元素 */}
-          <div className={`relative bg-gradient-to-br ${palaceColorScheme.bgGradient} rounded-3xl overflow-hidden mb-8`} style={{ padding: '40px' }}>
+          <div className={`relative bg-gradient-to-br ${palaceColorScheme.bgGradient} rounded-3xl overflow-hidden mb-8`} style={{ padding: '16px' }}>
             {/* 宫廷风装饰边框 */}
             <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
               <div className={`absolute top-0 left-0 w-32 h-32 border-t-4 border-l-4 border-amber-300/50 rounded-tl-3xl`}></div>
@@ -149,8 +149,8 @@ const ZHZShareCard = forwardRef<HTMLDivElement, ZHZShareCardProps>(function ZHZS
 
               {/* 核心特质描述 */}
               <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-soft border border-amber-200/50 mb-6" style={{
-                padding: '24px 32px',
-                maxWidth: '900px',
+                padding: '18px 16px',
+                maxWidth: '100%',
                 width: '100%'
               }}>
                 <div className="text-base text-neutral-700 leading-relaxed text-left" style={{
@@ -184,10 +184,10 @@ const ZHZShareCard = forwardRef<HTMLDivElement, ZHZShareCardProps>(function ZHZS
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             {/* 左侧：八维度雷达图 */}
             {radarData && radarData.length > 0 && (
-              <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-soft border border-neutral-100" style={{ padding: '24px' }}>
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-soft border border-neutral-100" style={{ padding: '12px 6px' }}>
                 <h3 className="text-center font-black text-neutral-900 mb-4 text-lg flex items-center justify-center gap-2">
                   <span>📊</span>
-                  八维度分析
+                  维度分析雷达图
                 </h3>
                 <div style={{ width: '100%', height: '300px' }}>
                   <DimensionRadarChart data={radarData} showLegend={false} compact={true} />
@@ -197,7 +197,7 @@ const ZHZShareCard = forwardRef<HTMLDivElement, ZHZShareCardProps>(function ZHZS
 
             {/* 右侧：其他相似角色 */}
             {otherCharacters && otherCharacters.length > 0 && (
-              <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-soft border border-neutral-100" style={{ padding: '24px' }}>
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-soft border border-neutral-100" style={{ padding: '36px 12px' }}>
                 <h3 className="text-center font-black text-neutral-900 mb-4 text-lg flex items-center justify-center gap-2">
                   <span>🎭</span>
                   其他相似角色
@@ -247,7 +247,7 @@ const ZHZShareCard = forwardRef<HTMLDivElement, ZHZShareCardProps>(function ZHZS
           </div>
 
           {/* 底部装饰和CTA */}
-          <div className="flex items-center justify-between border-t-2 border-amber-200/30" style={{ paddingTop: '24px', gap: '16px' }}>
+          <div className="flex items-center justify-between border-t-2 border-amber-200/30" style={{ paddingTop: '12px', gap: '12px' }}>
             <div className="text-sm text-neutral-500 flex items-center gap-2">
               <span className="text-lg">✨</span>
               扫码探索更多甄嬛传人格

@@ -77,7 +77,7 @@ const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(function ShareCard(
   const colorScheme = getColorScheme(levelColor);
 
   return (
-    <div ref={ref} className="relative mx-auto mb-6 animate-slide-up" style={{ width: '1200px', maxWidth: '100%' }}>
+    <div ref={ref} className="relative mx-auto mb-6 animate-slide-up" style={{ width: '1800px', maxWidth: '100%' }}>
       {/* 装饰性背景光晕 - 使用动态颜色 */}
       <div className={`absolute -inset-1 bg-gradient-to-r ${colorScheme.glow} rounded-3xl blur-2xl`}></div>
 
@@ -93,9 +93,9 @@ const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(function ShareCard(
           </svg>
         </div>
 
-        <div className="relative p-8" style={{ padding: '48px' }}>
+        <div className="relative" style={{ padding: '0px' }}>
           {/* Logo和标题 */}
-          <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
+          <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
             <div className="flex items-center gap-3">
               <Image
                 src="/knowyourself_logo.png"
@@ -125,7 +125,7 @@ const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(function ShareCard(
             {/* 装饰性背景 */}
             <div className="absolute inset-0 bg-gradient-to-br from-primary-50 via-purple-50 to-pink-50 rounded-3xl -z-10"></div>
 
-            <div style={{ padding: '0px 0px' }}>
+            <div style={{ padding: '0px 0px', width: '100%' }}>
               {/* 分数圆环 */}
               <div className="flex justify-center mb-6">
                 <div className="relative">
@@ -176,10 +176,10 @@ const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(function ShareCard(
               )}
 
               {/* 简短解读 */}
-              <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-soft border border-neutral-100 mb-6" style={{ padding: '20px 10px' }}>
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-soft border border-neutral-100 mb-6" style={{ padding: '10px 4px' }}>
                 <div className={`text-neutral-700 leading-relaxed ${isZHZ ? 'text-left' : 'text-center'} whitespace-pre-wrap`} style={{
-                  lineHeight: '1.8',
-                  fontSize: '14px',
+                  lineHeight: '1.6',
+                  fontSize: '12px',
                   maxHeight: '200px',
                   overflow: 'hidden'
                 }}>
@@ -196,8 +196,8 @@ const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(function ShareCard(
 
               {/* 雷达图 - 维度分析 */}
               {radarData && radarData.length > 0 && (
-                <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-soft border border-neutral-100" style={{ padding: '20px 10px' }}>
-                  <h3 className="text-center font-bold text-neutral-900 mb-4" style={{ fontSize: '18px' }}>维度分析</h3>
+                <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-soft border border-neutral-100" style={{ padding: '10px 4px' }}>
+                  <h3 className="text-center font-bold text-neutral-900 mb-3" style={{ fontSize: '14px' }}>维度分析</h3>
                   <div style={{ width: '100%', height: '300px' }}>
                     <DimensionRadarChart data={radarData} showLegend={false} compact={true} />
                   </div>
