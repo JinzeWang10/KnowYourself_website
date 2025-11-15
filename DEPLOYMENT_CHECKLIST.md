@@ -48,23 +48,23 @@ sudo -u postgres psql
 在 psql 中执行：
 
 ```sql
-CREATE DATABASE scales_db;
-CREATE USER scales_user WITH PASSWORD 'your_strong_password';
-GRANT ALL PRIVILEGES ON DATABASE scales_db TO scales_user;
-\c scales_db
-GRANT ALL ON SCHEMA public TO scales_user;
+CREATE DATABASE knowyourself_db;
+CREATE USER knowyourself_user WITH PASSWORD 'your_strong_password';
+GRANT ALL PRIVILEGES ON DATABASE knowyourself_db TO knowyourself_user;
+\c knowyourself_db
+GRANT ALL ON SCHEMA public TO knowyourself_user;
 \q
 ```
 
-- [ ] 数据库 `scales_db` 已创建
-- [ ] 用户 `scales_user` 已创建
+- [ ] 数据库 `knowyourself_db` 已创建
+- [ ] 用户 `knowyourself_user` 已创建
 - [ ] 密码已设置并记录
 - [ ] 权限已授予
 
 ### 3. 测试数据库连接
 
 ```bash
-psql -h localhost -U scales_user -d scales_db
+psql -h localhost -U knowyourself_user -d knowyourself_db
 ```
 
 - [ ] 可以成功连接（输入密码后进入 psql）
@@ -103,7 +103,7 @@ nano .env
 添加以下内容（修改密码和域名）：
 
 ```env
-DATABASE_URL="postgresql://scales_user:your_strong_password@localhost:5432/scales_db"
+DATABASE_URL="postgresql://knowyourself_user:your_strong_password@localhost:5432/knowyourself_db"
 NEXT_PUBLIC_SITE_URL=https://your-domain.com
 ```
 
@@ -132,7 +132,7 @@ Your database is now in sync with your Prisma schema.
 ### 5. 验证数据库表
 
 ```bash
-psql -h localhost -U scales_user -d scales_db -c "\dt"
+psql -h localhost -U knowyourself_user -d knowyourself_db -c "\dt"
 ```
 
 - [ ] 看到 `assessment_records` 表
@@ -159,7 +159,7 @@ npm run build
 npm install -g pm2
 
 # 启动应用
-pm2 start npm --name "scales" -- start
+pm2 start npm --name "knowyourself" -- start
 
 # 设置开机自启
 pm2 startup
@@ -197,7 +197,7 @@ sudo apt install -y nginx
 ### 2. 配置站点
 
 ```bash
-sudo nano /etc/nginx/sites-available/scales
+sudo nano /etc/nginx/sites-available/knowyourself
 ```
 
 添加配置：
@@ -224,7 +224,7 @@ server {
 ### 3. 启用站点
 
 ```bash
-sudo ln -s /etc/nginx/sites-available/scales /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/knowyourself /etc/nginx/sites-enabled/
 sudo nginx -t
 sudo systemctl restart nginx
 ```
@@ -263,7 +263,7 @@ sudo certbot --nginx -d your-domain.com
 ### 3. 测试数据存储
 
 ```bash
-psql -h localhost -U scales_user -d scales_db -c "SELECT COUNT(*) FROM assessment_records;"
+psql -h localhost -U knowyourself_user -d knowyourself_db -c "SELECT COUNT(*) FROM assessment_records;"
 ```
 
 - [ ] 完成测评后，数据库中有记录
@@ -308,7 +308,7 @@ curl http://localhost:8080/api/assessments?scaleId=ani
 
 ```bash
 # PM2 日志
-pm2 logs scales
+pm2 logs knowyourself
 
 # Next.js 日志（如果直接运行）
 # 查看控制台输出
@@ -363,16 +363,16 @@ top
 pm2 status
 
 # 重启应用
-pm2 restart scales
+pm2 restart knowyourself
 
 # 查看日志
-pm2 logs scales
+pm2 logs knowyourself
 
 # 查看数据库记录数
-psql -h localhost -U scales_user -d scales_db -c "SELECT scale_id, COUNT(*) FROM assessment_records GROUP BY scale_id;"
+psql -h localhost -U knowyourself_user -d knowyourself_db -c "SELECT scale_id, COUNT(*) FROM assessment_records GROUP BY scale_id;"
 
 # 备份数据库
-pg_dump -h localhost -U scales_user scales_db | gzip > backup_$(date +%Y%m%d).sql.gz
+pg_dump -h localhost -U knowyourself_user knowyourself_db | gzip > backup_$(date +%Y%m%d).sql.gz
 ```
 
 ---

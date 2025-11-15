@@ -1,11 +1,6 @@
 3. 继续添加量表
-4. 增加校验码功能
-   4.1. 校验码添加的页面，要有我们
-5. 想办法连一个数据库
-6. 增加安全属性，防止各种漏洞搞崩网站
-7. 登录功能
-
-分享卡片现在需要截图才能保存，如果可以有个按钮，点击后直接生成一个图片就好了。请做一下计划。
+4. 增加安全属性，防止各种漏洞搞崩网站
+5. 登录功能
 
 在 about us 里加上小红书账号链接
 
@@ -25,6 +20,6 @@ Reading the Mind in the Eyes Test 仅看眼睛部分，猜情绪 极具吸引力
 Emotion Recognition Test 看人脸判断情绪 可结合 AI 生成头像实现--https://kdef.se/
 Empathy Quotient (EQ) 测共情能力 有短版/长版公开问卷
 
-ICP 备案号要加在页面上
-
-现在/scales/zhz/result 页面，只有一个评分，这应该改成相似度。而且没有说是哪个人物，而且核心解读是空的。请修改。
+https://psychology-tools.com/test/big-5-personality-test
+https://psychology-tools.com/test/empathy-quotient
+https://m.psyctest.cn/tag/%E9%87%8F%E8%A1%A8/

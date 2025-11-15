@@ -1,15 +1,10 @@
 'use client';
 
 import { forwardRef } from 'react';
-import dynamic from 'next/dynamic';
 import { QRCodeSVG } from 'qrcode.react';
+import DivergingBarChartSimple from './DivergingBarChartSimple';
+import type { DivergingBarDataPoint } from './DivergingBarChartSimple';
 import type { RadarDataPoint } from './DimensionRadarChart';
-
-// 动态导入雷达图组件
-const DimensionRadarChart = dynamic(
-  () => import('./DimensionRadarChart'),
-  { ssr: false }
-);
 
 interface ZHZCharacter {
   id: string;
@@ -26,6 +21,20 @@ interface ZHZShareCardProps {
   completedAt: string;
   radarData?: RadarDataPoint[];
   coreKeywords?: string[]; // 核心关键词（最多3个）
+}
+
+// 维度标签映射（用于双极条形图）
+const dimensionLabels: Record<string, { left: string; right: string }> = {
+  '情绪敏感性': { left: '稳定冷静', right: '敏感细腻' },
+  '思维模式': { left: '直觉冲动', right: '理性谋划' },
+  '社交能量': { left: '内向沉静', right: '外向张扬' },
+  '价值取向': { left: '实用主义', right: '理想主义' },
+  '野心指数': { left: '随遇而安', right: '进取心强' },
+  '自我表达': { left: '战略掩饰', right: '真实坦率' }
+};
+
+function getLabelForDimension(dimension: string, side: 'left' | 'right'): string {
+  return dimensionLabels[dimension]?.[side] || (side === 'left' ? '低' : '高');
 }
 
 const ZHZShareCard = forwardRef<HTMLDivElement, ZHZShareCardProps>(function ZHZShareCard({
@@ -174,24 +183,32 @@ const ZHZShareCard = forwardRef<HTMLDivElement, ZHZShareCardProps>(function ZHZS
             </div>
           </div>
 
-          {/* 内容区域：雷达图 + 其他角色 */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            {/* 左侧：八维度雷达图 - 修复：移除backdrop-blur */}
+          {/* 内容区域：双极条形图 + 其他角色 */}
+          <div className="grid grid-cols-2 gap-6 mb-8">
+            {/* 左侧：人格维度双极条形图 */}
             {radarData && radarData.length > 0 && (
-              <div className="bg-white rounded-2xl shadow-soft border border-neutral-100" style={{ padding: '12px 6px' }}>
-                <h3 className="text-center font-black text-neutral-900 mb-4 text-lg flex items-center justify-center gap-2">
+              <div className="bg-white rounded-2xl shadow-soft border border-neutral-100" style={{ padding: '20px 16px', minHeight: '400px' }}>
+                <h3 className="text-center font-black text-neutral-900 mb-6 text-lg flex items-center justify-center gap-2">
                   <span>📊</span>
-                  维度分析雷达图
+                  人格维度分析
                 </h3>
-                <div style={{ width: '100%', height: '300px' }}>
-                  <DimensionRadarChart data={radarData} showLegend={false} compact={true} />
+                <div style={{ width: '100%', minHeight: '320px' }}>
+                  <DivergingBarChartSimple
+                    data={radarData.map((point) => ({
+                      dimension: point.dimension,
+                      value: point.value,
+                      leftLabel: getLabelForDimension(point.dimension, 'left'),
+                      rightLabel: getLabelForDimension(point.dimension, 'right')
+                    }))}
+                    compact={true}
+                  />
                 </div>
               </div>
             )}
 
             {/* 右侧：其他相似角色 - 修复：移除backdrop-blur */}
             {otherCharacters && otherCharacters.length > 0 && (
-              <div className="bg-white rounded-2xl shadow-soft border border-neutral-100" style={{ padding: '36px 12px' }}>
+              <div className="bg-white rounded-2xl shadow-soft border border-neutral-100" style={{ padding: '36px 12px', minHeight: '400px' }}>
                 <h3 className="text-center font-black text-neutral-900 mb-4 text-lg flex items-center justify-center gap-2">
                   <span>🎭</span>
                   其他相似角色

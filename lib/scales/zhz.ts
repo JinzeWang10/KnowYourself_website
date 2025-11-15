@@ -17,6 +17,34 @@ export const ZHZ_DIMENSIONS = {
   authenticity: '自我表达',    // 真实自我展露（低=战略掩饰 ↔ 高=真实坦率）
 } as const;
 
+// 维度双极标签（用于条形图可视化）
+export const ZHZ_DIMENSION_LABELS = {
+  sensitivity: {
+    left: '稳定冷静',
+    right: '敏感细腻'
+  },
+  rationality: {
+    left: '直觉冲动',
+    right: '理性谋划'
+  },
+  sociability: {
+    left: '内向沉静',
+    right: '外向张扬'
+  },
+  idealism: {
+    left: '实用主义',
+    right: '理想主义'
+  },
+  ambition: {
+    left: '随遇而安',
+    right: '进取心强'
+  },
+  authenticity: {
+    left: '战略掩饰',
+    right: '真实坦率'
+  }
+} as const;
+
 // 12个角色的六维度坐标（0-1范围）
 // 已手动调整以增强角色区分度和真实性
 export const CHARACTER_PROFILES = {
