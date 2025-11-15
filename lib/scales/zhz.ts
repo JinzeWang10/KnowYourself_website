@@ -7,33 +7,30 @@
 
 import type { QuizTemplate } from '@/types/quiz';
 
-// 八大心理维度定义
+// 六大心理维度定义（优化后：消除重叠，增强互斥性）
 export const ZHZ_DIMENSIONS = {
-  emotional: '情感敏感度',     // 对他人情绪、评价的反应强度
-  strategy: '策略思维',       // 行动前的思考深度、谋略性与控制欲
-  energy: '外显能量',         // 表达力、自信与外向程度
-  idealism: '情感理想化',     // 对爱、道德、理想的执着
-  stability: '稳定与自律',    // 内在稳定性、责任感与耐心
-  ambition: '进取心',         // 对成功的渴望、自我驱动力 vs 躺平接受现状
-  authenticity: '真实性',     // 表达真我的意愿 vs 社会面具/形象管理
-  novelty: '求新倾向',        // 拥抱变化、探索欲望 vs 偏好稳定熟悉
+  sensitivity: '情绪敏感性',   // 对情绪刺激的反应强度（低=稳定冷静 ↔ 高=敏感脆弱）
+  rationality: '思维模式',     // 决策方式（低=直觉冲动 ↔ 高=理性谋划）
+  sociability: '社交能量',     // 社交行为倾向（低=内向沉静 ↔ 高=外向张扬）
+  idealism: '价值取向',        // 价值权衡倾向（低=实用主义 ↔ 高=理想主义）
+  ambition: '野心指数',        // 成功追求程度（低=随遇而安 ↔ 高=进取心强）
+  authenticity: '自我表达',    // 真实自我展露（低=战略掩饰 ↔ 高=真实坦率）
 } as const;
 
-// 12个角色的八维度坐标（0-1范围）
+// 12个角色的六维度坐标（0-1范围）
+// 已手动调整以增强角色区分度和真实性
 export const CHARACTER_PROFILES = {
   'zhenhuan_early': {
     name: '甄嬛（前期）',
     emoji: '🕊️',
     subtitle: '理想主义与温柔的力量',
     scores: {
-      emotional: 0.85,
-      strategy: 0.3,
-      energy: 0.35,
-      idealism: 0.95,
-      stability: 0.45,
-      ambition: 0.35,
-      authenticity: 0.8,
-      novelty: 0.5,
+      sensitivity: 0.80,    // 情感细腻与理想主义并存
+      rationality: 0.45,    // 有一定判断力但更多凭感性
+      sociability: 0.50,    // 带温暖的人际吸引力
+      idealism: 0.90,       // 理想主义者
+      ambition: 0.45,       // 初期野心不强
+      authenticity: 0.70,   // 相对真诚
     }
   },
   'zhenhuan_late': {
@@ -41,14 +38,12 @@ export const CHARACTER_PROFILES = {
     emoji: '🦢',
     subtitle: '理智与权衡的女王',
     scores: {
-      emotional: 0.4,
-      strategy: 0.95,
-      energy: 0.25,
-      idealism: 0.25,
-      stability: 0.8,
-      ambition: 0.9,
-      authenticity: 0.2,
-      novelty: 0.75,
+      sensitivity: 0.35,    // 完成成长蜕变，情绪稳定
+      rationality: 0.95,    // 兼具谋略与克制
+      sociability: 0.40,    // 中等社交，不再低调
+      idealism: 0.40,       // 更现实了
+      ambition: 0.88,       // 强烈的进取心
+      authenticity: 0.35,   // 学会了克制表达
     }
   },
   'anlingrong': {
@@ -56,14 +51,12 @@ export const CHARACTER_PROFILES = {
     emoji: '🪞',
     subtitle: '敏感而脆弱的自我怀疑者',
     scores: {
-      emotional: 0.95,
-      strategy: 0.5,
-      energy: 0.2,
-      idealism: 0.75,
-      stability: 0.25,
-      ambition: 0.45,
-      authenticity: 0.6,
-      novelty: 0.15,
+      sensitivity: 0.92,    // 敏感脆弱且自我怀疑
+      rationality: 0.60,    // 仍具一定判断力
+      sociability: 0.25,    // 内向不善社交
+      idealism: 0.65,       // 中等理想主义
+      ambition: 0.55,       // 有一定野心但不强
+      authenticity: 0.55,   // 中等表达
     }
   },
   'queen': {
@@ -71,14 +64,12 @@ export const CHARACTER_PROFILES = {
     emoji: '👑',
     subtitle: '理性与秩序的掌控者',
     scores: {
-      emotional: 0.3,
-      strategy: 1.0,
-      energy: 0.15,
-      idealism: 0.2,
-      stability: 0.95,
-      ambition: 0.95,
-      authenticity: 0.1,
-      novelty: 0.1,
+      sensitivity: 0.20,    // 极强理性与克制
+      rationality: 1.00,    // 宫廷权谋的冷静中枢
+      sociability: 0.15,    // 极端内敛
+      idealism: 0.40,       // 有一定原则但偏现实
+      ambition: 0.95,       // 强烈的权力欲
+      authenticity: 0.10,   // 深度伪装
     }
   },
   'huafei': {
@@ -86,14 +77,12 @@ export const CHARACTER_PROFILES = {
     emoji: '🔥',
     subtitle: '外放能量与极致情感',
     scores: {
-      emotional: 0.2,
-      strategy: 0.2,
-      energy: 1.0,
-      idealism: 0.3,
-      stability: 0.2,
-      ambition: 0.75,
-      authenticity: 0.95,
-      novelty: 0.8,
+      sensitivity: 0.45,    // 情绪有波动但不敏感
+      rationality: 0.40,    // 更多凭直觉
+      sociability: 0.95,    // 情绪外放、强势直球
+      idealism: 0.30,       // 更现实或功利
+      ambition: 0.78,       // 较强野心
+      authenticity: 0.95,   // 有压迫性张力，情绪明显
     }
   },
   'shenmeizhuang': {
@@ -101,14 +90,12 @@ export const CHARACTER_PROFILES = {
     emoji: '🌿',
     subtitle: '优雅与坚韧并存的理性者',
     scores: {
-      emotional: 0.5,
-      strategy: 0.6,
-      energy: 0.25,
-      idealism: 0.8,
-      stability: 0.95,
-      ambition: 0.4,
-      authenticity: 0.7,
-      novelty: 0.15,
+      sensitivity: 0.35,    // 稳定可靠
+      rationality: 0.65,    // 有判断力
+      sociability: 0.30,    // 安静内敛
+      idealism: 0.85,       // 重情重义，极强道德自律
+      ambition: 0.40,       // 无意竞争
+      authenticity: 0.60,   // 表达较克制
     }
   },
   'huanbi': {
@@ -116,14 +103,12 @@ export const CHARACTER_PROFILES = {
     emoji: '💧',
     subtitle: '现实与忠诚的行动派',
     scores: {
-      emotional: 0.35,
-      strategy: 0.75,
-      energy: 0.5,
-      idealism: 0.3,
-      stability: 0.65,
-      ambition: 0.85,
-      authenticity: 0.45,
-      novelty: 0.55,
+      sensitivity: 0.50,    // 中等情绪稳定性
+      rationality: 0.70,    // 有判断力也有野心
+      sociability: 0.40,    // 中等社交
+      idealism: 0.50,       // 中等价值取向
+      ambition: 0.90,       // 行动路径更激进直接
+      authenticity: 0.45,   // 有一定伪装
     }
   },
   'supeisheng': {
@@ -131,14 +116,12 @@ export const CHARACTER_PROFILES = {
     emoji: '🪶',
     subtitle: '忠心耿耿的中庸者',
     scores: {
-      emotional: 0.65,
-      strategy: 0.5,
-      energy: 0.85,
-      idealism: 0.55,
-      stability: 0.5,
-      ambition: 0.3,
-      authenticity: 0.5,
-      novelty: 0.25,
+      sensitivity: 0.65,    // 善于察言观色
+      rationality: 0.55,    // 中等理性
+      sociability: 0.85,    // 八面玲珑，社交能量高
+      idealism: 0.60,       // 中等价值观
+      ambition: 0.30,       // 没有权力欲
+      authenticity: 0.35,   // 表达克制
     }
   },
   'guojunwang': {
@@ -146,14 +129,12 @@ export const CHARACTER_PROFILES = {
     emoji: '🌞',
     subtitle: '浪漫自由的理想行动派',
     scores: {
-      emotional: 0.7,
-      strategy: 0.2,
-      energy: 0.9,
-      idealism: 0.95,
-      stability: 0.4,
-      ambition: 0.4,
-      authenticity: 0.95,
-      novelty: 0.9,
+      sensitivity: 0.70,    // 情感真挚
+      rationality: 0.30,    // 更多凭情感与本能
+      sociability: 0.85,    // 自由浪漫、外放又真诚
+      idealism: 0.95,       // 理想主义者，富有骑士精神
+      ambition: 0.45,       // 中等野心
+      authenticity: 0.85,   // 情绪表达丰富
     }
   },
   'wentaiyi': {
@@ -161,14 +142,12 @@ export const CHARACTER_PROFILES = {
     emoji: '🌸',
     subtitle: '温柔理智的疗愈者',
     scores: {
-      emotional: 0.95,
-      strategy: 0.15,
-      energy: 0.35,
-      idealism: 0.9,
-      stability: 0.75,
-      ambition: 0.1,
-      authenticity: 0.85,
-      novelty: 0.2,
+      sensitivity: 0.75,    // 情感真挚
+      rationality: 0.30,    // 不擅权力社会
+      sociability: 0.35,    // 安静内敛
+      idealism: 0.95,       // 理想主义者
+      ambition: 0.10,       // 随遇而安
+      authenticity: 0.85,   // 真诚表达
     }
   },
   'emperor': {
@@ -176,14 +155,12 @@ export const CHARACTER_PROFILES = {
     emoji: '🦅',
     subtitle: '权力与秩序的掌舵者',
     scores: {
-      emotional: 0.2,
-      strategy: 0.95,
-      energy: 0.7,
-      idealism: 0.2,
-      stability: 0.75,
-      ambition: 0.95,
-      authenticity: 0.35,
-      novelty: 0.45,
+      sensitivity: 0.30,    // 帝王人格：冷静
+      rationality: 0.95,    // 理性强
+      sociability: 0.60,    // 有威严的领袖气场
+      idealism: 0.30,       // 更现实
+      ambition: 1.00,       // 权力欲极强
+      authenticity: 0.20,   // 行为克制
     }
   },
   'ningguiren': {
@@ -191,14 +168,12 @@ export const CHARACTER_PROFILES = {
     emoji: '🕰️',
     subtitle: '隐忍深思的现实派',
     scores: {
-      emotional: 0.45,
-      strategy: 0.9,
-      energy: 0.35,
-      idealism: 0.35,
-      stability: 0.7,
-      ambition: 0.8,
-      authenticity: 0.15,
-      novelty: 0.3,
+      sensitivity: 0.55,    // 中等敏感
+      rationality: 0.85,    // 深度压抑的策略型人物
+      sociability: 0.35,    // 倾向单独行动
+      idealism: 0.40,       // 更现实
+      ambition: 0.75,       // 较强野心
+      authenticity: 0.15,   // 精于算计但不外露
     }
   },
 } as const;
@@ -424,57 +399,45 @@ export const zhz: QuizTemplate = {
   titleEn: 'The Legend of Zhen Huan Personality Assessment',
   description: '以《甄嬛传》12位核心人物为原型，测试你最像谁',
   category: '趣味测评',
-  purpose: '通过36道题目（28道情景选择题 + 8道人格锚点题），从情感、理性、策略、进取心等8个维度，判断你最接近哪种"宫廷人格"',
-  duration: '8-12分钟',
-  questionCount: 36,
+  purpose: '通过30道题目（24道情景选择题 + 6道人格锚点题），从情绪敏感性、思维模式、社交能量、价值取向、野心指数、自我表达等6个维度，判断你最接近哪种"宫廷人格"',
+  duration: '8-10分钟',
+  questionCount: 30,
 
   dimensions: [
     {
-      id: 'emotional',
-      name: ZHZ_DIMENSIONS.emotional,
-      description: '对他人情绪、评价的反应强度',
+      id: 'sensitivity',
+      name: ZHZ_DIMENSIONS.sensitivity,
+      description: '对情绪刺激的反应强度（低=稳定冷静 ↔ 高=敏感脆弱）',
       questionIds: [] // ZHZ使用自定义计算，不需要questionIds
     },
     {
-      id: 'strategy',
-      name: ZHZ_DIMENSIONS.strategy,
-      description: '行动前的思考深度、谋略性与控制欲',
+      id: 'rationality',
+      name: ZHZ_DIMENSIONS.rationality,
+      description: '决策方式（低=直觉冲动 ↔ 高=理性谋划）',
       questionIds: []
     },
     {
-      id: 'energy',
-      name: ZHZ_DIMENSIONS.energy,
-      description: '表达力、自信与外向程度',
+      id: 'sociability',
+      name: ZHZ_DIMENSIONS.sociability,
+      description: '社交行为倾向（低=内向沉静 ↔ 高=外向张扬）',
       questionIds: []
     },
     {
       id: 'idealism',
       name: ZHZ_DIMENSIONS.idealism,
-      description: '对爱、道德、理想的执着',
-      questionIds: []
-    },
-    {
-      id: 'stability',
-      name: ZHZ_DIMENSIONS.stability,
-      description: '内在稳定性、责任感与耐心',
+      description: '价值权衡倾向（低=实用主义 ↔ 高=理想主义）',
       questionIds: []
     },
     {
       id: 'ambition',
       name: ZHZ_DIMENSIONS.ambition,
-      description: '对成功的渴望、自我驱动力',
+      description: '成功追求程度（低=随遇而安 ↔ 高=进取心强）',
       questionIds: []
     },
     {
       id: 'authenticity',
       name: ZHZ_DIMENSIONS.authenticity,
-      description: '表达真我的意愿 vs 社会面具/形象管理',
-      questionIds: []
-    },
-    {
-      id: 'novelty',
-      name: ZHZ_DIMENSIONS.novelty,
-      description: '拥抱变化、探索欲望 vs 偏好稳定熟悉',
+      description: '真实自我展露（低=战略掩饰 ↔ 高=真实坦率）',
       questionIds: []
     }
   ],
@@ -482,60 +445,60 @@ export const zhz: QuizTemplate = {
   questions: [
     // ========== 第一组：情绪与冲突处理 ==========
 
-    // Q1
+    // Q1 - 冲突处理（主测：思维模式、社交能量）
     {
       id: 'zhz_q1',
       type: 'scale',
       question: '团队开会吵翻天，你的做法是？💼',
       dimension: 'conflict_handling',
       options: [
-        { value: 1, label: '当和事佬，让每个人都感觉被理解', scores: {"emotional":0.16,"idealism":0.14} },
-        { value: 2, label: '先观察局势，找准关键矛盾再行动', scores: {"strategy":0.18,"ambition":0.12} },
-        { value: 3, label: '有话直说，最烦拐弯抹角！', scores: {"energy":0.18,"authenticity":0.16} },
-        { value: 4, label: '表面保持中立，暗中推动自己的方案', scores: {"strategy":0.2,"ambition":0.16,"authenticity":-0.12} },
-        { value: 5, label: '看戏就好，最后听领导的', scores: {"ambition":-0.12,"stability":0.1} },
+        { value: 1, label: '当和事佬，让每个人都感觉被理解', scores: {"sensitivity":0.18,"idealism":0.15} },
+        { value: 2, label: '先观察局势，找准关键矛盾再行动', scores: {"rationality":0.22,"ambition":0.12} },
+        { value: 3, label: '有话直说，最烦拐弯抹角！', scores: {"sociability":0.22,"authenticity":0.18} },
+        { value: 4, label: '表面保持中立，暗中推动自己的方案', scores: {"rationality":0.24,"ambition":0.18,"authenticity":-0.14} },
+        { value: 5, label: '看戏就好，最后听领导的', scores: {"ambition":-0.15,"sensitivity":-0.10} },
       ],
       required: true,
     },
 
-    // Q2
+    // Q2 - 竞争应对（主测：思维模式、野心指数）
     {
       id: 'zhz_q2',
       type: 'scale',
       question: '有人公开挑衅你，你会？🔥',
       dimension: 'competition_response',
       options: [
-        { value: 1, label: '表面不动声色，私下留意TA的一举一动', scores: {"strategy":0.18,"ambition":0.14,"authenticity":-0.1} },
-        { value: 2, label: '当场刚回去，谁怕谁？', scores: {"energy":0.18,"authenticity":0.16} },
-        { value: 3, label: '忍住，用成绩狠狠打脸TA', scores: {"emotional":0.14,"stability":0.1,"ambition":0.1} },
-        { value: 4, label: '微笑应对，但已经开始布局反击了', scores: {"strategy":0.18,"ambition":0.16,"authenticity":-0.08} },
-        { value: 5, label: '随TA去吧，不值得我浪费时间', scores: {"ambition":-0.14,"stability":0.12} },
+        { value: 1, label: '表面不动声色，私下留意TA的一举一动', scores: {"rationality":0.22,"ambition":0.16,"authenticity":-0.12} },
+        { value: 2, label: '当场刚回去，谁怕谁？', scores: {"sociability":0.22,"authenticity":0.18} },
+        { value: 3, label: '忍住，用成绩狠狠打脸TA', scores: {"sensitivity":0.15,"ambition":0.12} },
+        { value: 4, label: '微笑应对，但已经开始布局反击了', scores: {"rationality":0.22,"ambition":0.18,"authenticity":-0.10} },
+        { value: 5, label: '随TA去吧，不值得我浪费时间', scores: {"ambition":-0.16,"sensitivity":-0.12} },
       ],
       required: true,
     },
 
-    // Q3
+    // Q3 - 恋爱价值观（主测：价值取向、自我表达）
     {
       id: 'zhz_q3',
       type: 'scale',
       question: '❤️ 恋爱中，你最想要的是什么？',
       dimension: 'love_values',
       options: [
-        { value: 1, label: '真诚相待，彼此信任的安全感', scores: {"emotional":0.12,"idealism":0.18,"authenticity":0.12} },
-        { value: 2, label: '相互尊重，谁也别越界', scores: {"stability":0.16,"idealism":0.1} },
-        { value: 3, label: '强烈的占有欲和热烈的爱', scores: {"energy":0.18,"emotional":0.12} },
-        { value: 4, label: '灵魂契合，诗与远方的浪漫', scores: {"idealism":0.2,"novelty":0.14} },
-        { value: 5, label: '被看见、被珍惜、被需要的感觉', scores: {"emotional":0.18} },
+        { value: 1, label: '真诚相待，彼此信任的安全感', scores: {"idealism":0.22,"authenticity":0.15} },
+        { value: 2, label: '相互尊重，谁也别越界', scores: {"sensitivity":-0.10,"idealism":0.12} },
+        { value: 3, label: '强烈的占有欲和热烈的爱', scores: {"sociability":0.20,"sensitivity":0.15} },
+        { value: 4, label: '灵魂契合，诗与远方的浪漫', scores: {"idealism":0.25} },
+        { value: 5, label: '被看见、被珍惜、被需要的感觉', scores: {"sensitivity":0.22} },
       ],
       required: true,
     },
 
-    // 锚点题1 - 情感敏感度
+    // 锚点题1 - 情绪敏感性
     {
-      id: 'zhz_anchor_emotional',
+      id: 'zhz_anchor_sensitivity',
       type: 'likert',
-      question: '💭 我会快速察觉到别人情绪中的细微变化',
-      dimension: 'emotional',
+      question: '💭 我经常会因为他人的评价或态度而感到焦虑不安',
+      dimension: 'sensitivity',
       options: [
         { value: 1, label: '非常不符合' },
         { value: 2, label: '比较不符合' },
@@ -546,76 +509,76 @@ export const zhz: QuizTemplate = {
       required: true,
     },
 
-    // Q4
+    // Q4 - 误解处理（主测：自我表达、思维模式）
     {
       id: 'zhz_q4',
       type: 'scale',
       question: '被人误会冤枉了，你会？😤',
       dimension: 'misunderstanding_handling',
       options: [
-        { value: 1, label: '当面解释清楚，绝不含糊！', scores: {"energy":0.18,"authenticity":0.14} },
-        { value: 2, label: '保持沉默，清者自清', scores: {"stability":0.16,"idealism":0.1} },
-        { value: 3, label: '先收集证据，然后一次性翻盘', scores: {"strategy":0.18,"ambition":0.12} },
-        { value: 4, label: '表面不说，但会一辈子记在心里', scores: {"emotional":0.18} },
-        { value: 5, label: '劝自己放下，时间会证明一切', scores: {"stability":0.14,"idealism":0.12} },
+        { value: 1, label: '当面解释清楚，绝不含糊！', scores: {"sociability":0.20,"authenticity":0.16} },
+        { value: 2, label: '保持沉默，清者自清', scores: {"sensitivity":-0.12,"idealism":0.12} },
+        { value: 3, label: '先收集证据，然后一次性翻盘', scores: {"rationality":0.22,"ambition":0.14} },
+        { value: 4, label: '表面不说，但会一辈子记在心里', scores: {"sensitivity":0.22} },
+        { value: 5, label: '劝自己放下，时间会证明一切', scores: {"sensitivity":-0.10,"idealism":0.14} },
       ],
       required: true,
     },
 
-    // Q5
+    // Q5 - 浪漫表达（主测：社交能量、自我表达）
     {
       id: 'zhz_q5',
       type: 'scale',
       question: '💘 面对心动的人，你会？',
       dimension: 'romantic_approach',
       options: [
-        { value: 1, label: '主动制造浪漫惊喜，让TA感受到我的心意', scores: {"energy":0.16,"idealism":0.14,"novelty":0.12} },
-        { value: 2, label: '偷偷观察，不敢主动表白', scores: {"emotional":0.16,"energy":-0.14} },
-        { value: 3, label: '小心试探，确认TA对我也有意思', scores: {"emotional":0.12,"strategy":0.1} },
-        { value: 4, label: '直接开门见山，喜欢就说！', scores: {"energy":0.18,"authenticity":0.16} },
-        { value: 5, label: '顺其自然吧，是你的跑不掉', scores: {"ambition":-0.12,"stability":0.1} },
+        { value: 1, label: '主动制造浪漫惊喜，让TA感受到我的心意', scores: {"sociability":0.20,"idealism":0.16} },
+        { value: 2, label: '偷偷观察，不敢主动表白', scores: {"sensitivity":0.20,"sociability":-0.16} },
+        { value: 3, label: '小心试探，确认TA对我也有意思', scores: {"sensitivity":0.15,"rationality":0.12} },
+        { value: 4, label: '直接开门见山，喜欢就说！', scores: {"sociability":0.22,"authenticity":0.18} },
+        { value: 5, label: '顺其自然吧，是你的跑不掉', scores: {"ambition":-0.14,"sensitivity":-0.10} },
       ],
       required: true,
     },
 
-    // Q6
+    // Q6 - 错误处理（主测：自我表达、思维模式）
     {
       id: 'zhz_q6',
       type: 'scale',
       question: '工作出了大差错，你会？😰',
       dimension: 'mistake_handling',
       options: [
-        { value: 1, label: '立刻找原因，主动承担责任', scores: {"stability":0.16,"authenticity":0.12} },
-        { value: 2, label: '想办法补救，尽量别让领导发现', scores: {"strategy":0.14,"ambition":0.12,"authenticity":-0.08} },
-        { value: 3, label: '先安抚团队情绪，再一起想办法', scores: {"emotional":0.16,"idealism":0.12} },
-        { value: 4, label: '分析是谁的锅，想办法让别人背', scores: {"strategy":0.18,"ambition":0.14,"authenticity":-0.16} },
-        { value: 5, label: '冷静复盘，吸取教训下次改进', scores: {"stability":0.16} },
+        { value: 1, label: '立刻找原因，主动承担责任', scores: {"sensitivity":-0.10,"authenticity":0.14} },
+        { value: 2, label: '想办法补救，尽量别让领导发现', scores: {"rationality":0.18,"authenticity":-0.10} },
+        { value: 3, label: '先安抚团队情绪，再一起想办法', scores: {"sensitivity":0.18,"idealism":0.14} },
+        { value: 4, label: '分析是谁的锅，想办法让别人背', scores: {"rationality":0.22,"ambition":0.16,"authenticity":-0.18} },
+        { value: 5, label: '冷静复盘，吸取教训下次改进', scores: {"sensitivity":-0.12,"rationality":0.14} },
       ],
       required: true,
     },
 
-    // Q7
+    // Q7 - 背叛反应（主测：情绪敏感性、自我表达）
     {
       id: 'zhz_q7',
       type: 'scale',
       question: '闺蜜/兄弟背叛了你，你会？💔',
       dimension: 'betrayal_response',
       options: [
-        { value: 1, label: '表面原谅，但从此保持距离', scores: {"strategy":0.16,"authenticity":-0.12} },
-        { value: 2, label: '冷处理，不撕破脸但也不再来往', scores: {"stability":0.16} },
-        { value: 3, label: '恨一辈子！哪怕不报复也忘不了', scores: {"emotional":0.18} },
-        { value: 4, label: '当众撕破脸，让所有人都知道TA是什么人', scores: {"energy":0.18,"authenticity":0.16} },
-        { value: 5, label: '试着理解TA的苦衷和难处', scores: {"emotional":0.12,"idealism":0.16} },
+        { value: 1, label: '表面原谅，但从此保持距离', scores: {"rationality":0.18,"authenticity":-0.14} },
+        { value: 2, label: '冷处理，不撕破脸但也不再来往', scores: {"sensitivity":-0.12,"rationality":0.14} },
+        { value: 3, label: '恨一辈子！哪怕不报复也忘不了', scores: {"sensitivity":0.22} },
+        { value: 4, label: '当众撕破脸，让所有人都知道TA是什么人', scores: {"sociability":0.20,"authenticity":0.18} },
+        { value: 5, label: '试着理解TA的苦衷和难处', scores: {"sensitivity":0.14,"idealism":0.18} },
       ],
       required: true,
     },
 
-    // 锚点题2 - 策略思维
+    // 锚点题2 - 思维模式
     {
-      id: 'zhz_anchor_strategy',
+      id: 'zhz_anchor_rationality',
       type: 'likert',
-      question: '🧠 在行动前，我习惯提前规划并思考几种可能的结果',
-      dimension: 'strategy',
+      question: '🧠 在做重要决定前，我习惯深思熟虑并权衡各种可能性',
+      dimension: 'rationality',
       options: [
         { value: 1, label: '非常不符合' },
         { value: 2, label: '比较不符合' },
@@ -628,76 +591,76 @@ export const zhz: QuizTemplate = {
 
     // ========== 第二组：社交与价值观 ==========
 
-    // Q8
+    // Q8 - 社交偏好（主测：社交能量、价值取向）
     {
       id: 'zhz_q8',
       type: 'scale',
       question: '🎭 理想的社交状态是？',
       dimension: 'social_preference',
       options: [
-        { value: 1, label: '热闹聚会的中心，万众瞩目的感觉真好！', scores: {"energy":0.2} },
-        { value: 2, label: '小圈子深度交流，三五知己足矣', scores: {"emotional":0.12,"idealism":0.14} },
-        { value: 3, label: '精准社交，只和对我有帮助的人建立关系', scores: {"strategy":0.18,"ambition":0.14,"authenticity":-0.12} },
-        { value: 4, label: '找到灵魂伴侣，一起聊理想聊人生', scores: {"idealism":0.18,"novelty":0.12} },
-        { value: 5, label: '最好不用社交，自己待着最舒服', scores: {"energy":-0.16,"ambition":-0.1} },
+        { value: 1, label: '热闹聚会的中心，万众瞩目的感觉真好！', scores: {"sociability":0.25} },
+        { value: 2, label: '小圈子深度交流，三五知己足矣', scores: {"sensitivity":0.12,"idealism":0.16} },
+        { value: 3, label: '精准社交，只和对我有帮助的人建立关系', scores: {"rationality":0.22,"ambition":0.16,"authenticity":-0.14} },
+        { value: 4, label: '找到灵魂伴侣，一起聊理想聊人生', scores: {"idealism":0.22} },
+        { value: 5, label: '最好不用社交，自己待着最舒服', scores: {"sociability":-0.18,"ambition":-0.12} },
       ],
       required: true,
     },
 
-    // Q9
+    // Q9 - 诱惑处理（主测：价值取向、野心指数）
     {
       id: 'zhz_q9',
       type: 'scale',
       question: '面对巨大诱惑时，你更可能？🍎',
       dimension: 'temptation_handling',
       options: [
-        { value: 1, label: '不符合我的原则，直接拒绝！', scores: {"stability":0.16,"idealism":0.14} },
-        { value: 2, label: '内心挣扎但最终克制住', scores: {"emotional":0.12,"idealism":0.14,"stability":0.1} },
-        { value: 3, label: '机会难得，先抓住再说', scores: {"ambition":0.18,"novelty":0.1} },
-        { value: 4, label: '表面推辞，暗中想办法利用这个机会', scores: {"strategy":0.18,"ambition":0.14,"authenticity":-0.14} },
-        { value: 5, label: '情感冲昏头脑，顾不了那么多了', scores: {"emotional":0.18,"stability":-0.12} },
+        { value: 1, label: '不符合我的原则，直接拒绝！', scores: {"sensitivity":-0.12,"idealism":0.18} },
+        { value: 2, label: '内心挣扎但最终克制住', scores: {"sensitivity":0.15,"idealism":0.16} },
+        { value: 3, label: '机会难得，先抓住再说', scores: {"ambition":0.22,"idealism":-0.10} },
+        { value: 4, label: '表面推辞，暗中想办法利用这个机会', scores: {"rationality":0.22,"ambition":0.16,"authenticity":-0.16} },
+        { value: 5, label: '情感冲昏头脑，顾不了那么多了', scores: {"sensitivity":0.22,"rationality":-0.14} },
       ],
       required: true,
     },
 
-    // Q10
+    // Q10 - 功劳被抢（主测：野心指数、自我表达）
     {
       id: 'zhz_q10',
       type: 'scale',
       question: '有人抢走了你的功劳？😠',
       dimension: 'credit_stealing',
       options: [
-        { value: 1, label: '当场据理力争，必须要个说法！', scores: {"energy":0.18,"authenticity":0.14} },
-        { value: 2, label: '算了，不想浪费精力在这种人身上', scores: {"ambition":-0.14,"stability":0.1} },
-        { value: 3, label: '记下这笔账，找机会扳回来', scores: {"strategy":0.18,"ambition":0.14} },
-        { value: 4, label: '表面祝贺TA，暗中让TA付出代价', scores: {"strategy":0.2,"ambition":0.16,"authenticity":-0.16} },
-        { value: 5, label: '默默继续努力，用实力证明谁才是最强的', scores: {"stability":0.16,"ambition":0.1} },
+        { value: 1, label: '当场据理力争，必须要个说法！', scores: {"sociability":0.20,"authenticity":0.16} },
+        { value: 2, label: '算了，不想浪费精力在这种人身上', scores: {"ambition":-0.16,"sensitivity":-0.10} },
+        { value: 3, label: '记下这笔账，找机会扳回来', scores: {"rationality":0.22,"ambition":0.16} },
+        { value: 4, label: '表面祝贺TA，暗中让TA付出代价', scores: {"rationality":0.24,"ambition":0.18,"authenticity":-0.18} },
+        { value: 5, label: '默默继续努力，用实力证明谁才是最强的', scores: {"sensitivity":-0.12,"ambition":0.12} },
       ],
       required: true,
     },
 
-    // Q11
+    // Q11 - 压力反应（主测：情绪敏感性、野心指数）
     {
       id: 'zhz_q11',
       type: 'scale',
       question: '压力山大时，你的反应是？😫',
       dimension: 'stress_response',
       options: [
-        { value: 1, label: '越挫越勇，反而更想赢了！', scores: {"ambition":0.18,"stability":0.12} },
-        { value: 2, label: '会先自我怀疑："我是不是不行？"', scores: {"emotional":0.18,"stability":-0.1} },
-        { value: 3, label: '冷静分析问题，一步步解决', scores: {"stability":0.18,"strategy":0.1} },
-        { value: 4, label: '外表云淡风轻，内心早已翻江倒海', scores: {"emotional":0.14,"authenticity":-0.1} },
-        { value: 5, label: '暴躁发泄一通就好了', scores: {"energy":0.16,"authenticity":0.12} },
+        { value: 1, label: '越挫越勇，反而更想赢了！', scores: {"ambition":0.22,"sensitivity":-0.12} },
+        { value: 2, label: '会先自我怀疑："我是不是不行？"', scores: {"sensitivity":0.24} },
+        { value: 3, label: '冷静分析问题，一步步解决', scores: {"sensitivity":-0.14,"rationality":0.12} },
+        { value: 4, label: '外表云淡风轻，内心早已翻江倒海', scores: {"sensitivity":0.18,"authenticity":-0.12} },
+        { value: 5, label: '暴躁发泄一通就好了', scores: {"sociability":0.18,"authenticity":0.14} },
       ],
       required: true,
     },
 
-    // 锚点题3 - 外显能量
+    // 锚点题3 - 社交能量
     {
-      id: 'zhz_anchor_energy',
+      id: 'zhz_anchor_sociability',
       type: 'likert',
       question: '✨ 我在大多数社交场合都能表现得自信并且外向',
-      dimension: 'energy',
+      dimension: 'sociability',
       options: [
         { value: 1, label: '非常不符合' },
         { value: 2, label: '比较不符合' },
@@ -710,71 +673,55 @@ export const zhz: QuizTemplate = {
 
     // ========== 第三组：底线与价值 ==========
 
-    // Q12
+    // Q12 - 领导风格（主测：思维模式、社交能量）
     {
       id: 'zhz_q12',
-      type: 'scale',
-      question: '💢 你的底线是什么？',
-      dimension: 'intolerance',
-      options: [
-        { value: 1, label: '被背叛，这辈子都不会原谅！', scores: {"emotional":0.14,"idealism":0.12} },
-        { value: 2, label: '被忽视被无视，好像我不存在一样', scores: {"emotional":0.18} },
-        { value: 3, label: '质疑我的能力和权威', scores: {"ambition":0.18,"energy":0.1} },
-        { value: 4, label: '限制我的自由，把我困在牢笼里', scores: {"novelty":0.18,"authenticity":0.14} },
-        { value: 5, label: '其实都还好，没什么不能忍的', scores: {"stability":0.14} },
-      ],
-      required: true,
-    },
-
-    // Q13
-    {
-      id: 'zhz_q13',
       type: 'scale',
       question: '💼 如果你当了领导，你会？',
       dimension: 'leadership_style',
       options: [
-        { value: 1, label: '严谨稳重，把每件事都安排得明明白白', scores: {"strategy":0.18,"stability":0.14} },
-        { value: 2, label: '用热情感染大家，带领团队冲冲冲！', scores: {"energy":0.18,"authenticity":0.12} },
-        { value: 3, label: '平衡关系，让每个人都有好处', scores: {"strategy":0.16,"emotional":0.1} },
-        { value: 4, label: '少说多看，暗中观察每个人', scores: {"strategy":0.16,"authenticity":-0.1} },
-        { value: 5, label: '不太想当领导，太累了', scores: {"ambition":-0.16} },
+        { value: 1, label: '严谨稳重，把每件事都安排得明明白白', scores: {"rationality":0.22,"sensitivity":-0.10} },
+        { value: 2, label: '用热情感染大家，带领团队冲冲冲！', scores: {"sociability":0.22,"authenticity":0.14} },
+        { value: 3, label: '平衡关系，让每个人都有好处', scores: {"rationality":0.18,"sensitivity":0.12} },
+        { value: 4, label: '少说多看，暗中观察每个人', scores: {"rationality":0.20,"authenticity":-0.12} },
+        { value: 5, label: '不太想当领导，太累了', scores: {"ambition":-0.18} },
       ],
       required: true,
     },
 
-    // Q14
+    // Q13 - 价值格言（主测：价值取向、自我表达）
     {
-      id: 'zhz_q14',
+      id: 'zhz_q13',
       type: 'scale',
       question: '以下哪句话最打动你？💭',
       dimension: 'justice_view',
       options: [
-        { value: 1, label: '"愿得一心人，白首不相离。"', scores: {"idealism":0.18,"emotional":0.12} },
-        { value: 2, label: '"世上没有绝对的正义，只有立场不同。"', scores: {"strategy":0.16,"idealism":-0.1} },
-        { value: 3, label: '"宁可站着死，不愿跪着生。"', scores: {"authenticity":0.18,"energy":0.12} },
-        { value: 4, label: '"做人如兰，心静而芳。"', scores: {"stability":0.16,"idealism":0.1} },
-        { value: 5, label: '"人生在世，不过求心安二字。"', scores: {"stability":0.14,"idealism":0.12} },
+        { value: 1, label: '"愿得一心人，白首不相离。"', scores: {"idealism":0.22,"sensitivity":0.14} },
+        { value: 2, label: '"世上没有绝对的正义，只有立场不同。"', scores: {"rationality":0.20,"idealism":-0.12} },
+        { value: 3, label: '"宁可站着死，不愿跪着生。"', scores: {"authenticity":0.22,"sociability":0.14} },
+        { value: 4, label: '"做人如兰，心静而芳。"', scores: {"sensitivity":-0.12,"idealism":0.12} },
+        { value: 5, label: '"人生在世，不过求心安二字。"', scores: {"sensitivity":-0.10,"idealism":0.14} },
       ],
       required: true,
     },
 
-    // Q15
+    // Q14 - 升职反应（主测：野心指数、情绪敏感性）
     {
-      id: 'zhz_q15',
+      id: 'zhz_q14',
       type: 'scale',
       question: '突然升职加薪了，你会？📈',
       dimension: 'promotion_reaction',
       options: [
-        { value: 1, label: '兴奋！立刻规划如何做得更好', scores: {"ambition":0.16,"energy":0.1} },
-        { value: 2, label: '冷静分析：为什么是我？背后有什么目的？', scores: {"strategy":0.18} },
-        { value: 3, label: '担心别人嫉妒，小心翼翼做人', scores: {"emotional":0.16} },
-        { value: 4, label: '制定长远计划，巩固自己的地位', scores: {"strategy":0.16,"ambition":0.14} },
-        { value: 5, label: '无所谓，继续按自己的节奏来', scores: {"ambition":-0.12} },
+        { value: 1, label: '兴奋！立刻规划如何做得更好', scores: {"ambition":0.20,"sociability":0.12} },
+        { value: 2, label: '冷静分析：为什么是我？背后有什么目的？', scores: {"rationality":0.22} },
+        { value: 3, label: '担心别人嫉妒，小心翼翼做人', scores: {"sensitivity":0.20} },
+        { value: 4, label: '制定长远计划，巩固自己的地位', scores: {"rationality":0.20,"ambition":0.16} },
+        { value: 5, label: '无所谓，继续按自己的节奏来', scores: {"ambition":-0.14} },
       ],
       required: true,
     },
 
-    // 锚点题4 - 情感理想化
+    // 锚点题4 - 价值取向
     {
       id: 'zhz_anchor_idealism',
       type: 'likert',
@@ -792,155 +739,71 @@ export const zhz: QuizTemplate = {
 
     // ========== 第四组：适应与追求 ==========
 
-    // Q16
+    // Q15 - 新环境适应（主测：社交能量、思维模式）
     {
-      id: 'zhz_q16',
+      id: 'zhz_q15',
       type: 'scale',
       question: '到了全新的环境，你会？🌍',
       dimension: 'new_environment',
       options: [
-        { value: 1, label: '主动融入，快速和大家打成一片', scores: {"energy":0.18,"novelty":0.12} },
-        { value: 2, label: '先观察氛围，慢慢适应节奏', scores: {"emotional":0.12,"strategy":0.1} },
-        { value: 3, label: '迅速找到核心人物，掌握关键信息', scores: {"strategy":0.18,"ambition":0.12} },
-        { value: 4, label: '不刻意迎合，保持自己的节奏', scores: {"authenticity":0.16,"stability":0.1} },
-        { value: 5, label: '让自己成为有用的人，获得认可', scores: {"ambition":0.14,"strategy":0.1} },
+        { value: 1, label: '主动融入，快速和大家打成一片', scores: {"sociability":0.22} },
+        { value: 2, label: '先观察氛围，慢慢适应节奏', scores: {"sensitivity":0.14,"rationality":0.12} },
+        { value: 3, label: '迅速找到核心人物，掌握关键信息', scores: {"rationality":0.22,"ambition":0.14} },
+        { value: 4, label: '不刻意迎合，保持自己的节奏', scores: {"authenticity":0.18,"sensitivity":-0.10} },
+        { value: 5, label: '让自己成为有用的人，获得认可', scores: {"ambition":0.16,"rationality":0.12} },
       ],
       required: true,
     },
 
-    // Q17
+    // Q16 - 失恋处理（主测：价值取向、情绪敏感性）
     {
-      id: 'zhz_q17',
+      id: 'zhz_q16',
       type: 'scale',
       question: '💔 当你发现喜欢的人心有所属？',
       dimension: 'unrequited_love',
       options: [
-        { value: 1, label: '痛苦但祝福，爱TA就希望TA幸福', scores: {"idealism":0.16,"stability":0.12} },
-        { value: 2, label: '假装不在意，一个人偷偷崩溃', scores: {"emotional":0.18,"authenticity":-0.12} },
-        { value: 3, label: '不甘心！我要努力争取！', scores: {"ambition":0.16,"energy":0.12} },
-        { value: 4, label: '默默退出，把爱藏在心底', scores: {"emotional":0.14,"idealism":0.12} },
-        { value: 5, label: '转移注意力，重新开始就好', scores: {"stability":0.12,"novelty":0.12} },
+        { value: 1, label: '痛苦但祝福，爱TA就希望TA幸福', scores: {"idealism":0.20,"sensitivity":-0.10} },
+        { value: 2, label: '假装不在意，一个人偷偷崩溃', scores: {"sensitivity":0.22,"authenticity":-0.14} },
+        { value: 3, label: '不甘心！我要努力争取！', scores: {"ambition":0.20,"sociability":0.14} },
+        { value: 4, label: '默默退出，把爱藏在心底', scores: {"sensitivity":0.18,"idealism":0.14} },
+        { value: 5, label: '转移注意力，重新开始就好', scores: {"sensitivity":-0.12,"rationality":0.12} },
       ],
       required: true,
     },
 
-    // Q18
+    // Q17 - 超能力期望（主测：野心指数、价值取向）
     {
-      id: 'zhz_q18',
+      id: 'zhz_q17',
       type: 'scale',
       question: '如果你有超能力，你希望是？✨',
       dimension: 'desired_ability',
       options: [
-        { value: 1, label: '看透人心，掌握所有人的想法', scores: {"strategy":0.2,"ambition":0.14} },
-        { value: 2, label: '让所有人都喜欢我', scores: {"emotional":0.18} },
-        { value: 3, label: '治愈他人的痛苦和伤痛', scores: {"emotional":0.14,"idealism":0.16} },
-        { value: 4, label: '完全掌控自己的命运', scores: {"ambition":0.18,"strategy":0.1} },
-        { value: 5, label: '拥有无敌的力量，想做什么就做什么！', scores: {"energy":0.18,"ambition":0.12} },
+        { value: 1, label: '看透人心，掌握所有人的想法', scores: {"rationality":0.24,"ambition":0.16} },
+        { value: 2, label: '让所有人都喜欢我', scores: {"sensitivity":0.22} },
+        { value: 3, label: '治愈他人的痛苦和伤痛', scores: {"sensitivity":0.16,"idealism":0.20} },
+        { value: 4, label: '完全掌控自己的命运', scores: {"ambition":0.22,"rationality":0.12} },
+        { value: 5, label: '拥有无敌的力量，想做什么就做什么！', scores: {"sociability":0.20,"ambition":0.14} },
       ],
       required: true,
     },
 
-    // Q19
+    // Q18 - 理想自我（主测：价值取向、自我表达）
     {
-      id: 'zhz_q19',
+      id: 'zhz_q18',
       type: 'scale',
       question: '如果用一句话形容理想的自己？🌟',
       dimension: 'legacy',
       options: [
-        { value: 1, label: '"真诚待人，温柔而有力量。"', scores: {"authenticity":0.14,"idealism":0.14,"emotional":0.1} },
-        { value: 2, label: '"温柔坚定，宠辱不惊。"', scores: {"stability":0.18,"emotional":0.1} },
-        { value: 3, label: '"运筹帷幄，掌控自己的命运。"', scores: {"strategy":0.18,"ambition":0.14} },
-        { value: 4, label: '"光芒万丈，无人能挡。"', scores: {"energy":0.2,"ambition":0.12} },
-        { value: 5, label: '"治愈他人，自渡渡人。"', scores: {"idealism":0.16,"emotional":0.14} },
+        { value: 1, label: '"真诚待人，温柔而有力量。"', scores: {"authenticity":0.16,"idealism":0.16,"sensitivity":0.12} },
+        { value: 2, label: '"温柔坚定，宠辱不惊。"', scores: {"sensitivity":-0.14,"idealism":0.12} },
+        { value: 3, label: '"运筹帷幄，掌控自己的命运。"', scores: {"rationality":0.22,"ambition":0.16} },
+        { value: 4, label: '"光芒万丈，无人能挡。"', scores: {"sociability":0.24,"ambition":0.14} },
+        { value: 5, label: '"治愈他人，自渡渡人。"', scores: {"idealism":0.20,"sensitivity":0.16} },
       ],
       required: true,
     },
 
-    // 锚点题5 - 稳定与自律
-    {
-      id: 'zhz_anchor_stability',
-      type: 'likert',
-      question: '🎯 我在压力情境下仍能保持冷静和自我掌控',
-      dimension: 'stability',
-      options: [
-        { value: 1, label: '非常不符合' },
-        { value: 2, label: '比较不符合' },
-        { value: 3, label: '不确定' },
-        { value: 4, label: '比较符合' },
-        { value: 5, label: '非常符合' },
-      ],
-      required: true,
-    },
-
-    // ========== 第五组：友情与态度 ==========
-
-    // Q20
-    {
-      id: 'zhz_q20',
-      type: 'scale',
-      question: '🤝 哪句话最符合你的友情观？',
-      dimension: 'friendship_values',
-      options: [
-        { value: 1, label: '"真心换真心，四两换半斤。"', scores: {"authenticity":0.14,"idealism":0.14} },
-        { value: 2, label: '"朋友是资源，互相利用才能共赢。"', scores: {"strategy":0.16,"ambition":0.12,"authenticity":-0.12} },
-        { value: 3, label: '"患难见真情，岁月见人心。"', scores: {"stability":0.16,"idealism":0.1} },
-        { value: 4, label: '"江湖路远，有你足矣。"', scores: {"idealism":0.18,"authenticity":0.12} },
-        { value: 5, label: '"相识一场便是缘，散了也无妨。"', scores: {"stability":0.12,"emotional":-0.1} },
-      ],
-      required: true,
-    },
-
-    // 新增题目 Q21-Q28
-
-    // Q21
-    {
-      id: 'zhz_q21',
-      type: 'scale',
-      question: '看到同龄人成功，你的第一反应是？📊',
-      dimension: 'peer_success',
-      options: [
-        { value: 1, label: '分析TA的成功路径，想办法超越！', scores: {"strategy":0.16,"ambition":0.16} },
-        { value: 2, label: '祝福TA，但我也要加油追赶', scores: {"ambition":0.14,"idealism":0.1} },
-        { value: 3, label: '焦虑，担心自己被甩在后面', scores: {"emotional":0.18,"ambition":0.1} },
-        { value: 4, label: '无所谓，我有自己的节奏', scores: {"ambition":-0.12,"stability":0.12} },
-        { value: 5, label: '真心为TA高兴，替TA开心！', scores: {"emotional":0.12,"idealism":0.14} },
-      ],
-      required: true,
-    },
-
-    // Q22
-    {
-      id: 'zhz_q22',
-      type: 'scale',
-      question: '高薪但压力巨大的机会，你会？💰',
-      dimension: 'high_pressure_opportunity',
-      options: [
-        { value: 1, label: '果断接受，这是上升的机会！', scores: {"ambition":0.2,"stability":0.1} },
-        { value: 2, label: '仔细评估利弊，值得就拼一把', scores: {"strategy":0.16,"ambition":0.14} },
-        { value: 3, label: '担心自己做不好，犹豫不决', scores: {"emotional":0.16,"ambition":-0.08} },
-        { value: 4, label: '拒绝，不想牺牲生活质量', scores: {"ambition":-0.14,"stability":0.12} },
-        { value: 5, label: '算了吧，压力太大不值得', scores: {"ambition":-0.16} },
-      ],
-      required: true,
-    },
-
-    // Q23
-    {
-      id: 'zhz_q23',
-      type: 'scale',
-      question: '📱 朋友圈和真实生活，你的状态是？',
-      dimension: 'social_media_authenticity',
-      options: [
-        { value: 1, label: '基本一致，我不喜欢装！', scores: {"authenticity":0.2} },
-        { value: 2, label: '展示积极面，但不刻意美化', scores: {"authenticity":0.14,"energy":0.1} },
-        { value: 3, label: '基本不发，觉得没必要晒', scores: {"energy":-0.1,"authenticity":0.08} },
-        { value: 4, label: '非常用心经营，展示最好的自己', scores: {"strategy":0.14,"authenticity":-0.1} },
-        { value: 5, label: '精心打造人设，朋友圈≠真实生活', scores: {"strategy":0.16,"authenticity":-0.16} },
-      ],
-      required: true,
-    },
-
-    // 锚点题6 - 进取心
+    // 锚点题5 - 野心指数
     {
       id: 'zhz_anchor_ambition',
       type: 'likert',
@@ -956,112 +819,112 @@ export const zhz: QuizTemplate = {
       required: true,
     },
 
-    // ========== 第六组：真实性与变化 ==========
+    // ========== 第五组：友情与态度 ==========
 
-    // Q24
+    // Q19 - 友情观（主测：价值取向、自我表达）
     {
-      id: 'zhz_q24',
+      id: 'zhz_q19',
+      type: 'scale',
+      question: '🤝 哪句话最符合你的友情观？',
+      dimension: 'friendship_values',
+      options: [
+        { value: 1, label: '"真心换真心，四两换半斤。"', scores: {"authenticity":0.16,"idealism":0.16} },
+        { value: 2, label: '"朋友是资源，互相利用才能共赢。"', scores: {"rationality":0.20,"ambition":0.14,"authenticity":-0.14} },
+        { value: 3, label: '"患难见真情，岁月见人心。"', scores: {"sensitivity":-0.12,"idealism":0.12} },
+        { value: 4, label: '"江湖路远，有你足矣。"', scores: {"idealism":0.22,"authenticity":0.14} },
+        { value: 5, label: '"相识一场便是缘，散了也无妨。"', scores: {"sensitivity":-0.10} },
+      ],
+      required: true,
+    },
+
+    // Q20 - 同龄人成功（主测：野心指数、情绪敏感性）
+    {
+      id: 'zhz_q20',
+      type: 'scale',
+      question: '看到同龄人成功，你的第一反应是？📊',
+      dimension: 'peer_success',
+      options: [
+        { value: 1, label: '分析TA的成功路径，想办法超越！', scores: {"rationality":0.18,"ambition":0.20} },
+        { value: 2, label: '祝福TA，但我也要加油追赶', scores: {"ambition":0.16,"idealism":0.12} },
+        { value: 3, label: '焦虑，担心自己被甩在后面', scores: {"sensitivity":0.22,"ambition":0.12} },
+        { value: 4, label: '无所谓，我有自己的节奏', scores: {"ambition":-0.14,"sensitivity":-0.12} },
+        { value: 5, label: '真心为TA高兴，替TA开心！', scores: {"sensitivity":0.14,"idealism":0.16} },
+      ],
+      required: true,
+    },
+
+    // Q21 - 高压机会（主测：野心指数、情绪敏感性）
+    {
+      id: 'zhz_q21',
+      type: 'scale',
+      question: '高薪但压力巨大的机会，你会？💰',
+      dimension: 'high_pressure_opportunity',
+      options: [
+        { value: 1, label: '果断接受，这是上升的机会！', scores: {"ambition":0.24,"sensitivity":-0.12} },
+        { value: 2, label: '仔细评估利弊，值得就拼一把', scores: {"rationality":0.20,"ambition":0.16} },
+        { value: 3, label: '担心自己做不好，犹豫不决', scores: {"sensitivity":0.20,"ambition":-0.10} },
+        { value: 4, label: '拒绝，不想牺牲生活质量', scores: {"ambition":-0.16,"sensitivity":-0.10} },
+        { value: 5, label: '算了吧，压力太大不值得', scores: {"ambition":-0.20} },
+      ],
+      required: true,
+    },
+
+    // Q22 - 社交媒体真实性（主测：自我表达）
+    {
+      id: 'zhz_q22',
+      type: 'scale',
+      question: '📱 朋友圈和真实生活，你的状态是？',
+      dimension: 'social_media_authenticity',
+      options: [
+        { value: 1, label: '基本一致，我不喜欢装！', scores: {"authenticity":0.24} },
+        { value: 2, label: '展示积极面，但不刻意美化', scores: {"authenticity":0.16,"sociability":0.12} },
+        { value: 3, label: '基本不发，觉得没必要晒', scores: {"sociability":-0.12,"authenticity":0.10} },
+        { value: 4, label: '非常用心经营，展示最好的自己', scores: {"rationality":0.16,"authenticity":-0.12} },
+        { value: 5, label: '精心打造人设，朋友圈≠真实生活', scores: {"rationality":0.20,"authenticity":-0.18} },
+      ],
+      required: true,
+    },
+
+    // ========== 第六组：真实性与自我表达 ==========
+
+    // Q23 - 情绪披露（主测：自我表达、情绪敏感性）
+    {
+      id: 'zhz_q23',
       type: 'scale',
       question: '别人问你"过得好吗"，你通常？🗣️',
       dimension: 'emotional_disclosure',
       options: [
-        { value: 1, label: '实话实说，好就是好，不好就是不好', scores: {"authenticity":0.2} },
-        { value: 2, label: '看关系远近，亲近的才说真话', scores: {"authenticity":0.12,"emotional":0.1} },
-        { value: 3, label: '总说"还好"，不想暴露真实状态', scores: {"strategy":0.12,"authenticity":-0.1} },
-        { value: 4, label: '永远说"很好"，不让人看到我的脆弱', scores: {"strategy":0.14,"authenticity":-0.14} },
-        { value: 5, label: '表面云淡风轻，内心早已千疮百孔', scores: {"emotional":0.16,"authenticity":-0.12} },
+        { value: 1, label: '实话实说，好就是好，不好就是不好', scores: {"authenticity":0.24} },
+        { value: 2, label: '看关系远近，亲近的才说真话', scores: {"authenticity":0.14,"sensitivity":0.12} },
+        { value: 3, label: '总说"还好"，不想暴露真实状态', scores: {"rationality":0.14,"authenticity":-0.12} },
+        { value: 4, label: '永远说"很好"，不让人看到我的脆弱', scores: {"rationality":0.16,"authenticity":-0.16} },
+        { value: 5, label: '表面云淡风轻，内心早已千疮百孔', scores: {"sensitivity":0.20,"authenticity":-0.14} },
       ],
       required: true,
     },
 
-    // Q25
+    // Q24 - 职场真实性（主测：自我表达、思维模式）
     {
-      id: 'zhz_q25',
+      id: 'zhz_q24',
       type: 'scale',
       question: '💼 职场中，你更倾向于？',
       dimension: 'workplace_authenticity',
       options: [
-        { value: 1, label: '做真实的自己，不合适就换工作', scores: {"authenticity":0.2,"novelty":0.1} },
-        { value: 2, label: '保留底线，其他可以适当调整', scores: {"authenticity":0.12,"stability":0.12} },
-        { value: 3, label: '有策略地展示不同面，适应环境', scores: {"strategy":0.16,"authenticity":-0.08} },
-        { value: 4, label: '非常在意职业形象管理，打造完美人设', scores: {"strategy":0.18,"authenticity":-0.14} },
-        { value: 5, label: '扮演别人期待的角色，隐藏真实想法', scores: {"strategy":0.14,"authenticity":-0.16} },
+        { value: 1, label: '做真实的自己，不合适就换工作', scores: {"authenticity":0.24} },
+        { value: 2, label: '保留底线，其他可以适当调整', scores: {"authenticity":0.14,"sensitivity":-0.10} },
+        { value: 3, label: '有策略地展示不同面，适应环境', scores: {"rationality":0.20,"authenticity":-0.10} },
+        { value: 4, label: '非常在意职业形象管理，打造完美人设', scores: {"rationality":0.22,"authenticity":-0.16} },
+        { value: 5, label: '扮演别人期待的角色，隐藏真实想法', scores: {"rationality":0.18,"authenticity":-0.20} },
       ],
       required: true,
     },
 
-    // Q26
-    {
-      id: 'zhz_q26',
-      type: 'scale',
-      question: '换城市、换行业这种大改变，你的态度是？🚀',
-      dimension: 'life_change_attitude',
-      options: [
-        { value: 1, label: '期待新鲜感，很想尝试！', scores: {"novelty":0.2,"energy":0.12} },
-        { value: 2, label: '如果有明确好处就会考虑', scores: {"strategy":0.14,"novelty":0.1} },
-        { value: 3, label: '倾向稳定，除非迫不得已', scores: {"stability":0.18,"novelty":-0.12} },
-        { value: 4, label: '害怕变化，需要很长适应期', scores: {"emotional":0.14,"novelty":-0.14} },
-        { value: 5, label: '完全不想变，现状挺好的', scores: {"stability":0.16,"novelty":-0.16} },
-      ],
-      required: true,
-    },
-
-    // 锚点题7 - 真实性
+    // 锚点题6 - 自我表达
     {
       id: 'zhz_anchor_authenticity',
       type: 'likert',
       question: '💎 在大多数情况下，我更愿意真实表达自己而不是迎合他人期待',
       dimension: 'authenticity',
-      options: [
-        { value: 1, label: '非常不符合' },
-        { value: 2, label: '比较不符合' },
-        { value: 3, label: '不确定' },
-        { value: 4, label: '比较符合' },
-        { value: 5, label: '非常符合' },
-      ],
-      required: true,
-    },
-
-    // ========== 第七组：探索与创新 ==========
-
-    // Q27
-    {
-      id: 'zhz_q27',
-      type: 'scale',
-      question: '🎨 生活中，你更喜欢？',
-      dimension: 'lifestyle_preference',
-      options: [
-        { value: 1, label: '经常尝试新餐厅、新路线、新爱好', scores: {"novelty":0.2,"energy":0.1} },
-        { value: 2, label: '偶尔换换口味，但主要还是熟悉的好', scores: {"novelty":0.1,"stability":0.1} },
-        { value: 3, label: '固定的模式最舒服，有安全感', scores: {"stability":0.18,"novelty":-0.12} },
-        { value: 4, label: '大家都去的地方我也去，跟着走就行', scores: {"strategy":-0.08,"authenticity":-0.08} },
-        { value: 5, label: '随缘吧，有机会就试试新的', scores: {"novelty":0.08} },
-      ],
-      required: true,
-    },
-
-    // Q28
-    {
-      id: 'zhz_q28',
-      type: 'scale',
-      question: '🆕 面对新技术、新观念，你通常？',
-      dimension: 'innovation_acceptance',
-      options: [
-        { value: 1, label: '率先尝试，享受探索新事物的感觉！', scores: {"novelty":0.2,"energy":0.12} },
-        { value: 2, label: '观察一段时间，确认有用再学', scores: {"strategy":0.16,"novelty":0.08} },
-        { value: 3, label: '等大多数人都用了再考虑', scores: {"novelty":-0.08} },
-        { value: 4, label: '不想学，旧的用得好好的为啥要换？', scores: {"stability":0.16,"novelty":-0.14} },
-        { value: 5, label: '抗拒变化，除非被迫才会改', scores: {"stability":0.18,"novelty":-0.18} },
-      ],
-      required: true,
-    },
-
-    // 锚点题8 - 求新倾向
-    {
-      id: 'zhz_anchor_novelty',
-      type: 'likert',
-      question: '🌈 我倾向于尝试新鲜事物，而不是维持长期的稳定习惯',
-      dimension: 'novelty',
       options: [
         { value: 1, label: '非常不符合' },
         { value: 2, label: '比较不符合' },
@@ -1081,29 +944,25 @@ export const zhz: QuizTemplate = {
  * - 最小得分：每题选择该维度的最小增量（包括负分）
  */
 function calculateDimensionScoreRanges() {
-  const dimensions = ['emotional', 'strategy', 'energy', 'idealism', 'stability', 'ambition', 'authenticity', 'novelty'] as const;
+  const dimensions = ['sensitivity', 'rationality', 'sociability', 'idealism', 'ambition', 'authenticity'] as const;
   type DimensionKey = typeof dimensions[number];
 
   const minScores: Record<DimensionKey, number> = {
-    emotional: 0,
-    strategy: 0,
-    energy: 0,
+    sensitivity: 0,
+    rationality: 0,
+    sociability: 0,
     idealism: 0,
-    stability: 0,
     ambition: 0,
     authenticity: 0,
-    novelty: 0,
   };
 
   const maxScores: Record<DimensionKey, number> = {
-    emotional: 0,
-    strategy: 0,
-    energy: 0,
+    sensitivity: 0,
+    rationality: 0,
+    sociability: 0,
     idealism: 0,
-    stability: 0,
     ambition: 0,
     authenticity: 0,
-    novelty: 0,
   };
 
   zhz.questions.forEach((question) => {
@@ -1168,6 +1027,52 @@ function cosineSimilarity(
 }
 
 /**
+ * 归一化欧氏距离计算
+ * distance = sqrt(Σ(u_i - r_i)²) / sqrt(n)
+ *
+ * @param vec1 用户向量
+ * @param vec2 角色向量
+ * @returns 归一化距离 [0, 1]
+ */
+function normalizedEuclideanDistance(
+  vec1: Record<string, number>,
+  vec2: Record<string, number>
+): number {
+  const keys = Object.keys(vec1);
+  const n = keys.length;
+
+  let sumSquaredDiff = 0;
+  keys.forEach((key) => {
+    const diff = vec1[key] - vec2[key];
+    sumSquaredDiff += diff * diff;
+  });
+
+  // 归一化到 [0, 1]：除以 sqrt(n)（最大可能距离）
+  return Math.sqrt(sumSquaredDiff) / Math.sqrt(n);
+}
+
+/**
+ * 混合相似度算法（余弦相似度 + 欧氏距离）
+ * 同时考虑向量方向和绝对差异
+ *
+ * similarity = 0.5 × 余弦相似度 + 0.5 × (1 - 归一化欧氏距离)
+ *
+ * @param vec1 用户向量
+ * @param vec2 角色向量
+ * @returns 混合相似度 [0, 1]
+ */
+function hybridSimilarity(
+  vec1: Record<string, number>,
+  vec2: Record<string, number>
+): number {
+  const cosineSim = cosineSimilarity(vec1, vec2);
+  const euclideanDist = normalizedEuclideanDistance(vec1, vec2);
+
+  // 混合：余弦相似度（方向）+ 欧氏距离转相似度（绝对差异）
+  return 0.5 * cosineSim + 0.5 * (1 - euclideanDist);
+}
+
+/**
  * 四阶段向量建模方法（加入 Likert 锚点校准）
  *
  * 阶段1：维度得分累加（Raw Score Accumulation from forced-choice questions）
@@ -1176,19 +1081,17 @@ function cosineSimilarity(
  * 阶段4：余弦相似度匹配（Cosine Similarity）
  */
 export function calculateZHZResults(answers: Record<string, number>) {
-    const dimensions = ['emotional', 'strategy', 'energy', 'idealism', 'stability', 'ambition', 'authenticity', 'novelty'] as const;
+    const dimensions = ['sensitivity', 'rationality', 'sociability', 'idealism', 'ambition', 'authenticity'] as const;
     type DimensionKey = typeof dimensions[number];
 
     // ============ 阶段1：维度得分累加（仅 forced-choice 题）============
     const rawScores: Record<DimensionKey, number> = {
-      emotional: 0,
-      strategy: 0,
-      energy: 0,
+      sensitivity: 0,
+      rationality: 0,
+      sociability: 0,
       idealism: 0,
-      stability: 0,
       ambition: 0,
       authenticity: 0,
-      novelty: 0,
     };
 
     // 遍历所有答案，累加各维度分数（排除锚点题）
@@ -1214,14 +1117,12 @@ export function calculateZHZResults(answers: Record<string, number>) {
     const { minScores: minPossible, maxScores: maxPossible } = calculateDimensionScoreRanges();
 
     const relativeScores: Record<DimensionKey, number> = {
-      emotional: 0,
-      strategy: 0,
-      energy: 0,
+      sensitivity: 0,
+      rationality: 0,
+      sociability: 0,
       idealism: 0,
-      stability: 0,
       ambition: 0,
       authenticity: 0,
-      novelty: 0,
     };
 
     Object.keys(rawScores).forEach((dim) => {
@@ -1242,14 +1143,12 @@ export function calculateZHZResults(answers: Record<string, number>) {
     // ============ 阶段3：Likert 锚点校准（恢复绝对水平）============
     // 从锚点题获取各维度的绝对水平（1-5分）
     const anchorScores: Record<DimensionKey, number> = {
-      emotional: 0,
-      strategy: 0,
-      energy: 0,
+      sensitivity: 0,
+      rationality: 0,
+      sociability: 0,
       idealism: 0,
-      stability: 0,
       ambition: 0,
       authenticity: 0,
-      novelty: 0,
     };
 
     // 读取锚点题答案
@@ -1272,26 +1171,24 @@ export function calculateZHZResults(answers: Record<string, number>) {
     const beta = 0.4;  // 绝对水平权重
 
     const calibratedScores: Record<DimensionKey, number> = {
-      emotional: 0,
-      strategy: 0,
-      energy: 0,
+      sensitivity: 0,
+      rationality: 0,
+      sociability: 0,
       idealism: 0,
-      stability: 0,
       ambition: 0,
       authenticity: 0,
-      novelty: 0,
     };
 
     dimensions.forEach((dim) => {
       calibratedScores[dim] = alpha * relativeScores[dim] + beta * anchorScores[dim];
     });
 
-    // ============ 阶段4：余弦相似度匹配 ============
-    // 使用校准后的得分进行角色匹配
+    // ============ 阶段4：混合相似度匹配 ============
+    // 使用校准后的得分进行角色匹配（混合算法：余弦相似度 + 欧氏距离）
     const similarities: Array<{ character: string; similarity: number }> = [];
 
     Object.entries(CHARACTER_PROFILES).forEach(([charId, charData]) => {
-      const similarity = cosineSimilarity(calibratedScores, charData.scores);
+      const similarity = hybridSimilarity(calibratedScores, charData.scores);
       similarities.push({ character: charId, similarity });
     });
 
