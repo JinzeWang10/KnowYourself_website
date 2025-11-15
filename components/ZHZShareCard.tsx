@@ -47,8 +47,7 @@ const ZHZShareCard = forwardRef<HTMLDivElement, ZHZShareCardProps>(function ZHZS
   return (
     <div ref={ref} className="relative mx-auto mb-6 animate-slide-up" style={{ width: '1200px', maxWidth: '100%' }}>
       {/* 装饰性背景光晕 - 导出时会被忽略 */}
-      <div className={`absolute -inset-2 bg-gradient-to-br ${palaceColorScheme.glowLight} rounded-3xl blur-3xl no-export`}></div>
-
+      {/* <div className={`absolute -inset-2 bg-gradient-to-br ${palaceColorScheme.glowLight} rounded-3xl blur-3xl no-export`}></div> */}
       {/* 主卡片 */}
       <div className="relative bg-white rounded-3xl shadow-soft-xl overflow-hidden border-2 border-amber-200/50">
         {/* 顶部装饰性渐变条 */}
@@ -109,7 +108,7 @@ const ZHZShareCard = forwardRef<HTMLDivElement, ZHZShareCardProps>(function ZHZS
               {/* 角色图片 + 相似度徽章 */}
               <div className="relative mb-6">
                 {/* 装饰光晕 - 导出时会被忽略 */}
-                <div className={`absolute -inset-4 bg-gradient-to-br ${palaceColorScheme.glowHeavy} rounded-full blur-2xl animate-pulse no-export`}></div>
+                {/* <div className={`absolute -inset-4 bg-gradient-to-br ${palaceColorScheme.glowHeavy} rounded-full blur-2xl animate-pulse no-export`}></div> */}
 
                 {/* 角色图片 - 使用普通img标签 */}
                 <div className="relative rounded-2xl overflow-hidden shadow-glow-lg bg-gradient-to-br from-amber-100 via-pink-100 to-purple-100" style={{
