@@ -37,6 +37,10 @@ export default function DimensionRadarChart({
     setMounted(true);
   }, []);
 
+  // 计算最大值，向上取整到最近的10
+  const maxValue = Math.max(...data.map(d => d.value));
+  const maxDomain = Math.ceil(maxValue / 10) * 10;
+
   if (!mounted) {
     return (
       <div className="w-full h-[400px] flex items-center justify-center bg-gray-50 rounded-xl">
@@ -53,13 +57,14 @@ export default function DimensionRadarChart({
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       const value = data.value;
+      const percentage = (value / maxDomain) * 100;
       let level = '健康范围';
       let color = '#10b981'; // green
 
-      if (value >= 67) {
+      if (percentage >= 67) {
         level = '高风险';
         color = '#ef4444'; // red
-      } else if (value >= 34) {
+      } else if (percentage >= 34) {
         level = '需要关注';
         color = '#f59e0b'; // amber
       }
@@ -122,10 +127,10 @@ export default function DimensionRadarChart({
               tick={<CustomAngleAxisTick />}
             />
 
-            {/* 半径轴（分数） */}
+            {/* 半径轴（分数） - 自适应最大值 */}
             <PolarRadiusAxis
               angle={90}
-              domain={[0, 100]}
+              domain={[0, maxDomain]}
               tick={{ fill: '#a1a1aa', fontSize: 11, fontWeight: 500 }}
               tickCount={6}
               stroke="#e4e4e7"
@@ -203,7 +208,7 @@ export default function DimensionRadarChart({
           {/* 说明文字 */}
           <div className="mt-4 p-3 bg-blue-50/50 rounded-xl border border-blue-100">
             <p className="text-xs text-neutral-600 text-center leading-relaxed">
-              <span className="font-medium">💡 提示：</span> 所有维度得分已归一化到0-100范围，便于对比分析
+              <span className="font-medium">💡 提示：</span> 雷达图已根据最高维度得分自动调整量程（当前最大值：{maxDomain}分），便于查看各维度差异
             </p>
           </div>
         </>

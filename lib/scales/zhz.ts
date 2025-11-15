@@ -424,9 +424,9 @@ export const zhz: QuizTemplate = {
   titleEn: 'The Legend of Zhen Huan Personality Assessment',
   description: '以《甄嬛传》12位核心人物为原型，测试你最像谁',
   category: '趣味测评',
-  purpose: '通过28道现代生活场景题，从情感、理性、策略、进取心等8个维度，判断你最接近哪种"宫廷人格"',
-  duration: '7-10分钟',
-  questionCount: 28,
+  purpose: '通过36道题目（28道情景选择题 + 8道人格锚点题），从情感、理性、策略、进取心等8个维度，判断你最接近哪种"宫廷人格"',
+  duration: '8-12分钟',
+  questionCount: 36,
 
   dimensions: [
     {
@@ -480,6 +480,8 @@ export const zhz: QuizTemplate = {
   ],
 
   questions: [
+    // ========== 第一组：情绪与冲突处理 ==========
+
     // Q1
     {
       id: 'zhz_q1',
@@ -488,7 +490,7 @@ export const zhz: QuizTemplate = {
       dimension: 'conflict_handling',
       options: [
         { value: 1, label: '当和事佬，让每个人都感觉被理解', scores: {"emotional":0.16,"idealism":0.14} },
-        { value: 2, label: '先观察局势，找准关键人物再出手', scores: {"strategy":0.18,"ambition":0.12} },
+        { value: 2, label: '先观察局势，找准关键矛盾再行动', scores: {"strategy":0.18,"ambition":0.12} },
         { value: 3, label: '有话直说，最烦拐弯抹角！', scores: {"energy":0.18,"authenticity":0.16} },
         { value: 4, label: '表面保持中立，暗中推动自己的方案', scores: {"strategy":0.2,"ambition":0.16,"authenticity":-0.12} },
         { value: 5, label: '看戏就好，最后听领导的', scores: {"ambition":-0.12,"stability":0.1} },
@@ -524,6 +526,22 @@ export const zhz: QuizTemplate = {
         { value: 3, label: '强烈的占有欲和热烈的爱', scores: {"energy":0.18,"emotional":0.12} },
         { value: 4, label: '灵魂契合，诗与远方的浪漫', scores: {"idealism":0.2,"novelty":0.14} },
         { value: 5, label: '被看见、被珍惜、被需要的感觉', scores: {"emotional":0.18} },
+      ],
+      required: true,
+    },
+
+    // 锚点题1 - 情感敏感度
+    {
+      id: 'zhz_anchor_emotional',
+      type: 'likert',
+      question: '💭 我会快速察觉到别人情绪中的细微变化',
+      dimension: 'emotional',
+      options: [
+        { value: 1, label: '非常不符合' },
+        { value: 2, label: '比较不符合' },
+        { value: 3, label: '不确定' },
+        { value: 4, label: '比较符合' },
+        { value: 5, label: '非常符合' },
       ],
       required: true,
     },
@@ -592,6 +610,24 @@ export const zhz: QuizTemplate = {
       required: true,
     },
 
+    // 锚点题2 - 策略思维
+    {
+      id: 'zhz_anchor_strategy',
+      type: 'likert',
+      question: '🧠 在行动前，我习惯提前规划并思考几种可能的结果',
+      dimension: 'strategy',
+      options: [
+        { value: 1, label: '非常不符合' },
+        { value: 2, label: '比较不符合' },
+        { value: 3, label: '不确定' },
+        { value: 4, label: '比较符合' },
+        { value: 5, label: '非常符合' },
+      ],
+      required: true,
+    },
+
+    // ========== 第二组：社交与价值观 ==========
+
     // Q8
     {
       id: 'zhz_q8',
@@ -655,6 +691,24 @@ export const zhz: QuizTemplate = {
       ],
       required: true,
     },
+
+    // 锚点题3 - 外显能量
+    {
+      id: 'zhz_anchor_energy',
+      type: 'likert',
+      question: '✨ 我在大多数社交场合都能表现得自信并且外向',
+      dimension: 'energy',
+      options: [
+        { value: 1, label: '非常不符合' },
+        { value: 2, label: '比较不符合' },
+        { value: 3, label: '不确定' },
+        { value: 4, label: '比较符合' },
+        { value: 5, label: '非常符合' },
+      ],
+      required: true,
+    },
+
+    // ========== 第三组：底线与价值 ==========
 
     // Q12
     {
@@ -720,6 +774,24 @@ export const zhz: QuizTemplate = {
       required: true,
     },
 
+    // 锚点题4 - 情感理想化
+    {
+      id: 'zhz_anchor_idealism',
+      type: 'likert',
+      question: '⭐ 我对关系、价值观和理想有着非常坚定的坚持',
+      dimension: 'idealism',
+      options: [
+        { value: 1, label: '非常不符合' },
+        { value: 2, label: '比较不符合' },
+        { value: 3, label: '不确定' },
+        { value: 4, label: '比较符合' },
+        { value: 5, label: '非常符合' },
+      ],
+      required: true,
+    },
+
+    // ========== 第四组：适应与追求 ==========
+
     // Q16
     {
       id: 'zhz_q16',
@@ -783,6 +855,24 @@ export const zhz: QuizTemplate = {
       ],
       required: true,
     },
+
+    // 锚点题5 - 稳定与自律
+    {
+      id: 'zhz_anchor_stability',
+      type: 'likert',
+      question: '🎯 我在压力情境下仍能保持冷静和自我掌控',
+      dimension: 'stability',
+      options: [
+        { value: 1, label: '非常不符合' },
+        { value: 2, label: '比较不符合' },
+        { value: 3, label: '不确定' },
+        { value: 4, label: '比较符合' },
+        { value: 5, label: '非常符合' },
+      ],
+      required: true,
+    },
+
+    // ========== 第五组：友情与态度 ==========
 
     // Q20
     {
@@ -850,6 +940,24 @@ export const zhz: QuizTemplate = {
       required: true,
     },
 
+    // 锚点题6 - 进取心
+    {
+      id: 'zhz_anchor_ambition',
+      type: 'likert',
+      question: '🚀 我会主动追求更高的成就，而不是等待机会来临',
+      dimension: 'ambition',
+      options: [
+        { value: 1, label: '非常不符合' },
+        { value: 2, label: '比较不符合' },
+        { value: 3, label: '不确定' },
+        { value: 4, label: '比较符合' },
+        { value: 5, label: '非常符合' },
+      ],
+      required: true,
+    },
+
+    // ========== 第六组：真实性与变化 ==========
+
     // Q24
     {
       id: 'zhz_q24',
@@ -898,6 +1006,24 @@ export const zhz: QuizTemplate = {
       required: true,
     },
 
+    // 锚点题7 - 真实性
+    {
+      id: 'zhz_anchor_authenticity',
+      type: 'likert',
+      question: '💎 在大多数情况下，我更愿意真实表达自己而不是迎合他人期待',
+      dimension: 'authenticity',
+      options: [
+        { value: 1, label: '非常不符合' },
+        { value: 2, label: '比较不符合' },
+        { value: 3, label: '不确定' },
+        { value: 4, label: '比较符合' },
+        { value: 5, label: '非常符合' },
+      ],
+      required: true,
+    },
+
+    // ========== 第七组：探索与创新 ==========
+
     // Q27
     {
       id: 'zhz_q27',
@@ -929,15 +1055,47 @@ export const zhz: QuizTemplate = {
       ],
       required: true,
     },
+
+    // 锚点题8 - 求新倾向
+    {
+      id: 'zhz_anchor_novelty',
+      type: 'likert',
+      question: '🌈 我倾向于尝试新鲜事物，而不是维持长期的稳定习惯',
+      dimension: 'novelty',
+      options: [
+        { value: 1, label: '非常不符合' },
+        { value: 2, label: '比较不符合' },
+        { value: 3, label: '不确定' },
+        { value: 4, label: '比较符合' },
+        { value: 5, label: '非常符合' },
+      ],
+      required: true,
+    },
   ],
 };
 
 /**
- * 计算每个维度的理论最大得分
- * 遍历所有题目，每题选择该维度的最大增量
+ * 计算每个维度的理论最大和最小得分
+ * 遍历所有题目，分别计算：
+ * - 最大得分：每题选择该维度的最大增量（包括正分）
+ * - 最小得分：每题选择该维度的最小增量（包括负分）
  */
-function calculateDimensionMaxScores() {
-  const maxScores = {
+function calculateDimensionScoreRanges() {
+  const dimensions = ['emotional', 'strategy', 'energy', 'idealism', 'stability', 'ambition', 'authenticity', 'novelty'] as const;
+  type DimensionKey = typeof dimensions[number];
+
+  const minScores: Record<DimensionKey, number> = {
+    emotional: 0,
+    strategy: 0,
+    energy: 0,
+    idealism: 0,
+    stability: 0,
+    ambition: 0,
+    authenticity: 0,
+    novelty: 0,
+  };
+
+  const maxScores: Record<DimensionKey, number> = {
     emotional: 0,
     strategy: 0,
     energy: 0,
@@ -949,57 +1107,26 @@ function calculateDimensionMaxScores() {
   };
 
   zhz.questions.forEach((question) => {
-    // 对每个维度，找到该题中最大的增量
-    Object.keys(maxScores).forEach((dim) => {
-      const dimKey = dim as keyof typeof maxScores;
+    // 对每个维度，找到该题中的最大和最小增量
+    dimensions.forEach((dim) => {
       let maxIncrementForDim = 0;
+      let minIncrementForDim = 0;
 
       question.options.forEach((option) => {
         if ('scores' in option) {
           const scores = option.scores as Record<string, number>;
           const increment = scores[dim] || 0;
           maxIncrementForDim = Math.max(maxIncrementForDim, increment);
+          minIncrementForDim = Math.min(minIncrementForDim, increment);
         }
       });
 
-      maxScores[dimKey] += maxIncrementForDim;
+      maxScores[dim] += maxIncrementForDim;
+      minScores[dim] += minIncrementForDim;
     });
   });
 
-  return maxScores;
-}
-
-/**
- * Softmax平滑校准
- * 使用 softmax 函数使维度分布更自然，避免零和博弈
- *
- * @param scores 归一化后的得分（0-1范围）
- * @param alpha 温度参数，控制差异度（3-5）
- * @returns 平滑后的得分向量
- */
-function softmaxSmoothing(
-  scores: Record<string, number>,
-  alpha: number
-): Record<string, number> {
-  const keys = Object.keys(scores);
-
-  // 计算 exp(score * alpha)
-  const expScores: Record<string, number> = {};
-  let sumExp = 0;
-
-  keys.forEach((key) => {
-    const expValue = Math.exp(scores[key] * alpha);
-    expScores[key] = expValue;
-    sumExp += expValue;
-  });
-
-  // 归一化
-  const smoothed: Record<string, number> = {};
-  keys.forEach((key) => {
-    smoothed[key] = expScores[key] / sumExp;
-  });
-
-  return smoothed;
+  return { minScores, maxScores };
 }
 
 /**
@@ -1041,16 +1168,19 @@ function cosineSimilarity(
 }
 
 /**
- * 三阶段向量建模方法
+ * 四阶段向量建模方法（加入 Likert 锚点校准）
  *
- * 阶段1：维度得分累加（Raw Score Accumulation）
- * 阶段2：Min-Max归一化（Normalization）
- * 阶段3：Softmax平滑校准（Smoothing）
+ * 阶段1：维度得分累加（Raw Score Accumulation from forced-choice questions）
+ * 阶段2：Min-Max归一化（Normalization - 得到相对偏好向量）
+ * 阶段3：Likert 锚点校准（Anchor Calibration - 恢复绝对水平）
  * 阶段4：余弦相似度匹配（Cosine Similarity）
  */
 export function calculateZHZResults(answers: Record<string, number>) {
-    // ============ 阶段1：维度得分累加 ============
-    const rawScores = {
+    const dimensions = ['emotional', 'strategy', 'energy', 'idealism', 'stability', 'ambition', 'authenticity', 'novelty'] as const;
+    type DimensionKey = typeof dimensions[number];
+
+    // ============ 阶段1：维度得分累加（仅 forced-choice 题）============
+    const rawScores: Record<DimensionKey, number> = {
       emotional: 0,
       strategy: 0,
       energy: 0,
@@ -1061,8 +1191,11 @@ export function calculateZHZResults(answers: Record<string, number>) {
       novelty: 0,
     };
 
-    // 遍历所有答案，累加各维度分数
+    // 遍历所有答案，累加各维度分数（排除锚点题）
     zhz.questions.forEach((question) => {
+      // 跳过 Likert 锚点题，只处理 forced-choice 题
+      if (question.type === 'likert') return;
+
       const answerId = answers[question.id];
       if (answerId !== undefined) {
         const selectedOption = question.options.find(opt => opt.value === answerId);
@@ -1076,11 +1209,11 @@ export function calculateZHZResults(answers: Record<string, number>) {
       }
     });
 
-    // ============ 阶段2：Min-Max归一化 ============
-    // 计算每个维度的理论最大值
-    const maxPossible = calculateDimensionMaxScores();
+    // ============ 阶段2：Min-Max归一化（得到相对偏好向量）============
+    // 计算每个维度的理论最小值和最大值（考虑负分）
+    const { minScores: minPossible, maxScores: maxPossible } = calculateDimensionScoreRanges();
 
-    const normalizedScores = {
+    const relativeScores: Record<DimensionKey, number> = {
       emotional: 0,
       strategy: 0,
       energy: 0,
@@ -1093,22 +1226,72 @@ export function calculateZHZResults(answers: Record<string, number>) {
 
     Object.keys(rawScores).forEach((dim) => {
       const dimKey = dim as keyof typeof rawScores;
+      const min = minPossible[dimKey];
       const max = maxPossible[dimKey];
-      if (max > 0) {
-        // 归一化到 0-1 范围
-        normalizedScores[dimKey] = Math.max(0, Math.min(1, rawScores[dimKey] / max));
+      const range = max - min;
+
+      if (range > 0) {
+        // 归一化到 0-1 范围：(实际得分 - 最小值) / (最大值 - 最小值)
+        relativeScores[dimKey] = Math.max(0, Math.min(1, (rawScores[dimKey] - min) / range));
+      } else {
+        // 如果范围为0（该维度没有任何得分变化），设为0.5（中性）
+        relativeScores[dimKey] = 0.5;
       }
     });
 
-    // ============ 阶段3：Softmax平滑校准 ============
-    const alpha = 4.0; // 控制差异度的参数，范围3-5
-    const userScores = softmaxSmoothing(normalizedScores, alpha);
+    // ============ 阶段3：Likert 锚点校准（恢复绝对水平）============
+    // 从锚点题获取各维度的绝对水平（1-5分）
+    const anchorScores: Record<DimensionKey, number> = {
+      emotional: 0,
+      strategy: 0,
+      energy: 0,
+      idealism: 0,
+      stability: 0,
+      ambition: 0,
+      authenticity: 0,
+      novelty: 0,
+    };
+
+    // 读取锚点题答案
+    dimensions.forEach((dim) => {
+      const anchorId = `zhz_anchor_${dim}`;
+      const anchorAnswer = answers[anchorId];
+      if (anchorAnswer !== undefined) {
+        // Likert 得分归一化到 0-1：(答案 - 1) / (5 - 1)
+        anchorScores[dim] = (anchorAnswer - 1) / 4;
+      } else {
+        // 如果用户未回答锚点题，默认使用中性值 0.5
+        anchorScores[dim] = 0.5;
+      }
+    });
+
+    // 校准方法：加权混合
+    // calibratedScore = α × relativeScore + β × anchorScore
+    // 其中 α = 0.6（相对偏好权重），β = 0.4（绝对水平权重）
+    const alpha = 0.6; // 相对偏好权重
+    const beta = 0.4;  // 绝对水平权重
+
+    const calibratedScores: Record<DimensionKey, number> = {
+      emotional: 0,
+      strategy: 0,
+      energy: 0,
+      idealism: 0,
+      stability: 0,
+      ambition: 0,
+      authenticity: 0,
+      novelty: 0,
+    };
+
+    dimensions.forEach((dim) => {
+      calibratedScores[dim] = alpha * relativeScores[dim] + beta * anchorScores[dim];
+    });
 
     // ============ 阶段4：余弦相似度匹配 ============
+    // 使用校准后的得分进行角色匹配
     const similarities: Array<{ character: string; similarity: number }> = [];
 
     Object.entries(CHARACTER_PROFILES).forEach(([charId, charData]) => {
-      const similarity = cosineSimilarity(userScores, charData.scores);
+      const similarity = cosineSimilarity(calibratedScores, charData.scores);
       similarities.push({ character: charId, similarity });
     });
 
@@ -1116,16 +1299,16 @@ export function calculateZHZResults(answers: Record<string, number>) {
     similarities.sort((a, b) => b.similarity - a.similarity);
     const topMatches = similarities.slice(0, 3);
 
-    // 4. 构建结果
+    // 5. 构建结果
     const primaryChar = CHARACTER_PROFILES[topMatches[0].character as keyof typeof CHARACTER_PROFILES];
 
     return {
       totalScore: Math.round(topMatches[0].similarity * 100),
-      dimensionScores: Object.entries(userScores).map(([key, value]) => ({
+      dimensionScores: Object.entries(calibratedScores).map(([key, value]) => ({
         dimension: ZHZ_DIMENSIONS[key as keyof typeof ZHZ_DIMENSIONS],
         score: Math.round(value * 100),
       })),
-      interpretation: generateInterpretation(topMatches, userScores),
+      interpretation: generateInterpretation(topMatches, calibratedScores),
       recommendations: [
         `你的首要人格类型是 ${primaryChar.emoji} ${primaryChar.name}`,
         `相似度：${topMatches.map(m => {
@@ -1139,7 +1322,13 @@ export function calculateZHZResults(answers: Record<string, number>) {
           name: CHARACTER_PROFILES[m.character as keyof typeof CHARACTER_PROFILES].name,
           similarity: Math.round(m.similarity * 100),
         })),
-        userVector: userScores,
+        userVector: calibratedScores,
+        // 额外返回调试信息（可选）
+        debug: {
+          relativeScores,  // 仅来自 forced-choice 的相对偏好
+          anchorScores,    // 仅来自 Likert 的绝对水平
+          calibratedScores // 校准后的最终得分
+        }
       }
     };
   }
