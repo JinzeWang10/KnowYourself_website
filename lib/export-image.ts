@@ -16,6 +16,18 @@ async function waitForImages(root: HTMLElement) {
   );
 }
 
+/** 下载 Blob 对象为文件 */
+function downloadBlob(blob: Blob, filename: string) {
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.download = filename;
+  link.href = url;
+  link.click();
+
+  // 清理 URL 对象
+  setTimeout(() => URL.revokeObjectURL(url), 100);
+}
+
 /**
  * 导出 DOM 元素为图片
  *
@@ -24,6 +36,7 @@ async function waitForImages(root: HTMLElement) {
  * 2. 强制设置 opacity: 1 和禁用动画，避免动画导致的半透明
  * 3. 清理 blur/backdrop-filter 等会导致 html2canvas 渲染问题的样式
  * 4. 渲染后立即恢复所有样式和位置
+ * 5. 移动端优先使用 Share API，桌面端使用下载
  */
 export async function exportAsImage(element: HTMLElement, filename: string) {
   return new Promise<boolean>(async (resolve) => {
@@ -157,13 +170,33 @@ export async function exportAsImage(element: HTMLElement, filename: string) {
       const placeholderToRemove = originalParent?.querySelector('div[style*="visibility: hidden"]');
       placeholderToRemove?.remove();
 
-      // 7. 下载图片
-      const link = document.createElement("a");
-      link.download = filename + ".png";
-      link.href = canvas.toDataURL("image/png");
-      link.click();
+      // 7. 下载图片 - 兼容移动端
+      canvas.toBlob((blob) => {
+        if (!blob) {
+          resolve(false);
+          return;
+        }
 
-      resolve(true);
+        // 移动端优先使用 Share API
+        if (navigator.share && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+          const file = new File([blob], filename + ".png", { type: "image/png" });
+          navigator.share({
+            files: [file],
+            title: filename,
+          }).then(() => {
+            resolve(true);
+          }).catch((err) => {
+            // 分享失败，降级到下载
+            console.log('Share failed, fallback to download:', err);
+            downloadBlob(blob, filename + ".png");
+            resolve(true);
+          });
+        } else {
+          // 桌面端或不支持 Share API 的设备，直接下载
+          downloadBlob(blob, filename + ".png");
+          resolve(true);
+        }
+      }, "image/png");
     } catch (err) {
       console.error("Export failed:", err);
 

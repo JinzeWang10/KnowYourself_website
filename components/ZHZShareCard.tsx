@@ -262,7 +262,7 @@ const ZHZShareCard = forwardRef<HTMLDivElement, ZHZShareCardProps>(function ZHZS
           <div className="flex items-center justify-between border-t-2 border-amber-200/30" style={{ paddingTop: '12px', gap: '12px' }}>
             <div className="text-sm text-neutral-500 flex items-center gap-2">
               <span className="text-lg">✨</span>
-              扫码探索更多甄嬛传人格
+              扫码探索更多有趣测评
             </div>
             <div className="flex items-center gap-4">
               {/* 真实的二维码 */}

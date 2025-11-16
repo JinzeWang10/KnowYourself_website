@@ -94,9 +94,14 @@ export default function ResultPage() {
       return;
     }
 
+    // 生成安全的文件名（移除斜杠等特殊字符）
+    const now = new Date();
+    const dateStr = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}`;
+    const filename = `${scale?.title || '测评结果'}_${dateStr}`;
+
     await exportWithFeedback(
       shareCardRef.current,
-      `${scale?.title || '测评结果'}_${new Date().toLocaleDateString('zh-CN')}`,
+      filename,
       {
         onStart: () => setIsExporting(true),
         onComplete: (success) => {
