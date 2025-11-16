@@ -20,6 +20,7 @@ export default function QuizPage() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hasSubmitted, setHasSubmitted] = useState(false);
+  const [showUnansweredWarning, setShowUnansweredWarning] = useState(false);
 
   // 从 localStorage 恢复答案
   useEffect(() => {
@@ -33,6 +34,10 @@ export default function QuizPage() {
         } catch (e) {
           // Failed to restore progress
         }
+      } else {
+        // 没有保存的进度，确保从头开始
+        setAnswers({});
+        setCurrentIndex(0);
       }
     }
   }, [scaleId, scale]);
@@ -188,8 +193,10 @@ export default function QuizPage() {
         localStorage.setItem('quiz-history', JSON.stringify(history));
       }
 
-      // 清除进度
+      // 清除进度和状态
       localStorage.removeItem(`quiz-progress-${scaleId}`);
+      setAnswers({});
+      setCurrentIndex(0);
 
       // 跳转到结果页
       router.push(`/scales/${scaleId}/result/${result.id}`);
@@ -263,8 +270,86 @@ export default function QuizPage() {
         console.log('记录已存在，跳过添加');
       }
 
-      // 清除进度
+      // 清除进度和状态
       localStorage.removeItem(`quiz-progress-${scaleId}`);
+      setAnswers({});
+      setCurrentIndex(0);
+
+      // 跳转到结果页
+      router.push(`/scales/${scaleId}/result/${result.id}`);
+      return;
+    }
+
+    // EQ 量表使用自定义计算（处理正反向题的特殊计分）
+    if (scaleId === 'eq' && scale.calculateResults) {
+      const numericAnswers: Record<string, number> = Object.fromEntries(
+        Object.entries(answersToSubmit).map(([k, v]) => [k, typeof v === 'number' ? v : Number(v)])
+      );
+
+      const eqResult = scale.calculateResults(numericAnswers);
+
+      // 创建结果对象
+      const result: QuizResult = {
+        id: `result-${Date.now()}`,
+        quizId: scale.id,
+        quizTitle: scale.title,
+        score: eqResult.totalScore,
+        level: eqResult.dimensionScores[0]?.dimension || '未知',
+        completedAt: new Date(),
+        answers: Object.entries(answersToSubmit).map(([questionId, answer]) => ({
+          questionId,
+          answer: typeof answer === 'number' ? answer : Number(answer),
+        })),
+        dimensionScores: eqResult.dimensionScores.reduce((acc, item: any) => {
+          // 使用 dimensionId（英文ID）作为键，如果没有则降级使用中文名称
+          const key = item.dimensionId || item.dimension;
+          acc[key] = item.score;
+          return acc;
+        }, {} as Record<string, number>),
+        report: {
+          summary: eqResult.interpretation,
+          details: [],
+          recommendations: eqResult.recommendations || [],
+        },
+      };
+
+      // 提交到后台（如果有用户信息）
+      if (userInfo) {
+        const scoreLevel = getScoreLevel(scale, eqResult.totalScore);
+        const record: AssessmentRecord = {
+          id: result.id,
+          scaleId: scale.id,
+          scaleTitle: scale.title,
+          gender: userInfo.gender,
+          age: userInfo.age,
+          totalScore: eqResult.totalScore,
+          normalizedScore: eqResult.totalScore, // EQ已经是0-100范围
+          level: scoreLevel?.level || '未知',
+          dimensionScores: result.dimensionScores,
+          completedAt: new Date().toISOString(),
+          answers: Object.entries(answersToSubmit).map(([questionId, answer]) => ({
+            questionId,
+            answer: typeof answer === 'number' ? answer : Number(answer),
+          })),
+        };
+
+        submitAssessmentRecord(record).catch(err => {
+          console.error('提交测评记录失败:', err);
+        });
+      }
+
+      // 保存到历史记录
+      const history = JSON.parse(localStorage.getItem('quiz-history') || '[]');
+      const existingIndex = history.findIndex((r: QuizResult) => r.id === result.id);
+      if (existingIndex === -1) {
+        history.push(result);
+        localStorage.setItem('quiz-history', JSON.stringify(history));
+      }
+
+      // 清除进度和状态
+      localStorage.removeItem(`quiz-progress-${scaleId}`);
+      setAnswers({});
+      setCurrentIndex(0);
 
       // 跳转到结果页
       router.push(`/scales/${scaleId}/result/${result.id}`);
@@ -339,19 +424,54 @@ export default function QuizPage() {
       console.log('记录已存在，跳过添加');
     }
 
-    // 清除进度
+    // 清除进度和状态
     localStorage.removeItem(`quiz-progress-${scaleId}`);
+    setAnswers({});
+    setCurrentIndex(0);
 
     // 跳转到结果页
     router.push(`/scales/${scaleId}/result/${result.id}`);
   };
 
   const handleSubmit = async () => {
+    // 检查是否所有必答题都已回答
+    const unansweredIndex = scale.questions.findIndex((q) => {
+      // 检查题目是否标记为必答（默认所有题目都是必答）
+      const isRequired = q.required !== false;
+      return isRequired && answers[q.id] === undefined;
+    });
+
+    if (unansweredIndex !== -1) {
+      // 有未答题，跳转到第一个未答题
+      setCurrentIndex(unansweredIndex);
+      // 显示警告提示
+      setShowUnansweredWarning(true);
+      // 3秒后自动隐藏
+      setTimeout(() => setShowUnansweredWarning(false), 3000);
+      return;
+    }
+
+    // 所有题目都已回答，提交
     handleSubmitWithAnswers(answers);
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50/30 via-white to-purple-50/30">
+      {/* 未答题警告提示 */}
+      {showUnansweredWarning && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 animate-slide-in-down">
+          <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-6 py-4 rounded-2xl shadow-glow-lg flex items-center gap-3">
+            <svg className="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <div>
+              <p className="font-bold">请先完成未答题目</p>
+              <p className="text-sm opacity-90">已自动跳转到未回答的题目</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <header className="glass-effect border-b border-neutral-200/50 sticky top-0 z-10 backdrop-blur-xl">
         <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-5">
@@ -428,7 +548,7 @@ export default function QuizPage() {
 
                     return (
                       <button
-                        key={option.value}
+                        key={`${currentQuestion.id}-${idx}`}
                         onClick={() => handleAnswer(option.value)}
                         className={`group relative flex-1 aspect-square rounded-full border-3 transition-all duration-300 ${
                           isSelected
@@ -460,7 +580,7 @@ export default function QuizPage() {
                     const isSelected = answers[currentQuestion.id] === option.value;
                     return (
                       <div
-                        key={option.value}
+                        key={`${currentQuestion.id}-label-${idx}`}
                         className={`flex-1 text-center text-[10px] sm:text-xs transition-all ${
                           isSelected
                             ? 'font-bold text-neutral-900'
@@ -532,7 +652,7 @@ export default function QuizPage() {
             </div>
 
             <button
-              onClick={handleNext}
+              onClick={currentIndex === scale.questions.length - 1 ? handleSubmit : handleNext}
               disabled={!isAnswered || isSubmitting}
               className="px-3 sm:px-8 py-2.5 sm:py-3.5 rounded-xl bg-gradient-to-r from-primary to-primary-light text-white text-sm sm:text-base font-semibold disabled:opacity-40 disabled:cursor-not-allowed hover:shadow-glow-lg transition-all shadow-soft btn-glow whitespace-nowrap"
             >

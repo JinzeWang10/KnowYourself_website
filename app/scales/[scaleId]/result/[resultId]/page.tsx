@@ -148,7 +148,9 @@ export default function ResultPage() {
     Object.entries(answers).map(([k, v]) => [k, typeof v === 'number' ? v : Number(v)])
   ) as Record<string, number>;
 
-  const dimensionScores = calculateDimensionScores(scale, numericAnswers);
+  // 对于有自定义 calculateResults 的量表（如 EQ），直接使用保存的维度得分
+  // 否则使用通用计算函数重新计算
+  const dimensionScores = result.dimensionScores || calculateDimensionScores(scale, numericAnswers);
   const scoreLevel = scale.scoring?.ranges.find(
     (r) => result.score >= r.min && result.score <= r.max
   );
@@ -241,12 +243,22 @@ export default function ResultPage() {
               // 其他量表使用标准计算
               radarData = scale.dimensions?.map((dimension) => {
                 const dimScore = dimensionScores[dimension.id] || 0;
-                const normalizedValue = normalizeDimensionScore(
-                  dimScore,
-                  dimension.questionIds.length,
-                  scoreRange.min,
-                  scoreRange.max
-                );
+
+                // 对于 EQ 量表，dimensionScores 中已经是百分比（0-100），不需要再归一化
+                // 对于其他量表，需要使用 normalizeDimensionScore 转换
+                let normalizedValue: number;
+                if (scaleId === 'eq' && result.dimensionScores) {
+                  // EQ 量表直接使用已计算的百分比
+                  normalizedValue = dimScore;
+                } else {
+                  // 其他量表需要归一化
+                  normalizedValue = normalizeDimensionScore(
+                    dimScore,
+                    dimension.questionIds.length,
+                    scoreRange.min,
+                    scoreRange.max
+                  );
+                }
 
                 return {
                   dimension: dimension.name,
@@ -463,6 +475,110 @@ export default function ResultPage() {
                     </div>
                   </div>
                 )}
+
+                {/* EQ 量表整体评价（综合三个维度） */}
+                {scaleId === 'eq' && scale.dimensions && (
+                  <div className="p-5 sm:p-8 bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 rounded-xl sm:rounded-2xl border border-purple-200/30 shadow-soft mt-4 sm:mt-6">
+                    <h3 className="font-bold text-neutral-900 mb-4 sm:mb-6 text-base sm:text-lg flex items-center gap-2">
+                      <span className="text-xl sm:text-2xl">🌟</span>
+                      整体评价
+                    </h3>
+                    {(() => {
+                      // EQ 量表的 dimensionScores 已经是百分比（0-100），直接使用
+                      const cognitivePercentage = dimensionScores['cognitive_empathy'] || 0;
+                      const emotionalPercentage = dimensionScores['emotional_empathy'] || 0;
+                      const socialPercentage = dimensionScores['social_skills'] || 0;
+
+                      // 判断各维度档次
+                      const getDimensionLevel = (percentage: number) => {
+                        if (percentage < 40) return '低';
+                        if (percentage < 70) return '中';
+                        return '高';
+                      };
+
+                      const cogLevel = getDimensionLevel(cognitivePercentage);
+                      const emoLevel = getDimensionLevel(emotionalPercentage);
+                      const socLevel = getDimensionLevel(socialPercentage);
+
+                      // 生成综合评价
+                      let overallAssessment = '';
+                      const strongAreas: string[] = [];
+                      const weakAreas: string[] = [];
+
+                      if (cogLevel === '高') strongAreas.push('认知共情');
+                      if (emoLevel === '高') strongAreas.push('情绪共情');
+                      if (socLevel === '高') strongAreas.push('社交技能');
+
+                      if (cogLevel === '低') weakAreas.push('认知共情');
+                      if (emoLevel === '低') weakAreas.push('情绪共情');
+                      if (socLevel === '低') weakAreas.push('社交技能');
+
+                      if (strongAreas.length === 3) {
+                        overallAssessment = '您在共情能力的三个维度上均表现优秀，具有全面而均衡的共情能力。您不仅能够理性地理解他人的想法和意图（认知共情），还能深刻地感受和共鸣他人的情绪（情绪共情），同时在社交场合中游刃有余（社交技能）。这种全面的共情能力使您在人际关系中占据优势，能够建立深厚而温暖的人际连接。';
+                      } else if (strongAreas.length === 2) {
+                        overallAssessment = `您在${strongAreas.join('和')}方面表现出色，显示出较强的共情潜力。建议在保持优势的同时，适当提升${weakAreas.length > 0 ? weakAreas.join('和') : '其他'}方面的能力，以实现更全面的共情能力发展。`;
+                      } else if (strongAreas.length === 1) {
+                        overallAssessment = `您在${strongAreas[0]}方面表现突出，这是您的优势所在。然而，共情能力是多维度的，建议您在${weakAreas.join('和')}等方面加强练习，以提升整体共情水平。均衡发展各个维度将帮助您更好地理解和回应他人，建立更深层的人际关系。`;
+                      } else if (weakAreas.length === 3) {
+                        overallAssessment = '您在共情能力的三个维度上均有较大的提升空间。共情能力是可以通过有意识的练习和学习来提升的。建议从基础的情绪识别和换位思考开始，逐步提升理解他人、感受他人和有效社交的能力。如果这影响了您的生活质量，建议寻求专业心理咨询的帮助。';
+                      } else {
+                        // 中等水平为主
+                        const midAreas: string[] = [];
+                        if (cogLevel === '中') midAreas.push('认知共情');
+                        if (emoLevel === '中') midAreas.push('情绪共情');
+                        if (socLevel === '中') midAreas.push('社交技能');
+
+                        if (strongAreas.length > 0) {
+                          overallAssessment = `您在${strongAreas.join('和')}方面表现优秀，而在${midAreas.join('和')}方面处于中等水平。继续保持您的优势领域，同时针对性地提升中等和较弱的维度，将使您的共情能力更加全面和成熟。`;
+                        } else {
+                          overallAssessment = `您的共情能力整体处于中等水平，在日常社交中基本能够理解和回应他人。通过有针对性的练习和学习，您有很大的提升空间。建议重点关注${weakAreas.length > 0 ? weakAreas.join('和') : midAreas.join('和')}等方面，以提升整体共情水平。`;
+                        }
+                      }
+
+                      return (
+                        <div className="space-y-4">
+                          <p className="text-sm sm:text-base text-neutral-700 leading-relaxed">
+                            {overallAssessment}
+                          </p>
+
+                          {/* 维度分布概览 */}
+                          <div className="grid grid-cols-3 gap-2 sm:gap-3 mt-4">
+                            <div className="p-3 rounded-lg bg-white/60 border border-neutral-200/50 text-center">
+                              <div className="text-xs text-neutral-600 mb-1">认知共情</div>
+                              <div className={`text-lg sm:text-xl font-bold ${
+                                cogLevel === '高' ? 'text-green-600' :
+                                cogLevel === '中' ? 'text-amber-600' : 'text-red-600'
+                              }`}>
+                                {cogLevel}
+                              </div>
+                              <div className="text-xs text-neutral-500">{cognitivePercentage.toFixed(0)}%</div>
+                            </div>
+                            <div className="p-3 rounded-lg bg-white/60 border border-neutral-200/50 text-center">
+                              <div className="text-xs text-neutral-600 mb-1">情绪共情</div>
+                              <div className={`text-lg sm:text-xl font-bold ${
+                                emoLevel === '高' ? 'text-green-600' :
+                                emoLevel === '中' ? 'text-amber-600' : 'text-red-600'
+                              }`}>
+                                {emoLevel}
+                              </div>
+                              <div className="text-xs text-neutral-500">{emotionalPercentage.toFixed(0)}%</div>
+                            </div>
+                            <div className="p-3 rounded-lg bg-white/60 border border-neutral-200/50 text-center">
+                              <div className="text-xs text-neutral-600 mb-1">社交技能</div>
+                              <div className={`text-lg sm:text-xl font-bold ${
+                                socLevel === '高' ? 'text-green-600' :
+                                socLevel === '中' ? 'text-amber-600' : 'text-red-600'
+                              }`}>
+                                {socLevel}
+                              </div>
+                              <div className="text-xs text-neutral-500">{socialPercentage.toFixed(0)}%</div>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })()}
+                  </div>
+                )}
               </>
             )}
 
@@ -517,13 +633,20 @@ export default function ResultPage() {
                 // 准备雷达图数据
                 const radarData: RadarDataPoint[] = scale.dimensions.map((dimension) => {
                   const dimScore = dimensionScores[dimension.id] || 0;
-                  // 使用正确的归一化函数计算百分比，传入量表的分值范围
-                  const normalizedValue = normalizeDimensionScore(
-                    dimScore,
-                    dimension.questionIds.length,
-                    scoreRange.min,
-                    scoreRange.max
-                  );
+
+                  // 对于 EQ 量表，dimensionScores 中已经是百分比，直接使用
+                  // 其他量表需要归一化
+                  let normalizedValue: number;
+                  if (scaleId === 'eq' && result.dimensionScores) {
+                    normalizedValue = dimScore;
+                  } else {
+                    normalizedValue = normalizeDimensionScore(
+                      dimScore,
+                      dimension.questionIds.length,
+                      scoreRange.min,
+                      scoreRange.max
+                    );
+                  }
 
                   return {
                     dimension: dimension.name,
@@ -549,24 +672,78 @@ export default function ResultPage() {
 
               <div className="space-y-4 sm:space-y-6">
                 {scale.dimensions.map((dimension, index) => {
-                  // 其他量表使用标准计算
                   const dimScore = dimensionScores[dimension.id] || 0;
-                  const dimPercentage = normalizeDimensionScore(
-                    dimScore,
-                    dimension.questionIds.length,
-                    scoreRange.min,
-                    scoreRange.max
-                  );
 
-                  // 根据分数确定颜色
+                  // 对于 EQ 量表，dimensionScores 中已经是百分比，直接使用
+                  // 其他量表需要归一化
+                  let dimPercentage: number;
+                  if (scaleId === 'eq' && result.dimensionScores) {
+                    dimPercentage = dimScore;
+                  } else {
+                    dimPercentage = normalizeDimensionScore(
+                      dimScore,
+                      dimension.questionIds.length,
+                      scoreRange.min,
+                      scoreRange.max
+                    );
+                  }
+
+                  // 根据分数确定颜色和档次（针对 EQ 量表）
                   let barColor = 'from-green-500 to-emerald-600';
                   let bgColor = 'from-green-50 to-emerald-50';
-                  if (dimPercentage >= 67) {
-                    barColor = 'from-red-500 to-rose-600';
-                    bgColor = 'from-red-50 to-rose-50';
-                  } else if (dimPercentage >= 34) {
-                    barColor = 'from-amber-500 to-orange-600';
-                    bgColor = 'from-amber-50 to-orange-50';
+                  let levelText = '高';
+                  let levelDesc = '';
+
+                  if (scaleId === 'eq') {
+                    // EQ 量表特殊处理：0-39低、40-69中、70-100高
+                    if (dimPercentage < 40) {
+                      barColor = 'from-red-500 to-rose-600';
+                      bgColor = 'from-red-50 to-rose-50';
+                      levelText = '低';
+
+                      if (dimension.id === 'cognitive_empathy') {
+                        levelDesc = '对他人的思维和意图理解能力有限。容易误解他人行为或观点，换位思考困难。需要提升逻辑理解他人意图的能力。';
+                      } else if (dimension.id === 'emotional_empathy') {
+                        levelDesc = '情绪共鸣能力较弱，对他人情绪感知不足，难以表达同理或关怀。可能在社交关系中显得冷漠或疏离。';
+                      } else if (dimension.id === 'social_skills') {
+                        levelDesc = '社交能力有限，沟通不顺畅，难以处理复杂社交情境。需要训练基本社交技巧和互动规则。';
+                      }
+                    } else if (dimPercentage < 70) {
+                      barColor = 'from-amber-500 to-orange-600';
+                      bgColor = 'from-amber-50 to-orange-50';
+                      levelText = '中';
+
+                      if (dimension.id === 'cognitive_empathy') {
+                        levelDesc = '能理解他人的心理状态和观点，但在复杂或压力情境下仍可能理解不准确。适合练习多角度思考和理性判断。';
+                      } else if (dimension.id === 'emotional_empathy') {
+                        levelDesc = '能感受到他人情绪，但在情绪吸收和共情上存在一定波动。可通过练习情绪识别和情绪表达增强共情力。';
+                      } else if (dimension.id === 'social_skills') {
+                        levelDesc = '社交能力一般，能应对常规人际交往，但在冲突或复杂社交场景下可能表现不佳。可通过练习沟通策略和社交礼仪提高。';
+                      }
+                    } else {
+                      levelText = '高';
+
+                      if (dimension.id === 'cognitive_empathy') {
+                        levelDesc = '善于理解他人的思维和意图，能够准确把握他人的观点与心理状态。换位思考能力强，社交理解能力突出。';
+                      } else if (dimension.id === 'emotional_empathy') {
+                        levelDesc = '情绪敏感且易于共情，能够感受到他人情绪并适当回应。善于表达关怀，能够建立温暖的人际关系。';
+                      } else if (dimension.id === 'social_skills') {
+                        levelDesc = '社交能力强，能够灵活适应不同情境，有效沟通并建立良好的人际关系。能够自如处理冲突与合作。';
+                      }
+                    }
+                  } else {
+                    // 其他量表使用原有逻辑
+                    if (dimPercentage >= 67) {
+                      barColor = 'from-red-500 to-rose-600';
+                      bgColor = 'from-red-50 to-rose-50';
+                      levelText = '高风险';
+                    } else if (dimPercentage >= 34) {
+                      barColor = 'from-amber-500 to-orange-600';
+                      bgColor = 'from-amber-50 to-orange-50';
+                      levelText = '需关注';
+                    } else {
+                      levelText = '健康';
+                    }
                   }
 
                   return (
@@ -593,7 +770,7 @@ export default function ResultPage() {
                       </div>
 
                       {/* 3D进度条 */}
-                      <div className="relative">
+                      <div className="relative mb-4">
                         {/* 底层阴影 */}
                         <div className={`absolute inset-x-0 top-1 h-5 sm:h-6 bg-gradient-to-r ${barColor} opacity-10 rounded-full blur-sm`}></div>
 
@@ -620,6 +797,23 @@ export default function ResultPage() {
                           <span>100</span>
                         </div>
                       </div>
+
+                      {/* 维度档次和详细描述（仅 EQ 量表） */}
+                      {scaleId === 'eq' && levelDesc && (
+                        <div className={`p-3 sm:p-4 rounded-xl bg-gradient-to-br ${bgColor} border border-neutral-200/30`}>
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className={`px-2 py-1 text-xs font-bold rounded-lg bg-gradient-to-r ${barColor} text-white shadow-soft`}>
+                              {levelText}
+                            </span>
+                            <span className="text-xs sm:text-sm font-semibold text-neutral-700">
+                              {dimPercentage.toFixed(0)}分 / 100分
+                            </span>
+                          </div>
+                          <p className="text-xs sm:text-sm text-neutral-700 leading-relaxed">
+                            {levelDesc}
+                          </p>
+                        </div>
+                      )}
                     </div>
                   );
                 })}

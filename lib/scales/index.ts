@@ -5,10 +5,12 @@ import { essScale } from './ess';
 import { ini } from './ini';
 import { pat } from './pat';
 import { zhz } from './zhz';
+import { eq } from './eq';
 
 // 所有可用的量表
 const scales: QuizTemplate[] = [
   zhz,
+  eq,
   pat,
   essScale,
   ini,

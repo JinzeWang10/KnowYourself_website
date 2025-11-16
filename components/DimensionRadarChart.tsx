@@ -58,15 +58,15 @@ export default function DimensionRadarChart({
       const data = payload[0].payload;
       const value = data.value;
       const percentage = (value / maxDomain) * 100;
-      let level = '健康范围';
+      let level = '较低';
       let color = '#10b981'; // green
 
       if (percentage >= 67) {
-        level = '高风险';
-        color = '#ef4444'; // red
+        level = '较高';
+        color = '#8b5cf6'; // purple
       } else if (percentage >= 34) {
-        level = '需要关注';
-        color = '#f59e0b'; // amber
+        level = '中等';
+        color = '#3b82f6'; // blue
       }
 
       return (
@@ -75,7 +75,6 @@ export default function DimensionRadarChart({
           <p className="text-2xl font-bold" style={{ color }}>
             {value.toFixed(1)}分
           </p>
-          <p className="text-sm text-gray-500 mt-1">{level}</p>
         </div>
       );
     }
@@ -193,15 +192,15 @@ export default function DimensionRadarChart({
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <div className="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-200/50 shadow-soft">
               <div className="w-3 h-3 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 shadow-soft"></div>
-              <span className="text-sm font-medium text-neutral-700">健康范围 (0-33)</span>
+              <span className="text-sm font-medium text-neutral-700">较低水平 (0-33)</span>
             </div>
-            <div className="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl border border-amber-200/50 shadow-soft">
-              <div className="w-3 h-3 rounded-full bg-gradient-to-br from-amber-500 to-orange-600 shadow-soft"></div>
-              <span className="text-sm font-medium text-neutral-700">需要关注 (34-66)</span>
+            <div className="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-200/50 shadow-soft">
+              <div className="w-3 h-3 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 shadow-soft"></div>
+              <span className="text-sm font-medium text-neutral-700">中等水平 (34-66)</span>
             </div>
-            <div className="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-red-50 to-rose-50 rounded-xl border border-red-200/50 shadow-soft">
-              <div className="w-3 h-3 rounded-full bg-gradient-to-br from-red-500 to-rose-600 shadow-soft"></div>
-              <span className="text-sm font-medium text-neutral-700">高风险 (67-100)</span>
+            <div className="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-purple-50 to-violet-50 rounded-xl border border-purple-200/50 shadow-soft">
+              <div className="w-3 h-3 rounded-full bg-gradient-to-br from-purple-500 to-violet-600 shadow-soft"></div>
+              <span className="text-sm font-medium text-neutral-700">较高水平 (67-100)</span>
             </div>
           </div>
 
