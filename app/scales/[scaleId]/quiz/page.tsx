@@ -193,10 +193,8 @@ export default function QuizPage() {
         localStorage.setItem('quiz-history', JSON.stringify(history));
       }
 
-      // 清除进度和状态
+      // 清除进度（路由跳转后会自动卸载组件，不需要立即清除状态）
       localStorage.removeItem(`quiz-progress-${scaleId}`);
-      setAnswers({});
-      setCurrentIndex(0);
 
       // 跳转到结果页
       router.push(`/scales/${scaleId}/result/${result.id}`);
@@ -270,10 +268,8 @@ export default function QuizPage() {
         console.log('记录已存在，跳过添加');
       }
 
-      // 清除进度和状态
+      // 清除进度（路由跳转后会自动卸载组件，不需要立即清除状态）
       localStorage.removeItem(`quiz-progress-${scaleId}`);
-      setAnswers({});
-      setCurrentIndex(0);
 
       // 跳转到结果页
       router.push(`/scales/${scaleId}/result/${result.id}`);
@@ -346,10 +342,8 @@ export default function QuizPage() {
         localStorage.setItem('quiz-history', JSON.stringify(history));
       }
 
-      // 清除进度和状态
+      // 清除进度（路由跳转后会自动卸载组件，不需要立即清除状态）
       localStorage.removeItem(`quiz-progress-${scaleId}`);
-      setAnswers({});
-      setCurrentIndex(0);
 
       // 跳转到结果页
       router.push(`/scales/${scaleId}/result/${result.id}`);
@@ -424,10 +418,8 @@ export default function QuizPage() {
       console.log('记录已存在，跳过添加');
     }
 
-    // 清除进度和状态
+    // 清除进度（路由跳转后会自动卸载组件，不需要立即清除状态）
     localStorage.removeItem(`quiz-progress-${scaleId}`);
-    setAnswers({});
-    setCurrentIndex(0);
 
     // 跳转到结果页
     router.push(`/scales/${scaleId}/result/${result.id}`);
@@ -596,11 +588,11 @@ export default function QuizPage() {
             ) : (
               // 传统垂直选项样式
               <div className="space-y-2 sm:space-y-4">
-                {currentQuestion.options?.map((option) => {
+                {currentQuestion.options?.map((option, optionIndex) => {
                   const isSelected = answers[currentQuestion.id] === option.value;
                   return (
                     <button
-                      key={option.value}
+                      key={`${currentQuestion.id}-option-${optionIndex}`}
                       onClick={() => handleAnswer(option.value)}
                       className={`group w-full text-left p-3 sm:p-6 rounded-xl sm:rounded-2xl border-2 transition-all duration-300 ${
                         isSelected
