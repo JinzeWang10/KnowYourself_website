@@ -111,7 +111,12 @@ export default function DivergingBarChartSimple({ data, compact = false }: Diver
                   style={{
                     left: `${item.value}%`,
                     top: '50%',
-                    transform: 'translate(-50%, -50%)'
+                    // 根据百分比位置调整偏移，避免边缘遮挡
+                    transform: item.value < 10
+                      ? 'translate(0, -50%)' // 接近左边界，不向左偏移
+                      : item.value > 90
+                      ? 'translate(-100%, -50%)' // 接近右边界，不向右偏移
+                      : 'translate(-50%, -50%)' // 中间区域，居中显示
                   }}
                 >
                   <div

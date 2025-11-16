@@ -183,11 +183,11 @@ const ZHZShareCard = forwardRef<HTMLDivElement, ZHZShareCardProps>(function ZHZS
             </div>
           </div>
 
-          {/* 内容区域：双极条形图 + 其他角色 */}
-          <div className="grid grid-cols-2 gap-6 mb-8">
-            {/* 左侧：人格维度双极条形图 */}
+          {/* 内容区域：双极条形图 + 其他角色 - 改为上下排列 */}
+          <div className="flex flex-col gap-6 mb-8">
+            {/* 人格维度双极条形图 */}
             {radarData && radarData.length > 0 && (
-              <div className="bg-white rounded-2xl shadow-soft border border-neutral-100" style={{ padding: '20px 16px', minHeight: '400px' }}>
+              <div className="bg-white rounded-2xl shadow-soft border border-neutral-100" style={{ padding: '20px 16px' }}>
                 <h3 className="text-center font-black text-neutral-900 mb-6 text-lg flex items-center justify-center gap-2">
                   <span>📊</span>
                   人格维度分析
@@ -206,9 +206,9 @@ const ZHZShareCard = forwardRef<HTMLDivElement, ZHZShareCardProps>(function ZHZS
               </div>
             )}
 
-            {/* 右侧：其他相似角色 - 修复：移除backdrop-blur */}
+            {/* 其他相似角色 */}
             {otherCharacters && otherCharacters.length > 0 && (
-              <div className="bg-white rounded-2xl shadow-soft border border-neutral-100" style={{ padding: '36px 12px', minHeight: '400px' }}>
+              <div className="bg-white rounded-2xl shadow-soft border border-neutral-100" style={{ padding: '24px 16px' }}>
                 <h3 className="text-center font-black text-neutral-900 mb-4 text-lg flex items-center justify-center gap-2">
                   <span>🎭</span>
                   其他相似角色

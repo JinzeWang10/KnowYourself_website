@@ -6,24 +6,17 @@ import Link from 'next/link';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import { getScaleById, calculateDimensionScores, normalizeScore, normalizeDimensionScore, getScaleScoreRange } from '@/lib/scales';
-import { getCharacterImagePath, getCharacterCoreTrait, getCharacterSubtitle, getCharacterEmoji, getCharacterDetailedTraits, ZHZ_DIMENSION_LABELS } from '@/lib/scales/zhz';
+import { getCharacterImagePath, getCharacterCoreTrait, getCharacterSubtitle, getCharacterEmoji, getCharacterDetailedTraits } from '@/lib/scales/zhz';
 // import { getPercentileRank } from '@/lib/api-client';
 import { exportWithFeedback } from '@/lib/export-image';
 import type { QuizResult } from '@/types/quiz';
 import type { RadarDataPoint } from '@/components/DimensionRadarChart';
-import type { DivergingBarDataPoint } from '@/components/DivergingBarChart';
 import ShareCard from '@/components/ShareCard';
 import ZHZShareCard from '@/components/ZHZShareCard';
 
 // 动态导入雷达图组件（仅客户端）
 const DimensionRadarChart = dynamic(
   () => import('@/components/DimensionRadarChart'),
-  { ssr: false }
-);
-
-// 动态导入双极条形图组件（仅客户端）
-const DivergingBarChart = dynamic(
-  () => import('@/components/DivergingBarChart'),
   { ssr: false }
 );
 
@@ -539,53 +532,26 @@ export default function ResultPage() {
             </div>
           )}
 
-          {/* Dimension Scores - ZHZ使用双极条形图，其他量表使用传统进度条 */}
-          {scale.dimensions && scale.dimensions.length > 0 && (
+          {/* Dimension Scores - ZHZ量表在分享卡片中已有，其他量表使用传统进度条 */}
+          {!isZHZ && scale.dimensions && scale.dimensions.length > 0 && (
             <div className="bg-white/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-soft-lg p-5 sm:p-10 mb-6 sm:mb-8 border border-neutral-100/50 animate-slide-up animation-delay-200">
               <div className="flex items-center gap-2 sm:gap-3 mb-6 sm:mb-8">
                 <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-soft">
                   <span className="text-xl sm:text-2xl">📊</span>
                 </div>
-                <h2 className="text-xl sm:text-2xl font-bold text-neutral-900">
-                  {isZHZ ? '人格维度分析' : '维度得分详情'}
-                </h2>
+                <h2 className="text-xl sm:text-2xl font-bold text-neutral-900">维度得分详情</h2>
               </div>
 
-              {/* ZHZ专属：双极条形图 */}
-              {isZHZ && zhzMetadata && zhzMetadata.userVector ? (
-                <DivergingBarChart
-                  data={scale.dimensions.map((dimension) => {
-                    const dimPercentage = (zhzMetadata.userVector[dimension.id] || 0) * 100;
-                    const labels = ZHZ_DIMENSION_LABELS[dimension.id as keyof typeof ZHZ_DIMENSION_LABELS] || { left: '低', right: '高' };
-
-                    return {
-                      dimension: dimension.name,
-                      value: dimPercentage,
-                      leftLabel: labels.left,
-                      rightLabel: labels.right,
-                      description: dimension.description
-                    };
-                  })}
-                />
-              ) : (
-                /* 其他量表：传统进度条 */
-                <div className="space-y-4 sm:space-y-6">
-                  {scale.dimensions.map((dimension, index) => {
-                  // 对于 ZHZ 量表，使用 metadata 中的 userVector
-                  let dimPercentage: number;
-                  if (isZHZ && zhzMetadata && zhzMetadata.userVector) {
-                    // ZHZ 的 userVector 已经是 0-1 的值，直接转换为百分比
-                    dimPercentage = (zhzMetadata.userVector[dimension.id] || 0) * 100;
-                  } else {
-                    // 其他量表使用标准计算
-                    const dimScore = dimensionScores[dimension.id] || 0;
-                    dimPercentage = normalizeDimensionScore(
-                      dimScore,
-                      dimension.questionIds.length,
-                      scoreRange.min,
-                      scoreRange.max
-                    );
-                  }
+              <div className="space-y-4 sm:space-y-6">
+                {scale.dimensions.map((dimension, index) => {
+                  // 其他量表使用标准计算
+                  const dimScore = dimensionScores[dimension.id] || 0;
+                  const dimPercentage = normalizeDimensionScore(
+                    dimScore,
+                    dimension.questionIds.length,
+                    scoreRange.min,
+                    scoreRange.max
+                  );
 
                   // 根据分数确定颜色
                   let barColor = 'from-green-500 to-emerald-600';
@@ -652,8 +618,7 @@ export default function ResultPage() {
                     </div>
                   );
                 })}
-                </div>
-              )}
+              </div>
             </div>
           )}
 
