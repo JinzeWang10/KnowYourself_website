@@ -294,18 +294,18 @@ export default function QuizPage() {
         quizId: scale.id,
         quizTitle: scale.title,
         score: eqResult.totalScore,
-        level: eqResult.dimensionScores[0]?.dimension || '未知',
+        level: eqResult.dimensionScores?.[0]?.dimension || '未知',
         completedAt: new Date(),
         answers: Object.entries(answersToSubmit).map(([questionId, answer]) => ({
           questionId,
           answer: typeof answer === 'number' ? answer : Number(answer),
         })),
-        dimensionScores: eqResult.dimensionScores.reduce((acc, item: any) => {
+        dimensionScores: eqResult.dimensionScores?.reduce((acc, item: any) => {
           // 使用 dimensionId（英文ID）作为键，如果没有则降级使用中文名称
           const key = item.dimensionId || item.dimension;
           acc[key] = item.score;
           return acc;
-        }, {} as Record<string, number>),
+        }, {} as Record<string, number>) || {},
         report: {
           summary: eqResult.interpretation,
           details: [],
