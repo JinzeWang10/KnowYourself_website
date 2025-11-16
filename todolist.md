@@ -14,21 +14,11 @@ scales 页面，每个测评的图标需要更新：
 
 https://www.arealme.com/cn
 
-动物人格-选项有时候没有一个想选的
-
 Reading the Mind in the Eyes Test 仅看眼睛部分，猜情绪 极具吸引力，常用于心理课程  
 Emotion Recognition Test 看人脸判断情绪 可结合 AI 生成头像实现--https://kdef.se/
 Empathy Quotient (EQ) 测共情能力 有短版/长版公开问卷
 
 https://psychology-tools.com/test/big-5-personality-test
-https://psychology-tools.com/test/empathy-quotient
 https://m.psyctest.cn/tag/%E9%87%8F%E8%A1%A8/
 
-/scales/zhz/result/页面的条形图，如果维度百分比接近 0 或者 100，这个百分比数字会被条形框边缘遮挡，显示不全。请调整
-
-在手机端，分享卡片中的“人格维度分析”和“其他相似角色”两部分，由于手机屏幕窄，这两部分更加窄了。能否直接把这两部分从上下排列变为左右排列？
-
 EQ（empathy-quotient）量表，请参考 scales_desc/EQ.md 设计 EQ 量表
-
-现在做完一遍测试，重新做的时候，会自动跳到最后一题，应该回到第一题。
-现在如果有题目没有答也可以提交。如果有未答题目，点击提交应该自动跳转到未回答题目页面。

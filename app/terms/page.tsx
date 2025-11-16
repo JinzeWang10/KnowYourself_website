@@ -149,14 +149,13 @@ export default function TermsPage() {
                 如您对本协议有任何疑问或建议，请通过以下方式联系我们：
               </p>
               <ul className="list-none text-gray-700 space-y-2">
-                <li>📧 电子邮件: support@yourdomain.com</li>
-                <li>📍 联系地址: （待填写注册公司或运营主体地址）</li>
+                <li>📧 电子邮件: knowyourself_ofc@163.com</li>
               </ul>
             </section>
 
             <div className="bg-gray-100 p-6 rounded-lg text-center">
               <p className="text-sm text-gray-600">
-                本协议最后更新时间：2025年1月
+                本协议最后更新时间：2025年11月
               </p>
               <p className="text-sm text-gray-600 mt-2">
                 © 2025 心理量表测评平台 版权所有

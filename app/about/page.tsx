@@ -95,6 +95,24 @@ export default function AboutPage() {
             </div>
           </section>
 
+          {/* 联系我们 */}
+          <section className="mb-10">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+              <span className="w-2 h-8 bg-gradient-to-b from-blue-500 to-purple-500 rounded-full mr-3"></span>
+              联系我们
+            </h2>
+            <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl p-6 space-y-3">
+              <p className="text-gray-700 leading-relaxed">
+                邮箱：knowyourself_ofc@163.com
+              </p>
+              <p className="text-gray-700 leading-relaxed" >
+                <a href="https://www.xiaohongshu.com/user/profile/6844647c000000001e03f355">
+                    小红书：Know Yourself心理测评
+                </a>
+              </p>
+            </div>
+          </section>
+
           {/* 结尾口号 */}
           <div className="text-center mt-12 pt-8 border-t border-gray-200">
             <p className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 mb-2">

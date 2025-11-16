@@ -172,8 +172,8 @@ export default function PrivacyPage() {
                 如您对本隐私政策有任何疑问、意见或投诉，或希望行使您的隐私权利，请通过以下方式联系我们：
               </p>
               <ul className="list-none text-gray-700 space-y-2">
-                <li>📧 <strong>电子邮件</strong>: support@yourdomain.com</li>
-                <li>📍 <strong>联系地址</strong>: （待填写注册公司或运营主体地址）</li>
+                <li>📧 <strong>电子邮件</strong>: knowyourself_ofc@163.com</li>
+           
               </ul>
               <p className="text-gray-700 leading-relaxed mt-4">
                 我们将在收到您的请求后 15 个工作日内予以回复。
@@ -182,7 +182,7 @@ export default function PrivacyPage() {
 
             <div className="bg-gray-100 p-6 rounded-lg text-center">
               <p className="text-sm text-gray-600">
-                本政策最后更新时间：2025年1月
+                本政策最后更新时间：2025年11月
               </p>
               <p className="text-sm text-gray-600 mt-2">
                 © 2025 心理量表测评平台 版权所有

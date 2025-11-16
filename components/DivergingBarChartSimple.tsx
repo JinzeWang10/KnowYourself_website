@@ -57,88 +57,71 @@ export default function DivergingBarChartSimple({ data, compact = false }: Diver
           const barStyle = getBarStyle(item.value);
           const isLeft = item.value < 50;
 
+          // 计算左右百分比
+          const leftPercentage = item.value < 50 ? Math.round(100 - item.value) : 0;
+          const rightPercentage = item.value >= 50 ? Math.round(item.value) : 0;
+
           return (
             <div key={index}>
               {/* 维度名称 */}
-              <div className="text-center mb-1.5">
+              <div className="text-center mb-2">
                 <h4 className={`font-bold text-neutral-900 ${compact ? 'text-xs' : 'text-sm'}`}>
                   {item.dimension}
                 </h4>
               </div>
 
-              {/* 双极标签 */}
-              <div className={`flex items-center justify-between ${compact ? 'text-[10px]' : 'text-xs'} text-neutral-600 mb-1 px-0.5`}>
-                <span className={`font-medium ${isLeft ? 'text-blue-600 font-bold' : ''}`}>
+              {/* 双极标签 + 条形图在同一行 */}
+              <div className="flex items-center gap-2">
+                {/* 左侧标签 */}
+                <span className={`${compact ? 'text-[10px]' : 'text-xs'} text-neutral-600 font-medium whitespace-nowrap flex-shrink-0`}>
                   {item.leftLabel}
                 </span>
-                <span className={`font-medium ${!isLeft && item.value !== 50 ? 'text-purple-600 font-bold' : ''}`}>
+
+                {/* 条形图容器 */}
+                <div
+                  className={`relative ${compact ? 'h-6' : 'h-8'} rounded-full overflow-hidden border border-neutral-200 flex-1`}
+                  style={{
+                    backgroundColor: '#f5f5f5',
+                    minHeight: compact ? '24px' : '32px'
+                  }}
+                >
+                  {/* 中心分割线 */}
+                  <div
+                    className="absolute top-0 bottom-0 z-10"
+                    style={{
+                      left: '50%',
+                      width: '2px',
+                      backgroundColor: '#d4d4d4',
+                      height: '100%'
+                    }}
+                  ></div>
+
+                  {/* 进度条 - 纯色版本，避免渐变 */}
+                  <div
+                    className="absolute top-0 bottom-0 z-0"
+                    style={{
+                      ...barStyle,
+                      backgroundColor: isLeft ? '#3b82f6' : '#a855f7',
+                      height: '100%'
+                    }}
+                  ></div>
+                </div>
+
+                {/* 右侧标签 */}
+                <span className={`${compact ? 'text-[10px]' : 'text-xs'} text-neutral-600 font-medium whitespace-nowrap flex-shrink-0`}>
                   {item.rightLabel}
                 </span>
               </div>
 
-              {/* 条形图容器 */}
-              <div
-                className={`relative ${compact ? 'h-8' : 'h-10'} rounded-full overflow-hidden border border-neutral-200`}
-                style={{
-                  backgroundColor: '#f5f5f5',
-                  minHeight: compact ? '32px' : '40px'
-                }}
-              >
-                {/* 中心分割线 */}
-                <div
-                  className="absolute top-0 bottom-0 z-10"
-                  style={{
-                    left: '50%',
-                    width: '2px',
-                    backgroundColor: '#d4d4d4',
-                    height: '100%'
-                  }}
-                ></div>
-
-                {/* 进度条 - 纯色版本，避免渐变 */}
-                <div
-                  className="absolute top-0 bottom-0 z-0"
-                  style={{
-                    ...barStyle,
-                    backgroundColor: isLeft ? '#3b82f6' : '#a855f7',
-                    height: '100%'
-                  }}
-                ></div>
-
-                {/* 数值指示器 */}
-                <div
-                  className="absolute z-20"
-                  style={{
-                    left: `${item.value}%`,
-                    top: '50%',
-                    // 根据百分比位置调整偏移，避免边缘遮挡
-                    transform: item.value < 10
-                      ? 'translate(0, -50%)' // 接近左边界，不向左偏移
-                      : item.value > 90
-                      ? 'translate(-100%, -50%)' // 接近右边界，不向右偏移
-                      : 'translate(-50%, -50%)' // 中间区域，居中显示
-                  }}
-                >
-                  <div
-                    className={`${compact ? 'px-2 py-1' : 'px-2.5 py-1.5'} rounded-lg text-white font-bold ${compact ? 'text-[10px]' : 'text-xs'} whitespace-nowrap`}
-                    style={{
-                      backgroundColor: isLeft ? '#3b82f6' : '#a855f7',
-                      boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-                    }}
-                  >
-                    {Math.round(item.value)}%
-                  </div>
-                </div>
+              {/* 百分比显示在下方 */}
+              <div className="flex items-center justify-between mt-1 px-0.5">
+                <span className={`${compact ? 'text-[10px]' : 'text-xs'} ${isLeft ? 'text-blue-600 font-bold' : 'text-neutral-400'}`}>
+                  {`${Math.round(item.value)}%`}
+                </span>
+                <span className={`${compact ? 'text-[10px]' : 'text-xs'} ${!isLeft && item.value !== 50 ? 'text-purple-600 font-bold' : 'text-neutral-400'}`}>
+                  {`${Math.round(item.value)}%`}
+                </span>
               </div>
-
-              {/* 刻度标记 */}
-              {!compact && (
-                <div className="flex justify-between text-[9px] text-neutral-400 mt-1 px-0.5">
-                  <span>0</span>
-                  <span className="font-bold text-neutral-500">50</span>
-                  <span>100</span>
-                </div>
-              )}
             </div>
           );
         })}

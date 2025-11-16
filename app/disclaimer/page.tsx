@@ -156,8 +156,8 @@ export default function DisclaimerPage() {
                 如您对本免责声明有任何疑问，请通过以下方式联系我们：
               </p>
               <ul className="list-none text-gray-700 space-y-2">
-                <li>📧 <strong>电子邮件</strong>: support@yourdomain.com</li>
-                <li>📍 <strong>联系地址</strong>: （待填写注册公司或运营主体地址）</li>
+                <li>📧 <strong>电子邮件</strong>: knowyourself_ofc@163.com</li>
+      
               </ul>
             </section>
 
@@ -166,7 +166,7 @@ export default function DisclaimerPage() {
                 重要提示：使用本平台即表示您已完全理解并同意本免责声明
               </p>
               <p className="text-sm text-gray-300">
-                本声明最后更新时间：2025年1月
+                本声明最后更新时间：2025年11月
               </p>
             </div>
           </div>
