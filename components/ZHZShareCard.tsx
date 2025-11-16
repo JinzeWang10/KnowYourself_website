@@ -25,12 +25,12 @@ interface ZHZShareCardProps {
 
 // 维度标签映射（用于双极条形图）
 const dimensionLabels: Record<string, { left: string; right: string }> = {
-  '情绪敏感性': { left: '稳定冷静', right: '敏感细腻' },
-  '思维模式': { left: '直觉冲动', right: '理性谋划' },
-  '社交能量': { left: '内向沉静', right: '外向张扬' },
-  '价值取向': { left: '实用主义', right: '理想主义' },
-  '野心指数': { left: '随遇而安', right: '进取心强' },
-  '自我表达': { left: '战略掩饰', right: '真实坦率' }
+  '情绪敏感性': { left: '敏感细腻', right: '稳定冷静' },
+  '思维模式': { left: '理性谋划', right: '直觉决断' },
+  '社交能量': { left: '外向活泼', right: '内向沉稳' },
+  '价值取向': { left: '理想主义', right: '实用主义' },
+  '野心指数': { left: '进取心强', right: '随遇而安' },
+  '自我表达': { left: '真实坦率', right: '含蓄内敛' }
 };
 
 function getLabelForDimension(dimension: string, side: 'left' | 'right'): string {
