@@ -133,7 +133,6 @@ async function verify() {
       _count: true,
       _avg: {
         totalScore: true,
-        age: true,
       },
       orderBy: {
         _count: {
@@ -142,21 +141,32 @@ async function verify() {
       }
     })
 
-    scaleStats.forEach(stat => {
+    // 为每个量表计算平均年龄（需要关联查询）
+    for (const stat of scaleStats) {
+      const records = await prisma.assessmentRecord.findMany({
+        where: { scaleId: stat.scaleId },
+        include: { user: true }
+      })
+
+      const avgAge = records.length > 0
+        ? records.reduce((sum, r) => sum + r.user.age, 0) / records.length
+        : 0
+
       const avgScore = stat._avg.totalScore?.toFixed(1) || 'N/A'
-      const avgAge = stat._avg.age?.toFixed(1) || 'N/A'
+
       console.log(`${stat.scaleTitle}:`)
       console.log(`  📊 记录数: ${stat._count}`)
       console.log(`  📈 平均分: ${avgScore}`)
-      console.log(`  👥 平均年龄: ${avgAge}岁`)
+      console.log(`  👥 平均年龄: ${avgAge.toFixed(1)}岁`)
       console.log()
-    })
+    }
 
     // 6. 检查是否有异常数据
     console.log('6️⃣ 数据质量检查:')
     console.log('-'.repeat(70))
 
-    const invalidAge = await prisma.assessmentRecord.count({
+    // 检查异常年龄（需要在用户表中查询）
+    const invalidAgeUsers = await prisma.anonymousUser.count({
       where: {
         OR: [
           { age: { lt: 10 } },
@@ -171,8 +181,8 @@ async function verify() {
       }
     })
 
-    if (invalidAge > 0) {
-      console.log(`⚠️  发现 ${invalidAge} 条年龄异常的记录（<10 或 >100）`)
+    if (invalidAgeUsers > 0) {
+      console.log(`⚠️  发现 ${invalidAgeUsers} 个年龄异常的用户（<10 或 >100）`)
     } else {
       console.log('✅ 年龄数据正常')
     }
