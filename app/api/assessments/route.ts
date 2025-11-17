@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import type { AssessmentRecord } from '@/types/analytics';
+import type { AssessmentSubmission } from '@/types/analytics';
 import { prisma } from '@/lib/prisma';
 
 /**
@@ -8,10 +8,12 @@ import { prisma } from '@/lib/prisma';
  */
 export async function POST(request: NextRequest) {
   try {
-    const data: AssessmentRecord = await request.json();
+    const data: AssessmentSubmission = await request.json();
+
+    const { userId, gender, age, region, record } = data;
 
     // 数据验证
-    if (!data.scaleId || !data.gender || !data.age || data.totalScore === undefined || !data.answers) {
+    if (!userId || !record.scaleId || !gender || !age || record.totalScore === undefined || !record.answers) {
       return NextResponse.json(
         { success: false, error: '缺少必要字段' },
         { status: 400 }
@@ -19,7 +21,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 验证 answers 格式
-    if (!Array.isArray(data.answers) || data.answers.length === 0) {
+    if (!Array.isArray(record.answers) || record.answers.length === 0) {
       return NextResponse.json(
         { success: false, error: 'answers 必须是非空数组' },
         { status: 400 }
@@ -27,7 +29,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 年龄范围验证
-    if (data.age < 1 || data.age > 120) {
+    if (age < 1 || age > 120) {
       return NextResponse.json(
         { success: false, error: '年龄范围无效' },
         { status: 400 }
@@ -35,40 +37,74 @@ export async function POST(request: NextRequest) {
     }
 
     // 添加时间戳（如果未提供）
-    if (!data.completedAt) {
-      data.completedAt = new Date().toISOString();
+    if (!record.completedAt) {
+      record.completedAt = new Date().toISOString();
     }
 
     // 生成唯一ID（如果未提供）
-    if (!data.id) {
-      data.id = `record-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    if (!record.id) {
+      record.id = `record-${Date.now()}-${crypto.randomUUID()}`;
     }
 
-    // 保存到数据库
-    const record = await prisma.assessmentRecord.create({
-      data: {
-        id: data.id,
-        scaleId: data.scaleId,
-        scaleTitle: data.scaleTitle,
-        gender: data.gender,
-        age: data.age,
-        totalScore: data.totalScore,
-        normalizedScore: data.normalizedScore,
-        level: data.level,
-        dimensionScores: data.dimensionScores ? data.dimensionScores : undefined,
-        answers: data.answers,
-        completedAt: new Date(data.completedAt),
-        duration: data.duration || undefined,
-        region: data.region || undefined,
-      },
+    // 检查是否已存在相同 ID 的记录（防止重复提交）
+    const existingRecord = await prisma.assessmentRecord.findUnique({
+      where: { id: record.id },
     });
 
-    console.log(`[Analytics] 新测评记录已保存到数据库: ${data.scaleId}, 性别: ${data.gender}, 年龄: ${data.age}, 得分: ${data.totalScore}`);
+    if (existingRecord) {
+      console.log(`[Analytics] 记录已存在，忽略重复提交: ${record.id}`);
+      return NextResponse.json({
+        success: true,
+        message: '记录已存在',
+        recordId: existingRecord.id,
+        duplicate: true,
+      });
+    }
+
+    // 使用事务确保用户和测评记录一起创建/更新
+    const result = await prisma.$transaction(async (tx) => {
+      // 1. 创建或更新用户信息
+      const user = await tx.anonymousUser.upsert({
+        where: { id: userId },
+        create: {
+          id: userId,
+          gender,
+          age,
+          region: region || null,
+        },
+        update: {
+          gender,
+          age,
+          region: region || null,
+        },
+      });
+
+      // 2. 创建测评记录
+      const assessmentRecord = await tx.assessmentRecord.create({
+        data: {
+          id: record.id,
+          userId: user.id,
+          scaleId: record.scaleId,
+          scaleTitle: record.scaleTitle,
+          totalScore: record.totalScore,
+          normalizedScore: record.normalizedScore,
+          level: record.level,
+          dimensionScores: record.dimensionScores || undefined,
+          answers: record.answers,
+          completedAt: new Date(record.completedAt),
+          duration: record.duration || null,
+        },
+      });
+
+      return { user, record: assessmentRecord };
+    });
+
+    console.log(`[Analytics] 新测评记录已保存: ${record.scaleId}, 用户: ${userId}, 性别: ${gender}, 年龄: ${age}, 得分: ${record.totalScore}`);
 
     return NextResponse.json({
       success: true,
       message: '测评记录已保存',
-      recordId: record.id,
+      recordId: result.record.id,
     });
   } catch (error) {
     console.error('[Analytics] 保存测评记录失败:', error);
@@ -95,10 +131,11 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // 从数据库查询指定量表的记录
+    // 从数据库查询指定量表的记录（关联用户信息）
     const records = await prisma.assessmentRecord.findMany({
       where: { scaleId },
-      orderBy: { createdAt: 'desc' },
+      include: { user: true },
+      orderBy: { completedAt: 'desc' },
     });
 
     if (records.length === 0) {
@@ -121,11 +158,12 @@ export async function GET(request: NextRequest) {
 
     // 性别分布统计
     const genderStats = records.reduce((acc, r) => {
-      if (!acc[r.gender]) {
-        acc[r.gender] = { count: 0, totalScore: 0 };
+      const gender = r.user.gender;
+      if (!acc[gender]) {
+        acc[gender] = { count: 0, totalScore: 0 };
       }
-      acc[r.gender].count++;
-      acc[r.gender].totalScore += r.totalScore;
+      acc[gender].count++;
+      acc[gender].totalScore += r.totalScore;
       return acc;
     }, {} as Record<string, { count: number; totalScore: number }>);
 
@@ -140,12 +178,13 @@ export async function GET(request: NextRequest) {
     const ageStats: Record<string, { count: number; totalScore: number }> = {};
 
     records.forEach(r => {
+      const age = r.user.age;
       let group = '>60';
-      if (r.age < 18) group = '<18';
-      else if (r.age <= 25) group = '18-25';
-      else if (r.age <= 35) group = '26-35';
-      else if (r.age <= 45) group = '36-45';
-      else if (r.age <= 60) group = '46-60';
+      if (age < 18) group = '<18';
+      else if (age <= 25) group = '18-25';
+      else if (age <= 35) group = '26-35';
+      else if (age <= 45) group = '36-45';
+      else if (age <= 60) group = '46-60';
 
       if (!ageStats[group]) {
         ageStats[group] = { count: 0, totalScore: 0 };
@@ -165,17 +204,19 @@ export async function GET(request: NextRequest) {
     // 转换最近10条记录格式
     const latestRecords = records.slice(0, 10).map(r => ({
       id: r.id,
+      userId: r.userId,
       scaleId: r.scaleId,
       scaleTitle: r.scaleTitle,
-      gender: r.gender,
-      age: r.age,
       totalScore: r.totalScore,
       normalizedScore: r.normalizedScore,
       level: r.level,
       dimensionScores: r.dimensionScores as Record<string, number> | undefined,
       completedAt: r.completedAt.toISOString(),
       duration: r.duration || undefined,
-      region: r.region || undefined,
+      // 用户信息
+      gender: r.user.gender,
+      age: r.user.age,
+      region: r.user.region || undefined,
     }));
 
     return NextResponse.json({

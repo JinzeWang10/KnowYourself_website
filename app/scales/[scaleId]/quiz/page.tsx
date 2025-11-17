@@ -7,8 +7,9 @@ import { getScaleById, calculateScore, calculateDimensionScores, getScoreLevel, 
 import { calculateANI } from '@/lib/calculateANI';
 import { calculateZHZResults } from '@/lib/scales/zhz';
 import { submitAssessmentRecord } from '@/lib/api-client';
+import { getOrCreateUserId } from '@/lib/user-id';
 import type { QuizResult, UserInfo } from '@/types/quiz';
-import type { AssessmentRecord } from '@/types/analytics';
+import type { AssessmentRecord, AssessmentSubmission } from '@/types/analytics';
 
 export default function QuizPage() {
   const params = useParams();
@@ -163,24 +164,30 @@ export default function QuizPage() {
 
       // 提交到后台（如果有用户信息）
       if (userInfo) {
-        const record: AssessmentRecord = {
-          id: result.id,
-          scaleId: scale.id,
-          scaleTitle: scale.title,
+        const userId = getOrCreateUserId();
+        const submission: AssessmentSubmission = {
+          userId,
           gender: userInfo.gender,
           age: userInfo.age,
-          totalScore: zhzResult.totalScore,
-          normalizedScore: zhzResult.totalScore,
-          level: topCharacterName,
-          dimensionScores: result.dimensionScores,
-          completedAt: new Date().toISOString(),
-          answers: Object.entries(answersToSubmit).map(([questionId, answer]) => ({
-            questionId,
-            answer: typeof answer === 'number' ? answer : Number(answer),
-          })),
+          region: undefined,
+          record: {
+            id: result.id,
+            userId,
+            scaleId: scale.id,
+            scaleTitle: scale.title,
+            totalScore: zhzResult.totalScore,
+            normalizedScore: zhzResult.totalScore,
+            level: topCharacterName,
+            dimensionScores: result.dimensionScores,
+            completedAt: new Date().toISOString(),
+            answers: Object.entries(answersToSubmit).map(([questionId, answer]) => ({
+              questionId,
+              answer: typeof answer === 'number' ? answer : Number(answer),
+            })),
+          },
         };
 
-        submitAssessmentRecord(record).catch(err => {
+        submitAssessmentRecord(submission).catch(err => {
           console.error('提交测评记录失败:', err);
         });
       }
@@ -233,26 +240,32 @@ export default function QuizPage() {
 
       // 提交到后台（如果有用户信息）
       if (userInfo) {
+        const userId = getOrCreateUserId();
         const normalizedScore = normalizeScore(scale, aniResult.totalScore);
-        const record: AssessmentRecord = {
-          id: result.id,
-          scaleId: scale.id,
-          scaleTitle: scale.title,
+        const submission: AssessmentSubmission = {
+          userId,
           gender: userInfo.gender,
           age: userInfo.age,
-          totalScore: aniResult.totalScore,
-          normalizedScore,
-          level: aniResult.level,
-          dimensionScores: result.dimensionScores,
-          completedAt: new Date().toISOString(),
-          answers: Object.entries(answersToSubmit).map(([questionId, answer]) => ({
-            questionId,
-            answer: typeof answer === 'number' ? answer : Number(answer),
-          })),
+          region: undefined,
+          record: {
+            id: result.id,
+            userId,
+            scaleId: scale.id,
+            scaleTitle: scale.title,
+            totalScore: aniResult.totalScore,
+            normalizedScore,
+            level: aniResult.level,
+            dimensionScores: result.dimensionScores,
+            completedAt: new Date().toISOString(),
+            answers: Object.entries(answersToSubmit).map(([questionId, answer]) => ({
+              questionId,
+              answer: typeof answer === 'number' ? answer : Number(answer),
+            })),
+          },
         };
 
         // 异步提交，不阻塞用户
-        submitAssessmentRecord(record).catch(err => {
+        submitAssessmentRecord(submission).catch(err => {
           console.error('提交测评记录失败:', err);
         });
       }
@@ -311,25 +324,31 @@ export default function QuizPage() {
 
       // 提交到后台（如果有用户信息）
       if (userInfo) {
+        const userId = getOrCreateUserId();
         const scoreLevel = getScoreLevel(scale, eqResult.totalScore);
-        const record: AssessmentRecord = {
-          id: result.id,
-          scaleId: scale.id,
-          scaleTitle: scale.title,
+        const submission: AssessmentSubmission = {
+          userId,
           gender: userInfo.gender,
           age: userInfo.age,
-          totalScore: eqResult.totalScore,
-          normalizedScore: eqResult.totalScore, // EQ已经是0-100范围
-          level: scoreLevel?.level || '未知',
-          dimensionScores: result.dimensionScores,
-          completedAt: new Date().toISOString(),
-          answers: Object.entries(answersToSubmit).map(([questionId, answer]) => ({
-            questionId,
-            answer: typeof answer === 'number' ? answer : Number(answer),
-          })),
+          region: undefined,
+          record: {
+            id: result.id,
+            userId,
+            scaleId: scale.id,
+            scaleTitle: scale.title,
+            totalScore: eqResult.totalScore,
+            normalizedScore: eqResult.totalScore, // EQ已经是0-100范围
+            level: scoreLevel?.level || '未知',
+            dimensionScores: result.dimensionScores,
+            completedAt: new Date().toISOString(),
+            answers: Object.entries(answersToSubmit).map(([questionId, answer]) => ({
+              questionId,
+              answer: typeof answer === 'number' ? answer : Number(answer),
+            })),
+          },
         };
 
-        submitAssessmentRecord(record).catch(err => {
+        submitAssessmentRecord(submission).catch(err => {
           console.error('提交测评记录失败:', err);
         });
       }
@@ -383,26 +402,32 @@ export default function QuizPage() {
 
     // 提交到后台（如果有用户信息）
     if (userInfo && scoreLevel) {
+      const userId = getOrCreateUserId();
       const normalizedScore = normalizeScore(scale, totalScore);
-      const record: AssessmentRecord = {
-        id: result.id,
-        scaleId: scale.id,
-        scaleTitle: scale.title,
+      const submission: AssessmentSubmission = {
+        userId,
         gender: userInfo.gender,
         age: userInfo.age,
-        totalScore,
-        normalizedScore,
-        level: scoreLevel.level,
-        dimensionScores,
-        completedAt: new Date().toISOString(),
-        answers: Object.entries(answersToSubmit).map(([questionId, answer]) => ({
-          questionId,
-          answer: typeof answer === 'number' ? answer : Number(answer),
-        })),
+        region: undefined,
+        record: {
+          id: result.id,
+          userId,
+          scaleId: scale.id,
+          scaleTitle: scale.title,
+          totalScore,
+          normalizedScore,
+          level: scoreLevel.level,
+          dimensionScores,
+          completedAt: new Date().toISOString(),
+          answers: Object.entries(answersToSubmit).map(([questionId, answer]) => ({
+            questionId,
+            answer: typeof answer === 'number' ? answer : Number(answer),
+          })),
+        },
       };
 
       // 异步提交，不阻塞用户
-      submitAssessmentRecord(record).catch(err => {
+      submitAssessmentRecord(submission).catch(err => {
         console.error('提交测评记录失败:', err);
       });
     }

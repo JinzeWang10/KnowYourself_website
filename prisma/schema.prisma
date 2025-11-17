@@ -10,18 +10,45 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// 匿名用户表
+model AnonymousUser {
+  // 用户唯一标识（前端生成的匿名 ID）
+  id               String   @id
+
+  // 用户基本信息
+  gender           String   // 'male' | 'female' | 'other' | 'prefer_not_to_say'
+  age              Int
+
+  // 可选：地理位置（仅国家/地区级别）
+  region           String?
+
+  // 时间信息
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  // 关联的测评记录
+  assessments      AssessmentRecord[]
+
+  // 索引优化
+  @@index([gender])
+  @@index([age])
+  @@index([createdAt])
+
+  @@map("anonymous_users")
+}
+
 // 测评记录表
 model AssessmentRecord {
-  // 基本标识
+  // 测评记录唯一标识
   id               String   @id
+
+  // 关联用户
+  userId           String
+  user             AnonymousUser @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   // 量表信息
   scaleId          String
   scaleTitle       String
-
-  // 用户信息（匿名化）
-  gender           String   // 'male' | 'female' | 'other' | 'prefer_not_to_say'
-  age              Int
 
   // 测评结果
   totalScore       Float
@@ -36,20 +63,16 @@ model AssessmentRecord {
 
   // 时间信息
   completedAt      DateTime
-  createdAt        DateTime @default(now())
 
   // 可选：测评用时（秒）
   duration         Int?
 
-  // 可选：地理位置（仅国家/地区级别）
-  region           String?
-
   // 索引优化查询性能
+  @@index([userId])
   @@index([scaleId])
-  @@index([gender])
-  @@index([age])
   @@index([completedAt])
   @@index([scaleId, totalScore])
+  @@index([userId, completedAt])
 
   @@map("assessment_records")
 }

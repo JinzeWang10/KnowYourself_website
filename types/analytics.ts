@@ -1,15 +1,22 @@
 // 后台统计分析相关类型
 
+// 匿名用户信息
+export interface AnonymousUser {
+  id: string;
+  gender: 'male' | 'female' | 'other' | 'prefer_not_to_say';
+  age: number;
+  region?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 // 测评记录（提交到后台）
 export interface AssessmentRecord {
   // 基本信息
   id: string;
+  userId: string; // 关联用户 ID
   scaleId: string;
   scaleTitle: string;
-
-  // 用户信息（匿名化）
-  gender: 'male' | 'female' | 'other' | 'prefer_not_to_say';
-  age: number;
 
   // 测评结果
   totalScore: number;
@@ -21,14 +28,23 @@ export interface AssessmentRecord {
   completedAt: string; // ISO 8601 格式
   duration?: number; // 测评用时（秒）
 
-  // 可选：地理位置（仅国家/地区级别）
-  region?: string;
-
   // 答题记录
   answers: Array<{
     questionId: string;
     answer: number | string;
   }>;
+}
+
+// 用于前端提交的完整数据（包含用户信息）
+export interface AssessmentSubmission {
+  // 用户信息
+  userId: string;
+  gender: 'male' | 'female' | 'other' | 'prefer_not_to_say';
+  age: number;
+  region?: string;
+
+  // 测评记录
+  record: AssessmentRecord;
 }
 
 // 统计数据响应

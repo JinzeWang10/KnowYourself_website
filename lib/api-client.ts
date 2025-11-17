@@ -3,15 +3,16 @@
  * 用于与后端 API 通信
  */
 
-import type { AssessmentRecord } from '@/types/analytics';
+import type { AssessmentSubmission, AssessmentRecord } from '@/types/analytics';
 
 /**
  * 提交测评记录到后台
  */
-export async function submitAssessmentRecord(record: AssessmentRecord): Promise<{
+export async function submitAssessmentRecord(submission: AssessmentSubmission): Promise<{
   success: boolean;
   recordId?: string;
   error?: string;
+  duplicate?: boolean;
 }> {
   try {
     const response = await fetch('/api/assessments', {
@@ -19,7 +20,7 @@ export async function submitAssessmentRecord(record: AssessmentRecord): Promise<
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(record),
+      body: JSON.stringify(submission),
     });
 
     const data = await response.json();
