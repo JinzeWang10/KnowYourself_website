@@ -40,17 +40,12 @@ async function diagnose() {
         const recent = await prisma.assessmentRecord.findMany({
           take: 5,
           orderBy: { completedAt: 'desc' },
-          select: {
-            id: true,
-            scaleTitle: true,
-            gender: true,
-            age: true,
-            totalScore: true,
-            completedAt: true,
+          include: {
+            user: true,
           }
         })
         recent.forEach((r, i) => {
-          console.log(`   ${i + 1}. ${r.scaleTitle} - ${r.gender}, ${r.age}岁, 得分:${r.totalScore} (${new Date(r.completedAt).toLocaleString('zh-CN')})`)
+          console.log(`   ${i + 1}. ${r.scaleTitle} - ${r.user.gender}, ${r.user.age}岁, 得分:${r.totalScore} (${new Date(r.completedAt).toLocaleString('zh-CN')})`)
         })
       }
     } catch (error) {
@@ -63,27 +58,43 @@ async function diagnose() {
 
     // 5. 测试写入
     console.log('\n5️⃣ 测试写入功能:')
-    const testRecord = {
-      id: `test-${Date.now()}`,
-      scaleId: 'test',
-      scaleTitle: '测试量表',
-      gender: 'male',
-      age: 25,
-      totalScore: 100,
-      normalizedScore: 100,
-      level: '测试',
-      answers: [{ questionId: 'q1', answer: 1 }],
-      completedAt: new Date(),
-    }
+    const testUserId = `test-user-${Date.now()}`
+    const testRecordId = `test-record-${Date.now()}`
 
-    const created = await prisma.assessmentRecord.create({
-      data: testRecord
+    // 创建测试用户和记录
+    const created = await prisma.$transaction(async (tx) => {
+      // 创建用户
+      const user = await tx.anonymousUser.create({
+        data: {
+          id: testUserId,
+          gender: 'male',
+          age: 25,
+        }
+      })
+
+      // 创建测评记录
+      const record = await tx.assessmentRecord.create({
+        data: {
+          id: testRecordId,
+          userId: user.id,
+          scaleId: 'test',
+          scaleTitle: '测试量表',
+          totalScore: 100,
+          normalizedScore: 100,
+          level: '测试',
+          answers: [{ questionId: 'q1', answer: 1 }],
+          completedAt: new Date(),
+        }
+      })
+
+      return { user, record }
     })
-    console.log('✓ 写入测试成功, ID:', created.id)
 
-    // 删除测试记录
-    await prisma.assessmentRecord.delete({
-      where: { id: created.id }
+    console.log('✓ 写入测试成功, 记录ID:', created.record.id, '用户ID:', created.user.id)
+
+    // 删除测试记录（级联删除）
+    await prisma.anonymousUser.delete({
+      where: { id: testUserId }
     })
     console.log('✓ 测试记录已清理')
 

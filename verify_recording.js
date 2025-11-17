@@ -38,6 +38,9 @@ async function verify() {
     const recent = await prisma.assessmentRecord.findMany({
       take: 10,
       orderBy: { completedAt: 'desc' },
+      include: {
+        user: true,
+      }
     })
 
     recent.forEach((r, i) => {
@@ -57,14 +60,14 @@ async function verify() {
       }
 
       console.log(`\n${i + 1}. ${r.scaleTitle} (${r.scaleId})`)
-      console.log(`   👤 ${r.gender}, ${r.age}岁`)
+      console.log(`   👤 ${r.user.gender}, ${r.user.age}岁 (用户: ${r.userId.substring(0, 15)}...)`)
       console.log(`   📊 得分: ${r.totalScore} (归一化: ${r.normalizedScore}) | 等级: ${r.level}`)
       console.log(`   ⏰ 完成时间: ${time.toLocaleString('zh-CN')} (${timeAgo})`)
       if (r.duration) {
         console.log(`   ⏱️  用时: ${Math.floor(r.duration / 60)}分${r.duration % 60}秒`)
       }
-      if (r.region) {
-        console.log(`   🌍 地区: ${r.region}`)
+      if (r.user.region) {
+        console.log(`   🌍 地区: ${r.user.region}`)
       }
     })
 
@@ -107,6 +110,9 @@ async function verify() {
             lt: tomorrow
           }
         },
+        include: {
+          user: true
+        },
         orderBy: { completedAt: 'desc' }
       })
 
@@ -114,7 +120,7 @@ async function verify() {
       console.log('-'.repeat(70))
       todayRecords.forEach((r, i) => {
         const time = new Date(r.completedAt).toLocaleTimeString('zh-CN')
-        console.log(`${i + 1}. [${time}] ${r.scaleTitle} - ${r.gender}, ${r.age}岁, 得分: ${r.totalScore}`)
+        console.log(`${i + 1}. [${time}] ${r.scaleTitle} - ${r.user.gender}, ${r.user.age}岁, 得分: ${r.totalScore}`)
       })
     }
 
