@@ -22,6 +22,12 @@ interface ShareCardProps {
   percentile?: number | null;
   radarData?: RadarDataPoint[];
   isZHZ?: boolean; // ZHZ 量表特殊标记
+  isPAT?: boolean; // PAT 量表特殊标记
+  patMetadata?: {
+    actualAge: number;
+    psychologicalAge: number;
+    ageDifference: number;
+  };
 }
 
 const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(function ShareCard({
@@ -34,6 +40,8 @@ const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(function ShareCard(
   percentile,
   radarData,
   isZHZ = false,
+  isPAT = false,
+  patMetadata,
 }, ref) {
   // 根据levelColor生成统一的配色方案
   const getColorScheme = (color: string) => {
@@ -171,6 +179,63 @@ const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(function ShareCard(
                     <span className="text-sm text-neutral-600">
                       超过 <span className="font-bold text-primary" style={{ fontSize: '18px' }}>{percentile}%</span> 的测评者
                     </span>
+                  </div>
+                </div>
+              )}
+
+              {/* PAT心理年龄展示 */}
+              {isPAT && patMetadata && (
+                <div className="bg-gradient-to-r from-purple-500 via-pink-500 to-rose-500 rounded-2xl shadow-soft mb-6 text-white" style={{ padding: '20px' }}>
+                  <div className="text-center mb-3">
+                    <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full" style={{ padding: '6px 16px' }}>
+                      <span style={{ fontSize: '16px' }}>🎂</span>
+                      <span style={{ fontSize: '12px', fontWeight: '600' }}>心理年龄</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-center gap-6">
+                    <div className="text-center">
+                      <div style={{ fontSize: '10px', opacity: 0.9, marginBottom: '4px' }}>实际年龄</div>
+                      <div style={{ fontSize: '32px', fontWeight: '900' }}>{patMetadata.actualAge}</div>
+                      <div style={{ fontSize: '10px', opacity: 0.75 }}>岁</div>
+                    </div>
+
+                    <svg style={{ width: '24px', height: '24px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+
+                    <div className="text-center">
+                      <div style={{ fontSize: '10px', opacity: 0.9, marginBottom: '4px' }}>心理年龄</div>
+                      <div className="bg-white/20 backdrop-blur-sm rounded-xl shadow-glow" style={{ fontSize: '32px', fontWeight: '900', padding: '8px 16px' }}>
+                        {patMetadata.psychologicalAge}
+                      </div>
+                      <div style={{ fontSize: '10px', opacity: 0.75 }}>岁</div>
+                    </div>
+                  </div>
+
+                  <div className="text-center mt-4">
+                    <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-lg" style={{ padding: '6px 12px' }}>
+                      {patMetadata.ageDifference > 0 ? (
+                        <>
+                          <span style={{ fontSize: '14px' }}>📈</span>
+                          <span style={{ fontSize: '11px', fontWeight: '500' }}>
+                            比实际年龄大 {patMetadata.ageDifference} 岁
+                          </span>
+                        </>
+                      ) : patMetadata.ageDifference < 0 ? (
+                        <>
+                          <span style={{ fontSize: '14px' }}>📉</span>
+                          <span style={{ fontSize: '11px', fontWeight: '500' }}>
+                            比实际年龄小 {Math.abs(patMetadata.ageDifference)} 岁
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <span style={{ fontSize: '14px' }}>✨</span>
+                          <span style={{ fontSize: '11px', fontWeight: '500' }}>与实际年龄相符</span>
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
               )}

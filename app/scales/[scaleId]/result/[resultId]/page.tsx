@@ -165,6 +165,10 @@ export default function ResultPage() {
   const isZHZ = scaleId === 'zhz';
   const zhzMetadata = isZHZ && result.metadata ? result.metadata : null;
 
+  // 检查是否是 PAT 量表，需要展示心理年龄
+  const isPAT = scaleId === 'pat';
+  const patMetadata = isPAT && result.metadata ? result.metadata : null;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-purple-50/30 to-pink-50/30">
       {/* 成功提示Toast */}
@@ -224,8 +228,81 @@ export default function ResultPage() {
             </p>
           </div>
 
+          {/* PAT Psychological Age Section - 心理年龄展示区 */}
+          {isPAT && patMetadata && (
+            <div className="mb-6 sm:mb-8 animate-fade-in">
+              <div className="bg-gradient-to-br from-purple-500 via-pink-500 to-rose-500 rounded-2xl sm:rounded-3xl shadow-glow-lg p-6 sm:p-8 text-white overflow-hidden relative">
+                {/* 背景装饰 */}
+                <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+                <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
+
+                <div className="relative z-10">
+                  <div className="text-center mb-4">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full mb-3">
+                      <span className="text-2xl">🎂</span>
+                      <span className="text-sm font-medium">心理年龄测算</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-center gap-8 sm:gap-12">
+                    {/* 实际年龄 */}
+                    <div className="text-center">
+                      <div className="text-xs sm:text-sm opacity-90 mb-2">实际年龄</div>
+                      <div className="text-4xl sm:text-5xl font-black">{patMetadata.actualAge}</div>
+                      <div className="text-xs sm:text-sm opacity-75 mt-1">岁</div>
+                    </div>
+
+                    {/* 箭头 */}
+                    <div className="flex flex-col items-center">
+                      <svg className="w-8 h-8 sm:w-12 sm:h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                      </svg>
+                    </div>
+
+                    {/* 心理年龄 */}
+                    <div className="text-center">
+                      <div className="text-xs sm:text-sm opacity-90 mb-2">心理年龄</div>
+                      <div className="text-4xl sm:text-5xl font-black bg-white/20 backdrop-blur-sm rounded-2xl px-6 py-3 shadow-glow">
+                        {patMetadata.psychologicalAge}
+                      </div>
+                      <div className="text-xs sm:text-sm opacity-75 mt-1">岁</div>
+                    </div>
+                  </div>
+
+                  {/* 年龄差异说明 */}
+                  <div className="mt-6 text-center">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur-sm rounded-xl">
+                      {patMetadata.ageDifference > 0 ? (
+                        <>
+                          <span className="text-lg">📈</span>
+                          <span className="text-sm font-medium">
+                            心理年龄比实际年龄大 <span className="text-lg font-bold">{patMetadata.ageDifference}</span> 岁
+                          </span>
+                        </>
+                      ) : patMetadata.ageDifference < 0 ? (
+                        <>
+                          <span className="text-lg">📉</span>
+                          <span className="text-sm font-medium">
+                            心理年龄比实际年龄小 <span className="text-lg font-bold">{Math.abs(patMetadata.ageDifference)}</span> 岁
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <span className="text-lg">✨</span>
+                          <span className="text-sm font-medium">
+                            心理年龄与实际年龄相符
+                          </span>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* ZHZ Character Hero Section - 人物角色展示区 */}
-          
+
 
           {/* ShareCard - 精美分享卡片置顶 */}
           {(() => {
@@ -316,6 +393,8 @@ export default function ResultPage() {
                 completedAt={typeof result.completedAt === 'string' ? result.completedAt : new Date(result.completedAt).toISOString()}
                 percentile={undefined}
                 radarData={radarData}
+                isPAT={isPAT}
+                patMetadata={patMetadata}
               />
             );
           })()}

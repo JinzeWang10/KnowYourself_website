@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { getScaleById, calculateScore, calculateDimensionScores, getScoreLevel, normalizeScore } from '@/lib/scales';
 import { calculateANI } from '@/lib/calculateANI';
 import { calculateZHZResults } from '@/lib/scales/zhz';
+import { calculatePsychologicalAge } from '@/lib/scales/pat';
 import { submitAssessmentRecord } from '@/lib/api-client';
 import { getOrCreateUserId } from '@/lib/user-id';
 import type { QuizResult, UserInfo } from '@/types/quiz';
@@ -77,8 +78,9 @@ export default function QuizPage() {
   // 检测是否为Likert量表（需要question.type明确标记为'likert'）
   const isLikertScale = currentQuestion.type === 'likert';
 
-  const handleAnswer = (value: number | string) => {
-    const newAnswers = { ...answers, [currentQuestion.id]: value };
+  const handleAnswer = (value: number | string, optionIndex: number) => {
+    // 存储选项索引而非分数，避免相同分数的选项都被选中
+    const newAnswers = { ...answers, [currentQuestion.id]: optionIndex };
     setAnswers(newAnswers);
 
     // 自动跳转到下一题（延迟300ms让用户看到选中效果）
@@ -116,6 +118,17 @@ export default function QuizPage() {
     setIsSubmitting(true);
     setHasSubmitted(true);
 
+    // 将选项索引转换为实际分数值
+    const convertedAnswers: Record<string, number> = {};
+    for (const [questionId, optionIndex] of Object.entries(answersToSubmit)) {
+      const question = scale.questions.find(q => q.id === questionId);
+      if (question && question.options) {
+        const index = typeof optionIndex === 'number' ? optionIndex : Number(optionIndex);
+        const actualValue = question.options[index]?.value;
+        convertedAnswers[questionId] = typeof actualValue === 'number' ? actualValue : Number(actualValue);
+      }
+    }
+
     // 获取用户信息
     const userInfoStr = localStorage.getItem('userInfo');
     let userInfo: UserInfo | null = null;
@@ -129,11 +142,7 @@ export default function QuizPage() {
 
     // ZHZ量表使用自定义计算
     if (scaleId === 'zhz') {
-      const numericAnswers: Record<string, number> = Object.fromEntries(
-        Object.entries(answersToSubmit).map(([k, v]) => [k, typeof v === 'number' ? v : Number(v)])
-      );
-
-      const zhzResult = calculateZHZResults(numericAnswers);
+      const zhzResult = calculateZHZResults(convertedAnswers);
 
       // 获取最相似的角色名称
       const topCharacterName = zhzResult.metadata?.topCharacters?.[0]?.name || '未知角色';
@@ -146,9 +155,9 @@ export default function QuizPage() {
         score: zhzResult.totalScore,
         level: topCharacterName,
         completedAt: new Date(),
-        answers: Object.entries(answersToSubmit).map(([questionId, answer]) => ({
+        answers: Object.entries(convertedAnswers).map(([questionId, answer]) => ({
           questionId,
-          answer: typeof answer === 'number' ? answer : Number(answer),
+          answer,
         })),
         dimensionScores: zhzResult.dimensionScores.reduce((acc, item) => {
           acc[item.dimension] = item.score;
@@ -180,9 +189,9 @@ export default function QuizPage() {
             level: topCharacterName,
             dimensionScores: result.dimensionScores,
             completedAt: new Date().toISOString(),
-            answers: Object.entries(answersToSubmit).map(([questionId, answer]) => ({
+            answers: Object.entries(convertedAnswers).map(([questionId, answer]) => ({
               questionId,
-              answer: typeof answer === 'number' ? answer : Number(answer),
+              answer,
             })),
           },
         };
@@ -210,7 +219,7 @@ export default function QuizPage() {
 
     // ANI量表使用自定义计算
     if (scaleId === 'ani') {
-      const aniResult = calculateANI(answersToSubmit);
+      const aniResult = calculateANI(convertedAnswers);
 
       // 创建结果对象
       const result: QuizResult = {
@@ -220,10 +229,9 @@ export default function QuizPage() {
         score: aniResult.totalScore,
         level: aniResult.level,
         completedAt: new Date(),
-        answers: Object.entries(answersToSubmit).map(([questionId, answer]) => ({
+        answers: Object.entries(convertedAnswers).map(([questionId, answer]) => ({
           questionId,
-          // Coerce stored answers to number for scoring. If it's already a number, keep it.
-          answer: typeof answer === 'number' ? answer : Number(answer),
+          answer,
         })),
         dimensionScores: {
           hbi_consequences: aniResult.dimensionScores.hbi_consequences.normalized,
@@ -257,9 +265,9 @@ export default function QuizPage() {
             level: aniResult.level,
             dimensionScores: result.dimensionScores,
             completedAt: new Date().toISOString(),
-            answers: Object.entries(answersToSubmit).map(([questionId, answer]) => ({
+            answers: Object.entries(convertedAnswers).map(([questionId, answer]) => ({
               questionId,
-              answer: typeof answer === 'number' ? answer : Number(answer),
+              answer,
             })),
           },
         };
@@ -291,11 +299,7 @@ export default function QuizPage() {
 
     // EQ 量表使用自定义计算（处理正反向题的特殊计分）
     if (scaleId === 'eq' && scale.calculateResults) {
-      const numericAnswers: Record<string, number> = Object.fromEntries(
-        Object.entries(answersToSubmit).map(([k, v]) => [k, typeof v === 'number' ? v : Number(v)])
-      );
-
-      const eqResult = scale.calculateResults(numericAnswers);
+      const eqResult = scale.calculateResults(convertedAnswers);
 
       // 创建结果对象
       const result: QuizResult = {
@@ -305,9 +309,9 @@ export default function QuizPage() {
         score: eqResult.totalScore,
         level: eqResult.dimensionScores?.[0]?.dimension || '未知',
         completedAt: new Date(),
-        answers: Object.entries(answersToSubmit).map(([questionId, answer]) => ({
+        answers: Object.entries(convertedAnswers).map(([questionId, answer]) => ({
           questionId,
-          answer: typeof answer === 'number' ? answer : Number(answer),
+          answer,
         })),
         dimensionScores: eqResult.dimensionScores?.reduce((acc, item: any) => {
           // 使用 dimensionId（英文ID）作为键，如果没有则降级使用中文名称
@@ -341,9 +345,9 @@ export default function QuizPage() {
             level: scoreLevel?.level || '未知',
             dimensionScores: result.dimensionScores,
             completedAt: new Date().toISOString(),
-            answers: Object.entries(answersToSubmit).map(([questionId, answer]) => ({
+            answers: Object.entries(convertedAnswers).map(([questionId, answer]) => ({
               questionId,
-              answer: typeof answer === 'number' ? answer : Number(answer),
+              answer,
             })),
           },
         };
@@ -370,14 +374,20 @@ export default function QuizPage() {
     }
 
     // 其他量表使用常规计算
-    // 将 answersToSubmit 转换为 numericAnswers（Record<string, number>）以匹配计算函数接口
-    const numericAnswers: Record<string, number> = Object.fromEntries(
-      Object.entries(answersToSubmit).map(([k, v]) => [k, typeof v === 'number' ? v : Number(v)])
-    ) as Record<string, number>;
-
-    const totalScore = calculateScore(scale, numericAnswers);
-    const dimensionScores = calculateDimensionScores(scale, numericAnswers);
+    const totalScore = calculateScore(scale, convertedAnswers);
+    const dimensionScores = calculateDimensionScores(scale, convertedAnswers);
     const scoreLevel = getScoreLevel(scale, totalScore);
+
+    // PAT量表：计算心理年龄
+    let metadata: any = undefined;
+    if (scaleId === 'pat' && userInfo) {
+      const psychologicalAge = calculatePsychologicalAge(totalScore, userInfo.age);
+      metadata = {
+        actualAge: userInfo.age,
+        psychologicalAge,
+        ageDifference: psychologicalAge - userInfo.age,
+      };
+    }
 
     // 创建结果对象
     const result: QuizResult = {
@@ -387,10 +397,9 @@ export default function QuizPage() {
       score: totalScore,
       level: scoreLevel?.level || '未知',
       completedAt: new Date(),
-      answers: Object.entries(answersToSubmit).map(([questionId, answer]) => ({
+      answers: Object.entries(convertedAnswers).map(([questionId, answer]) => ({
         questionId,
-        // Ensure answer is a number type in the result
-        answer: typeof answer === 'number' ? answer : Number(answer),
+        answer,
       })),
       dimensionScores: dimensionScores,
       report: {
@@ -398,6 +407,7 @@ export default function QuizPage() {
         details: [],
         recommendations: scoreLevel?.suggestions || [],
       },
+      metadata,
     };
 
     // 提交到后台（如果有用户信息）
@@ -419,9 +429,9 @@ export default function QuizPage() {
           level: scoreLevel.level,
           dimensionScores,
           completedAt: new Date().toISOString(),
-          answers: Object.entries(answersToSubmit).map(([questionId, answer]) => ({
+          answers: Object.entries(convertedAnswers).map(([questionId, answer]) => ({
             questionId,
-            answer: typeof answer === 'number' ? answer : Number(answer),
+            answer,
           })),
         },
       };
@@ -558,7 +568,7 @@ export default function QuizPage() {
                 {/* 按钮条 */}
                 <div className="flex items-center justify-between gap-2 sm:gap-3 px-2 sm:px-4 py-4 sm:py-6 bg-gradient-to-r from-red-50/50 via-yellow-50/30 to-green-50/50 rounded-xl sm:rounded-2xl border-2 border-neutral-200">
                   {currentQuestion.options?.map((option, idx) => {
-                    const isSelected = answers[currentQuestion.id] === option.value;
+                    const isSelected = answers[currentQuestion.id] === idx;
                     const totalOptions = currentQuestion.options!.length;
                     // 计算颜色：从红色过渡到绿色
                     const colorProgress = idx / (totalOptions - 1);
@@ -566,7 +576,7 @@ export default function QuizPage() {
                     return (
                       <button
                         key={`${currentQuestion.id}-${idx}`}
-                        onClick={() => handleAnswer(option.value)}
+                        onClick={() => handleAnswer(option.value, idx)}
                         className={`group relative flex-1 aspect-square rounded-full border-3 transition-all duration-300 ${
                           isSelected
                             ? 'scale-125 shadow-lg'
@@ -594,7 +604,7 @@ export default function QuizPage() {
                 {/* 选项标签（可选，显示所有选项文字） */}
                 <div className="flex items-start justify-between gap-1 sm:gap-2 px-1 sm:px-2">
                   {currentQuestion.options?.map((option, idx) => {
-                    const isSelected = answers[currentQuestion.id] === option.value;
+                    const isSelected = answers[currentQuestion.id] === idx;
                     return (
                       <div
                         key={`${currentQuestion.id}-label-${idx}`}
@@ -614,11 +624,11 @@ export default function QuizPage() {
               // 传统垂直选项样式
               <div className="space-y-2 sm:space-y-4">
                 {currentQuestion.options?.map((option, optionIndex) => {
-                  const isSelected = answers[currentQuestion.id] === option.value;
+                  const isSelected = answers[currentQuestion.id] === optionIndex;
                   return (
                     <button
                       key={`${currentQuestion.id}-option-${optionIndex}`}
-                      onClick={() => handleAnswer(option.value)}
+                      onClick={() => handleAnswer(option.value, optionIndex)}
                       className={`group w-full text-left p-3 sm:p-6 rounded-xl sm:rounded-2xl border-2 transition-all duration-300 ${
                         isSelected
                           ? 'border-primary bg-gradient-to-r from-primary-50 to-purple-50 shadow-soft-lg scale-[1.02]'
