@@ -6,11 +6,13 @@ import { ini } from './ini';
 import { pat } from './pat';
 import { zhz } from './zhz';
 import { eq } from './eq';
+import { bes } from './bes';
 
 // 所有可用的量表
 const scales: QuizTemplate[] = [
   zhz,
   eq,
+  bes,
   pat,
   essScale,
   ini,

@@ -15,7 +15,8 @@
       "Bash(npx prisma:*)",
       "Bash(curl:*)",
       "Bash(node:*)",
-      "Bash(git fetch:*)"
+      "Bash(git fetch:*)",
+      "Bash(npx tsc:*)"
     ],
     "deny": [],
     "ask": []
