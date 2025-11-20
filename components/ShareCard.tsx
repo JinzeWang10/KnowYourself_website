@@ -101,7 +101,7 @@ const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(function ShareCard(
           </svg>
         </div>
 
-        <div className="relative" style={{ padding: '0px' }}>
+        <div className="relative" style={{ padding: '10px' }}>
           {/* Logo和标题 */}
           <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
             <div className="flex items-center gap-3">
@@ -145,9 +145,11 @@ const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(function ShareCard(
                     <div className="w-full h-full rounded-full bg-white flex items-center justify-center">
                       <div className="text-center">
                         <div className={`font-black bg-gradient-to-br ${colorScheme.gradient} bg-clip-text text-transparent`} style={{ fontSize: '64px', lineHeight: '1' }}>
-                          {score}
+                          {isPAT && patMetadata ? patMetadata.psychologicalAge : score}
                         </div>
-                        <div className="text-sm text-neutral-500 font-medium mt-2">{isZHZ ? '%' : '分'}</div>
+                        <div className="text-sm text-neutral-500 font-medium mt-2">
+                          {isPAT ? '岁' : (isZHZ ? '%' : '分')}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -185,54 +187,54 @@ const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(function ShareCard(
 
               {/* PAT心理年龄展示 */}
               {isPAT && patMetadata && (
-                <div className="bg-gradient-to-r from-purple-500 via-pink-500 to-rose-500 rounded-2xl shadow-soft mb-6 text-white" style={{ padding: '20px' }}>
+                <div className="bg-gradient-to-br from-purple-50 via-pink-50 to-rose-50 rounded-2xl shadow-soft border border-purple-100/50 mb-6" style={{ padding: '20px' }}>
                   <div className="text-center mb-3">
-                    <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full" style={{ padding: '6px 16px' }}>
+                    <div className="inline-flex items-center gap-2 bg-white/60 backdrop-blur-sm rounded-full border border-purple-100/30" style={{ padding: '6px 16px' }}>
                       <span style={{ fontSize: '16px' }}>🎂</span>
-                      <span style={{ fontSize: '12px', fontWeight: '600' }}>心理年龄</span>
+                      <span style={{ fontSize: '12px', fontWeight: '600', color: '#9333ea' }}>心理年龄</span>
                     </div>
                   </div>
 
                   <div className="flex items-center justify-center gap-6">
                     <div className="text-center">
-                      <div style={{ fontSize: '10px', opacity: 0.9, marginBottom: '4px' }}>实际年龄</div>
-                      <div style={{ fontSize: '32px', fontWeight: '900' }}>{patMetadata.actualAge}</div>
-                      <div style={{ fontSize: '10px', opacity: 0.75 }}>岁</div>
+                      <div style={{ fontSize: '10px', opacity: 0.6, marginBottom: '4px', color: '#6b7280' }}>实际年龄</div>
+                      <div style={{ fontSize: '32px', fontWeight: '900', color: '#374151' }}>{patMetadata.actualAge}</div>
+                      <div style={{ fontSize: '10px', opacity: 0.5, color: '#9ca3af' }}>岁</div>
                     </div>
 
-                    <svg style={{ width: '24px', height: '24px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg style={{ width: '24px', height: '24px', color: '#d946ef' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                     </svg>
 
                     <div className="text-center">
-                      <div style={{ fontSize: '10px', opacity: 0.9, marginBottom: '4px' }}>心理年龄</div>
-                      <div className="bg-white/20 backdrop-blur-sm rounded-xl shadow-glow" style={{ fontSize: '32px', fontWeight: '900', padding: '8px 16px' }}>
+                      <div style={{ fontSize: '10px', opacity: 0.6, marginBottom: '4px', color: '#6b7280' }}>心理年龄</div>
+                      <div className="bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl shadow-soft" style={{ fontSize: '32px', fontWeight: '900', padding: '8px 16px', color: '#ffffff' }}>
                         {patMetadata.psychologicalAge}
                       </div>
-                      <div style={{ fontSize: '10px', opacity: 0.75 }}>岁</div>
+                      <div style={{ fontSize: '10px', opacity: 0.5, color: '#9ca3af' }}>岁</div>
                     </div>
                   </div>
 
                   <div className="text-center mt-4">
-                    <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-lg" style={{ padding: '6px 12px' }}>
+                    <div className="inline-flex items-center gap-2 bg-white/60 backdrop-blur-sm rounded-lg border border-purple-100/30" style={{ padding: '6px 12px' }}>
                       {patMetadata.ageDifference > 0 ? (
                         <>
                           <span style={{ fontSize: '14px' }}>📈</span>
-                          <span style={{ fontSize: '11px', fontWeight: '500' }}>
+                          <span style={{ fontSize: '11px', fontWeight: '500', color: '#6b7280' }}>
                             比实际年龄大 {patMetadata.ageDifference} 岁
                           </span>
                         </>
                       ) : patMetadata.ageDifference < 0 ? (
                         <>
                           <span style={{ fontSize: '14px' }}>📉</span>
-                          <span style={{ fontSize: '11px', fontWeight: '500' }}>
+                          <span style={{ fontSize: '11px', fontWeight: '500', color: '#6b7280' }}>
                             比实际年龄小 {Math.abs(patMetadata.ageDifference)} 岁
                           </span>
                         </>
                       ) : (
                         <>
                           <span style={{ fontSize: '14px' }}>✨</span>
-                          <span style={{ fontSize: '11px', fontWeight: '500' }}>与实际年龄相符</span>
+                          <span style={{ fontSize: '11px', fontWeight: '500', color: '#6b7280' }}>与实际年龄相符</span>
                         </>
                       )}
                     </div>
@@ -241,23 +243,25 @@ const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(function ShareCard(
               )}
 
               {/* 简短解读 */}
-              <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-soft border border-neutral-100 mb-6" style={{ padding: '10px 4px' }}>
-                <div className={`text-neutral-700 leading-relaxed ${isZHZ ? 'text-left' : 'text-center'} whitespace-pre-wrap`} style={{
-                  lineHeight: '1.6',
-                  fontSize: '12px',
-                  maxHeight: '200px',
-                  overflow: 'hidden'
-                }}>
-                  {/* 对于 ZHZ，只显示前几行 */}
-                  {isZHZ ? (
-                    description.split('\n').slice(0, 4).map((line, i) => (
-                      <div key={i}>{line || '\u00A0'}</div>
-                    ))
-                  ) : (
-                    description.length > 200 ? description.substring(0, 197) + '...' : description
-                  )}
+              {description && (
+                <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-soft border border-neutral-100 mb-6" style={{ padding: '10px 8px' }}>
+                  <div className={`text-neutral-700 leading-relaxed ${isZHZ ? 'text-left' : 'text-center'} whitespace-pre-wrap`} style={{
+                    lineHeight: '1.6',
+                    fontSize: '14px',
+                    maxHeight: '200px',
+                    overflow: 'hidden'
+                  }}>
+                    {/* 对于 ZHZ，只显示前几行 */}
+                    {isZHZ ? (
+                      description.split('\n').slice(0, 4).map((line, i) => (
+                        <div key={i}>{line || '\u00A0'}</div>
+                      ))
+                    ) : (
+                      description.length > 200 ? description.substring(0, 197) + '...' : description
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* 雷达图 - 维度分析 */}
               {radarData && radarData.length > 0 && (

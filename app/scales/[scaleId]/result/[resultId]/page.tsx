@@ -151,7 +151,7 @@ export default function ResultPage() {
   // 对于有自定义 calculateResults 的量表（如 EQ），直接使用保存的维度得分
   // 否则使用通用计算函数重新计算
   const dimensionScores = result.dimensionScores || calculateDimensionScores(scale, numericAnswers);
-  const scoreLevel = scale.scoring?.ranges.find(
+  const scoreLevel = scale.scoring?.ranges?.find(
     (r) => result.score >= r.min && result.score <= r.max
   );
 
@@ -228,79 +228,6 @@ export default function ResultPage() {
             </p>
           </div>
 
-          {/* PAT Psychological Age Section - 心理年龄展示区 */}
-          {isPAT && patMetadata && (
-            <div className="mb-6 sm:mb-8 animate-fade-in">
-              <div className="bg-gradient-to-br from-purple-500 via-pink-500 to-rose-500 rounded-2xl sm:rounded-3xl shadow-glow-lg p-6 sm:p-8 text-white overflow-hidden relative">
-                {/* 背景装饰 */}
-                <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-                <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
-
-                <div className="relative z-10">
-                  <div className="text-center mb-4">
-                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full mb-3">
-                      <span className="text-2xl">🎂</span>
-                      <span className="text-sm font-medium">心理年龄测算</span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-center gap-8 sm:gap-12">
-                    {/* 实际年龄 */}
-                    <div className="text-center">
-                      <div className="text-xs sm:text-sm opacity-90 mb-2">实际年龄</div>
-                      <div className="text-4xl sm:text-5xl font-black">{patMetadata.actualAge}</div>
-                      <div className="text-xs sm:text-sm opacity-75 mt-1">岁</div>
-                    </div>
-
-                    {/* 箭头 */}
-                    <div className="flex flex-col items-center">
-                      <svg className="w-8 h-8 sm:w-12 sm:h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                      </svg>
-                    </div>
-
-                    {/* 心理年龄 */}
-                    <div className="text-center">
-                      <div className="text-xs sm:text-sm opacity-90 mb-2">心理年龄</div>
-                      <div className="text-4xl sm:text-5xl font-black bg-white/20 backdrop-blur-sm rounded-2xl px-6 py-3 shadow-glow">
-                        {patMetadata.psychologicalAge}
-                      </div>
-                      <div className="text-xs sm:text-sm opacity-75 mt-1">岁</div>
-                    </div>
-                  </div>
-
-                  {/* 年龄差异说明 */}
-                  <div className="mt-6 text-center">
-                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur-sm rounded-xl">
-                      {patMetadata.ageDifference > 0 ? (
-                        <>
-                          <span className="text-lg">📈</span>
-                          <span className="text-sm font-medium">
-                            心理年龄比实际年龄大 <span className="text-lg font-bold">{patMetadata.ageDifference}</span> 岁
-                          </span>
-                        </>
-                      ) : patMetadata.ageDifference < 0 ? (
-                        <>
-                          <span className="text-lg">📉</span>
-                          <span className="text-sm font-medium">
-                            心理年龄比实际年龄小 <span className="text-lg font-bold">{Math.abs(patMetadata.ageDifference)}</span> 岁
-                          </span>
-                        </>
-                      ) : (
-                        <>
-                          <span className="text-lg">✨</span>
-                          <span className="text-sm font-medium">
-                            心理年龄与实际年龄相符
-                          </span>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
           {/* ZHZ Character Hero Section - 人物角色展示区 */}
 
 
@@ -321,11 +248,11 @@ export default function ResultPage() {
               radarData = scale.dimensions?.map((dimension) => {
                 const dimScore = dimensionScores[dimension.id] || 0;
 
-                // 对于 EQ 量表，dimensionScores 中已经是百分比（0-100），不需要再归一化
+                // 对于 EQ、PAT 量表，dimensionScores 中已经是百分比（0-100），不需要再归一化
                 // 对于其他量表，需要使用 normalizeDimensionScore 转换
                 let normalizedValue: number;
-                if (scaleId === 'eq' && result.dimensionScores) {
-                  // EQ 量表直接使用已计算的百分比
+                if ((scaleId === 'eq' || scaleId === 'pat') && result.dimensionScores) {
+                  // EQ、PAT 量表直接使用已计算的百分比
                   normalizedValue = dimScore;
                 } else {
                   // 其他量表需要归一化
@@ -382,14 +309,28 @@ export default function ResultPage() {
               );
             }
 
+            // 对于 PAT 量表，使用新的年龄解读
+            const description = isPAT && patMetadata?.ageInterpretation
+              ? patMetadata.ageInterpretation.description
+              : (scoreLevel?.description || '');
+
+            const level = isPAT && patMetadata?.ageInterpretation
+              ? patMetadata.ageInterpretation.title
+              : (scoreLevel?.level || '');
+
+            const levelColor = isPAT && patMetadata?.ageInterpretation
+              ? (patMetadata.ageInterpretation.level === 'A' || patMetadata.ageInterpretation.level === 'B' ? '#10b981' :
+                 patMetadata.ageInterpretation.level === 'C' ? '#f59e0b' : '#ef4444')
+              : (scoreLevel?.color || '#6366F1');
+
             return (
               <ShareCard
                 ref={shareCardRef}
                 scaleTitle={scale.title}
                 score={normalizedScore}
-                level={scoreLevel?.level || ''}
-                levelColor={scoreLevel?.color || '#6366F1'}
-                description={scoreLevel?.description || ''}
+                level={level}
+                levelColor={levelColor}
+                description={description}
                 completedAt={typeof result.completedAt === 'string' ? result.completedAt : new Date(result.completedAt).toISOString()}
                 percentile={undefined}
                 radarData={radarData}
@@ -437,242 +378,244 @@ export default function ResultPage() {
             </div>
           </div>
 
-          {/* Detailed Interpretation - 详细解读区 */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-soft-xl p-5 sm:p-10 mb-6 sm:mb-8 border border-neutral-100/50 animate-slide-up">
-            <div className="flex items-center gap-2 sm:gap-3 mb-6 sm:mb-8">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-gradient-to-br from-primary to-purple-500 flex items-center justify-center shadow-soft">
-                <span className="text-xl sm:text-2xl">📖</span>
+          {/* PAT 量表不显示详细解读区，其他量表显示 */}
+          {!isPAT && (
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-soft-xl p-5 sm:p-10 mb-6 sm:mb-8 border border-neutral-100/50 animate-slide-up">
+              <div className="flex items-center gap-2 sm:gap-3 mb-6 sm:mb-8">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-gradient-to-br from-primary to-purple-500 flex items-center justify-center shadow-soft">
+                  <span className="text-xl sm:text-2xl">📖</span>
+                </div>
+                <h2 className="text-xl sm:text-2xl font-bold text-neutral-900">详细解读</h2>
               </div>
-              <h2 className="text-xl sm:text-2xl font-bold text-neutral-900">详细解读</h2>
-            </div>
 
-            {/* ZHZ 测评专属解读 */}
-            {isZHZ && zhzMetadata && zhzMetadata.topCharacters && zhzMetadata.topCharacters.length > 0 ? (
-              <>
-                {/* 核心特质 */}
-                <div className="p-5 sm:p-8 bg-gradient-to-br from-neutral-50 to-purple-50/30 rounded-xl sm:rounded-2xl border border-neutral-200/30 shadow-soft mb-4 sm:mb-6">
-                  <h3 className="font-bold text-neutral-900 mb-3 sm:mb-4 text-base sm:text-lg flex items-center gap-2">
-                    <span className="text-xl sm:text-2xl">🎯</span>
-                    核心特质
-                  </h3>
-                  <p className="text-sm sm:text-base text-neutral-700 leading-relaxed">
-                    {getCharacterCoreTrait(zhzMetadata.topCharacters[0].id)}
-                  </p>
-                </div>
-
-                {(() => {
-                  const detailedTraits = getCharacterDetailedTraits(zhzMetadata.topCharacters[0].id);
-                  return detailedTraits ? (
-                    <>
-                      {/* 性格优势 */}
-                      <div className="p-5 sm:p-8 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl sm:rounded-2xl border border-green-200/30 shadow-soft mb-4 sm:mb-6">
-                        <h3 className="font-bold text-neutral-900 mb-4 sm:mb-6 text-base sm:text-lg flex items-center gap-2">
-                          <span className="text-xl sm:text-2xl">✨</span>
-                          性格优势
-                        </h3>
-                        <div className="space-y-3 sm:space-y-4">
-                          {detailedTraits.advantages.map((advantage, index) => (
-                            <div key={index} className="flex items-start gap-3 sm:gap-4 group hover:translate-x-1 transition-transform">
-                              <span className="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 text-white text-xs sm:text-sm flex items-center justify-center font-bold shadow-soft group-hover:shadow-glow transition-shadow">
-                                {index + 1}
-                              </span>
-                              <span className="text-sm sm:text-base text-neutral-700 leading-relaxed flex-1 pt-0.5">
-                                {advantage}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* 潜在风险 */}
-                      <div className="p-5 sm:p-8 bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl sm:rounded-2xl border border-amber-200/30 shadow-soft">
-                        <h3 className="font-bold text-neutral-900 mb-4 sm:mb-6 text-base sm:text-lg flex items-center gap-2">
-                          <span className="text-xl sm:text-2xl">⚠️</span>
-                          潜在风险
-                        </h3>
-                        <div className="space-y-3 sm:space-y-4">
-                          {detailedTraits.risks.map((risk, index) => (
-                            <div key={index} className="flex items-start gap-3 sm:gap-4 group hover:translate-x-1 transition-transform">
-                              <span className="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 text-white text-xs sm:text-sm flex items-center justify-center font-bold shadow-soft group-hover:shadow-glow transition-shadow">
-                                {index + 1}
-                              </span>
-                              <span className="text-sm sm:text-base text-neutral-700 leading-relaxed flex-1 pt-0.5">
-                                {risk}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </>
-                  ) : null;
-                })()}
-              </>
-            ) : (
-              <>
-                {/* 其他测评的原有解读 */}
-                <div className="p-5 sm:p-8 bg-gradient-to-br from-neutral-50 to-purple-50/30 rounded-xl sm:rounded-2xl border border-neutral-200/30 shadow-soft mb-4 sm:mb-6">
-                  <h3 className="font-bold text-neutral-900 mb-3 sm:mb-4 text-base sm:text-lg flex items-center gap-2">
-                    <span className="text-xl sm:text-2xl">🎯</span>
-                    核心解读
-                  </h3>
-                  <p className="text-sm sm:text-base text-neutral-700 leading-relaxed">
-                    {scoreLevel?.description}
-                  </p>
-                </div>
-
-                {/* Psychological Traits - 心理特征 */}
-                {scoreLevel?.psychologicalTraits && (
-                  <div className="p-5 sm:p-8 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl sm:rounded-2xl border border-purple-200/30 shadow-soft mb-4 sm:mb-6">
+              {/* ZHZ 测评专属解读 */}
+              {isZHZ && zhzMetadata && zhzMetadata.topCharacters && zhzMetadata.topCharacters.length > 0 ? (
+                <>
+                  {/* 核心特质 */}
+                  <div className="p-5 sm:p-8 bg-gradient-to-br from-neutral-50 to-purple-50/30 rounded-xl sm:rounded-2xl border border-neutral-200/30 shadow-soft mb-4 sm:mb-6">
                     <h3 className="font-bold text-neutral-900 mb-3 sm:mb-4 text-base sm:text-lg flex items-center gap-2">
-                      <span className="text-xl sm:text-2xl">🧠</span>
-                      心理特征
+                      <span className="text-xl sm:text-2xl">🎯</span>
+                      核心特质
                     </h3>
                     <p className="text-sm sm:text-base text-neutral-700 leading-relaxed">
-                      {scoreLevel.psychologicalTraits}
+                      {getCharacterCoreTrait(zhzMetadata.topCharacters[0].id)}
                     </p>
                   </div>
-                )}
 
-                {/* Suggestions - 建议 */}
-                {scoreLevel?.suggestions && scoreLevel.suggestions.length > 0 && (
-                  <div className="p-5 sm:p-8 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-xl sm:rounded-2xl border border-blue-200/30 shadow-soft">
-                    <h3 className="font-bold text-neutral-900 mb-4 sm:mb-6 text-base sm:text-lg flex items-center gap-2">
-                      <span className="text-xl sm:text-2xl">💡</span>
-                      改善建议
-                    </h3>
-                    <div className="space-y-3 sm:space-y-4">
-                      {scoreLevel.suggestions.map((suggestion, index) => (
-                        <div key={index} className="flex items-start gap-3 sm:gap-4 group hover:translate-x-1 transition-transform">
-                          <span className="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-gradient-to-br from-primary via-purple-500 to-pink-500 text-white text-xs sm:text-sm flex items-center justify-center font-bold shadow-soft group-hover:shadow-glow transition-shadow">
-                            {index + 1}
-                          </span>
-                          <span className="text-sm sm:text-base text-neutral-700 leading-relaxed flex-1 pt-0.5">
-                            {suggestion}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* EQ 量表整体评价（综合三个维度） */}
-                {scaleId === 'eq' && scale.dimensions && (
-                  <div className="p-5 sm:p-8 bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 rounded-xl sm:rounded-2xl border border-purple-200/30 shadow-soft mt-4 sm:mt-6">
-                    <h3 className="font-bold text-neutral-900 mb-4 sm:mb-6 text-base sm:text-lg flex items-center gap-2">
-                      <span className="text-xl sm:text-2xl">🌟</span>
-                      整体评价
-                    </h3>
-                    {(() => {
-                      // EQ 量表的 dimensionScores 已经是百分比（0-100），直接使用
-                      const cognitivePercentage = dimensionScores['cognitive_empathy'] || 0;
-                      const emotionalPercentage = dimensionScores['emotional_empathy'] || 0;
-                      const socialPercentage = dimensionScores['social_skills'] || 0;
-
-                      // 判断各维度档次
-                      const getDimensionLevel = (percentage: number) => {
-                        if (percentage < 40) return '低';
-                        if (percentage < 70) return '中';
-                        return '高';
-                      };
-
-                      const cogLevel = getDimensionLevel(cognitivePercentage);
-                      const emoLevel = getDimensionLevel(emotionalPercentage);
-                      const socLevel = getDimensionLevel(socialPercentage);
-
-                      // 生成综合评价
-                      let overallAssessment = '';
-                      const strongAreas: string[] = [];
-                      const weakAreas: string[] = [];
-
-                      if (cogLevel === '高') strongAreas.push('认知共情');
-                      if (emoLevel === '高') strongAreas.push('情绪共情');
-                      if (socLevel === '高') strongAreas.push('社交技能');
-
-                      if (cogLevel === '低') weakAreas.push('认知共情');
-                      if (emoLevel === '低') weakAreas.push('情绪共情');
-                      if (socLevel === '低') weakAreas.push('社交技能');
-
-                      if (strongAreas.length === 3) {
-                        overallAssessment = '您在共情能力的三个维度上均表现优秀，具有全面而均衡的共情能力。您不仅能够理性地理解他人的想法和意图（认知共情），还能深刻地感受和共鸣他人的情绪（情绪共情），同时在社交场合中游刃有余（社交技能）。这种全面的共情能力使您在人际关系中占据优势，能够建立深厚而温暖的人际连接。';
-                      } else if (strongAreas.length === 2) {
-                        overallAssessment = `您在${strongAreas.join('和')}方面表现出色，显示出较强的共情潜力。建议在保持优势的同时，适当提升${weakAreas.length > 0 ? weakAreas.join('和') : '其他'}方面的能力，以实现更全面的共情能力发展。`;
-                      } else if (strongAreas.length === 1) {
-                        overallAssessment = `您在${strongAreas[0]}方面表现突出，这是您的优势所在。然而，共情能力是多维度的，建议您在${weakAreas.join('和')}等方面加强练习，以提升整体共情水平。均衡发展各个维度将帮助您更好地理解和回应他人，建立更深层的人际关系。`;
-                      } else if (weakAreas.length === 3) {
-                        overallAssessment = '您在共情能力的三个维度上均有较大的提升空间。共情能力是可以通过有意识的练习和学习来提升的。建议从基础的情绪识别和换位思考开始，逐步提升理解他人、感受他人和有效社交的能力。如果这影响了您的生活质量，建议寻求专业心理咨询的帮助。';
-                      } else {
-                        // 中等水平为主
-                        const midAreas: string[] = [];
-                        if (cogLevel === '中') midAreas.push('认知共情');
-                        if (emoLevel === '中') midAreas.push('情绪共情');
-                        if (socLevel === '中') midAreas.push('社交技能');
-
-                        if (strongAreas.length > 0) {
-                          overallAssessment = `您在${strongAreas.join('和')}方面表现优秀，而在${midAreas.join('和')}方面处于中等水平。继续保持您的优势领域，同时针对性地提升中等和较弱的维度，将使您的共情能力更加全面和成熟。`;
-                        } else {
-                          overallAssessment = `您的共情能力整体处于中等水平，在日常社交中基本能够理解和回应他人。通过有针对性的练习和学习，您有很大的提升空间。建议重点关注${weakAreas.length > 0 ? weakAreas.join('和') : midAreas.join('和')}等方面，以提升整体共情水平。`;
-                        }
-                      }
-
-                      return (
-                        <div className="space-y-4">
-                          <p className="text-sm sm:text-base text-neutral-700 leading-relaxed">
-                            {overallAssessment}
-                          </p>
-
-                          {/* 维度分布概览 */}
-                          <div className="grid grid-cols-3 gap-2 sm:gap-3 mt-4">
-                            <div className="p-3 rounded-lg bg-white/60 border border-neutral-200/50 text-center">
-                              <div className="text-xs text-neutral-600 mb-1">认知共情</div>
-                              <div className={`text-lg sm:text-xl font-bold ${
-                                cogLevel === '高' ? 'text-green-600' :
-                                cogLevel === '中' ? 'text-amber-600' : 'text-red-600'
-                              }`}>
-                                {cogLevel}
+                  {(() => {
+                    const detailedTraits = getCharacterDetailedTraits(zhzMetadata.topCharacters[0].id);
+                    return detailedTraits ? (
+                      <>
+                        {/* 性格优势 */}
+                        <div className="p-5 sm:p-8 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl sm:rounded-2xl border border-green-200/30 shadow-soft mb-4 sm:mb-6">
+                          <h3 className="font-bold text-neutral-900 mb-4 sm:mb-6 text-base sm:text-lg flex items-center gap-2">
+                            <span className="text-xl sm:text-2xl">✨</span>
+                            性格优势
+                          </h3>
+                          <div className="space-y-3 sm:space-y-4">
+                            {detailedTraits.advantages.map((advantage, index) => (
+                              <div key={index} className="flex items-start gap-3 sm:gap-4 group hover:translate-x-1 transition-transform">
+                                <span className="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 text-white text-xs sm:text-sm flex items-center justify-center font-bold shadow-soft group-hover:shadow-glow transition-shadow">
+                                  {index + 1}
+                                </span>
+                                <span className="text-sm sm:text-base text-neutral-700 leading-relaxed flex-1 pt-0.5">
+                                  {advantage}
+                                </span>
                               </div>
-                              <div className="text-xs text-neutral-500">{cognitivePercentage.toFixed(0)}%</div>
-                            </div>
-                            <div className="p-3 rounded-lg bg-white/60 border border-neutral-200/50 text-center">
-                              <div className="text-xs text-neutral-600 mb-1">情绪共情</div>
-                              <div className={`text-lg sm:text-xl font-bold ${
-                                emoLevel === '高' ? 'text-green-600' :
-                                emoLevel === '中' ? 'text-amber-600' : 'text-red-600'
-                              }`}>
-                                {emoLevel}
-                              </div>
-                              <div className="text-xs text-neutral-500">{emotionalPercentage.toFixed(0)}%</div>
-                            </div>
-                            <div className="p-3 rounded-lg bg-white/60 border border-neutral-200/50 text-center">
-                              <div className="text-xs text-neutral-600 mb-1">社交技能</div>
-                              <div className={`text-lg sm:text-xl font-bold ${
-                                socLevel === '高' ? 'text-green-600' :
-                                socLevel === '中' ? 'text-amber-600' : 'text-red-600'
-                              }`}>
-                                {socLevel}
-                              </div>
-                              <div className="text-xs text-neutral-500">{socialPercentage.toFixed(0)}%</div>
-                            </div>
+                            ))}
                           </div>
                         </div>
-                      );
-                    })()}
-                  </div>
-                )}
-              </>
-            )}
 
-            {/* 免责声明和参考提示 */}
-            <div className="mt-6 p-4 bg-blue-50 border-l-4 border-blue-500 rounded-lg">
-              <p className="text-sm text-gray-700 leading-relaxed">
-                ℹ️ <strong>重要提示：</strong>测评结果仅供参考，不具备临床诊断效力。
-                若您有心理健康疑虑，请咨询专业心理咨询师或医疗机构。
-                详情请查阅
-                <Link href="/disclaimer" target="_blank" className="text-primary hover:underline mx-1">
-                  《免责声明》
-                </Link>
-              </p>
+                        {/* 潜在风险 */}
+                        <div className="p-5 sm:p-8 bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl sm:rounded-2xl border border-amber-200/30 shadow-soft">
+                          <h3 className="font-bold text-neutral-900 mb-4 sm:mb-6 text-base sm:text-lg flex items-center gap-2">
+                            <span className="text-xl sm:text-2xl">⚠️</span>
+                            潜在风险
+                          </h3>
+                          <div className="space-y-3 sm:space-y-4">
+                            {detailedTraits.risks.map((risk, index) => (
+                              <div key={index} className="flex items-start gap-3 sm:gap-4 group hover:translate-x-1 transition-transform">
+                                <span className="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 text-white text-xs sm:text-sm flex items-center justify-center font-bold shadow-soft group-hover:shadow-glow transition-shadow">
+                                  {index + 1}
+                                </span>
+                                <span className="text-sm sm:text-base text-neutral-700 leading-relaxed flex-1 pt-0.5">
+                                  {risk}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </>
+                    ) : null;
+                  })()}
+                </>
+              ) : (
+                <>
+                  {/* 其他测评的原有解读 */}
+                  <div className="p-5 sm:p-8 bg-gradient-to-br from-neutral-50 to-purple-50/30 rounded-xl sm:rounded-2xl border border-neutral-200/30 shadow-soft mb-4 sm:mb-6">
+                    <h3 className="font-bold text-neutral-900 mb-3 sm:mb-4 text-base sm:text-lg flex items-center gap-2">
+                      <span className="text-xl sm:text-2xl">🎯</span>
+                      核心解读
+                    </h3>
+                    <p className="text-sm sm:text-base text-neutral-700 leading-relaxed">
+                      {scoreLevel?.description}
+                    </p>
+                  </div>
+
+                  {/* Psychological Traits - 心理特征 */}
+                  {scoreLevel?.psychologicalTraits && (
+                    <div className="p-5 sm:p-8 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl sm:rounded-2xl border border-purple-200/30 shadow-soft mb-4 sm:mb-6">
+                      <h3 className="font-bold text-neutral-900 mb-3 sm:mb-4 text-base sm:text-lg flex items-center gap-2">
+                        <span className="text-xl sm:text-2xl">🧠</span>
+                        心理特征
+                      </h3>
+                      <p className="text-sm sm:text-base text-neutral-700 leading-relaxed">
+                        {scoreLevel.psychologicalTraits}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Suggestions - 建议 */}
+                  {scoreLevel?.suggestions && scoreLevel.suggestions.length > 0 && (
+                    <div className="p-5 sm:p-8 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-xl sm:rounded-2xl border border-blue-200/30 shadow-soft">
+                      <h3 className="font-bold text-neutral-900 mb-4 sm:mb-6 text-base sm:text-lg flex items-center gap-2">
+                        <span className="text-xl sm:text-2xl">💡</span>
+                        改善建议
+                      </h3>
+                      <div className="space-y-3 sm:space-y-4">
+                        {scoreLevel.suggestions.map((suggestion, index) => (
+                          <div key={index} className="flex items-start gap-3 sm:gap-4 group hover:translate-x-1 transition-transform">
+                            <span className="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-gradient-to-br from-primary via-purple-500 to-pink-500 text-white text-xs sm:text-sm flex items-center justify-center font-bold shadow-soft group-hover:shadow-glow transition-shadow">
+                              {index + 1}
+                            </span>
+                            <span className="text-sm sm:text-base text-neutral-700 leading-relaxed flex-1 pt-0.5">
+                              {suggestion}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* EQ 量表整体评价（综合三个维度） */}
+                  {scaleId === 'eq' && scale.dimensions && (
+                    <div className="p-5 sm:p-8 bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 rounded-xl sm:rounded-2xl border border-purple-200/30 shadow-soft mt-4 sm:mt-6">
+                      <h3 className="font-bold text-neutral-900 mb-4 sm:mb-6 text-base sm:text-lg flex items-center gap-2">
+                        <span className="text-xl sm:text-2xl">🌟</span>
+                        整体评价
+                      </h3>
+                      {(() => {
+                        // EQ 量表的 dimensionScores 已经是百分比（0-100），直接使用
+                        const cognitivePercentage = dimensionScores['cognitive_empathy'] || 0;
+                        const emotionalPercentage = dimensionScores['emotional_empathy'] || 0;
+                        const socialPercentage = dimensionScores['social_skills'] || 0;
+
+                        // 判断各维度档次
+                        const getDimensionLevel = (percentage: number) => {
+                          if (percentage < 40) return '低';
+                          if (percentage < 70) return '中';
+                          return '高';
+                        };
+
+                        const cogLevel = getDimensionLevel(cognitivePercentage);
+                        const emoLevel = getDimensionLevel(emotionalPercentage);
+                        const socLevel = getDimensionLevel(socialPercentage);
+
+                        // 生成综合评价
+                        let overallAssessment = '';
+                        const strongAreas: string[] = [];
+                        const weakAreas: string[] = [];
+
+                        if (cogLevel === '高') strongAreas.push('认知共情');
+                        if (emoLevel === '高') strongAreas.push('情绪共情');
+                        if (socLevel === '高') strongAreas.push('社交技能');
+
+                        if (cogLevel === '低') weakAreas.push('认知共情');
+                        if (emoLevel === '低') weakAreas.push('情绪共情');
+                        if (socLevel === '低') weakAreas.push('社交技能');
+
+                        if (strongAreas.length === 3) {
+                          overallAssessment = '您在共情能力的三个维度上均表现优秀，具有全面而均衡的共情能力。您不仅能够理性地理解他人的想法和意图（认知共情），还能深刻地感受和共鸣他人的情绪（情绪共情），同时在社交场合中游刃有余（社交技能）。这种全面的共情能力使您在人际关系中占据优势，能够建立深厚而温暖的人际连接。';
+                        } else if (strongAreas.length === 2) {
+                          overallAssessment = `您在${strongAreas.join('和')}方面表现出色，显示出较强的共情潜力。建议在保持优势的同时，适当提升${weakAreas.length > 0 ? weakAreas.join('和') : '其他'}方面的能力，以实现更全面的共情能力发展。`;
+                        } else if (strongAreas.length === 1) {
+                          overallAssessment = `您在${strongAreas[0]}方面表现突出，这是您的优势所在。然而，共情能力是多维度的，建议您在${weakAreas.join('和')}等方面加强练习，以提升整体共情水平。均衡发展各个维度将帮助您更好地理解和回应他人，建立更深层的人际关系。`;
+                        } else if (weakAreas.length === 3) {
+                          overallAssessment = '您在共情能力的三个维度上均有较大的提升空间。共情能力是可以通过有意识的练习和学习来提升的。建议从基础的情绪识别和换位思考开始，逐步提升理解他人、感受他人和有效社交的能力。如果这影响了您的生活质量，建议寻求专业心理咨询的帮助。';
+                        } else {
+                          // 中等水平为主
+                          const midAreas: string[] = [];
+                          if (cogLevel === '中') midAreas.push('认知共情');
+                          if (emoLevel === '中') midAreas.push('情绪共情');
+                          if (socLevel === '中') midAreas.push('社交技能');
+
+                          if (strongAreas.length > 0) {
+                            overallAssessment = `您在${strongAreas.join('和')}方面表现优秀，而在${midAreas.join('和')}方面处于中等水平。继续保持您的优势领域，同时针对性地提升中等和较弱的维度，将使您的共情能力更加全面和成熟。`;
+                          } else {
+                            overallAssessment = `您的共情能力整体处于中等水平，在日常社交中基本能够理解和回应他人。通过有针对性的练习和学习，您有很大的提升空间。建议重点关注${weakAreas.length > 0 ? weakAreas.join('和') : midAreas.join('和')}等方面，以提升整体共情水平。`;
+                          }
+                        }
+
+                        return (
+                          <div className="space-y-4">
+                            <p className="text-sm sm:text-base text-neutral-700 leading-relaxed">
+                              {overallAssessment}
+                            </p>
+
+                            {/* 维度分布概览 */}
+                            <div className="grid grid-cols-3 gap-2 sm:gap-3 mt-4">
+                              <div className="p-3 rounded-lg bg-white/60 border border-neutral-200/50 text-center">
+                                <div className="text-xs text-neutral-600 mb-1">认知共情</div>
+                                <div className={`text-lg sm:text-xl font-bold ${
+                                  cogLevel === '高' ? 'text-green-600' :
+                                  cogLevel === '中' ? 'text-amber-600' : 'text-red-600'
+                                }`}>
+                                  {cogLevel}
+                                </div>
+                                <div className="text-xs text-neutral-500">{cognitivePercentage.toFixed(0)}%</div>
+                              </div>
+                              <div className="p-3 rounded-lg bg-white/60 border border-neutral-200/50 text-center">
+                                <div className="text-xs text-neutral-600 mb-1">情绪共情</div>
+                                <div className={`text-lg sm:text-xl font-bold ${
+                                  emoLevel === '高' ? 'text-green-600' :
+                                  emoLevel === '中' ? 'text-amber-600' : 'text-red-600'
+                                }`}>
+                                  {emoLevel}
+                                </div>
+                                <div className="text-xs text-neutral-500">{emotionalPercentage.toFixed(0)}%</div>
+                              </div>
+                              <div className="p-3 rounded-lg bg-white/60 border border-neutral-200/50 text-center">
+                                <div className="text-xs text-neutral-600 mb-1">社交技能</div>
+                                <div className={`text-lg sm:text-xl font-bold ${
+                                  socLevel === '高' ? 'text-green-600' :
+                                  socLevel === '中' ? 'text-amber-600' : 'text-red-600'
+                                }`}>
+                                  {socLevel}
+                                </div>
+                                <div className="text-xs text-neutral-500">{socialPercentage.toFixed(0)}%</div>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })()}
+                    </div>
+                  )}
+                </>
+              )}
+
+              {/* 免责声明和参考提示 */}
+              <div className="mt-6 p-4 bg-blue-50 border-l-4 border-blue-500 rounded-lg">
+                <p className="text-sm text-gray-700 leading-relaxed">
+                  ℹ️ <strong>重要提示：</strong>测评结果仅供参考，不具备临床诊断效力。
+                  若您有心理健康疑虑，请咨询专业心理咨询师或医疗机构。
+                  详情请查阅
+                  <Link href="/disclaimer" target="_blank" className="text-primary hover:underline mx-1">
+                    《免责声明》
+                  </Link>
+                </p>
+              </div>
             </div>
-          </div>
+          )}
 
 
           {/* Percentile Chart - 百分位分析 - 暂时隐藏
@@ -698,8 +641,8 @@ export default function ResultPage() {
           )}
           */}
 
-          {/* Radar Chart for Dimensions - ZHZ测评不显示雷达图 */}
-          {!isZHZ && scale.dimensions && scale.dimensions.length > 0 && (
+          {/* Radar Chart for Dimensions - ZHZ测评和PAT测评不显示雷达图 */}
+          {!isZHZ && !isPAT && scale.dimensions && scale.dimensions.length > 0 && (
             <div className="bg-white/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-soft-lg p-5 sm:p-10 mb-6 sm:mb-8 border border-neutral-100/50 animate-slide-up animation-delay-100">
               <div className="flex items-center gap-2 sm:gap-3 mb-6 sm:mb-8">
                 <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center shadow-soft">
@@ -753,10 +696,10 @@ export default function ResultPage() {
                 {scale.dimensions.map((dimension, index) => {
                   const dimScore = dimensionScores[dimension.id] || 0;
 
-                  // 对于 EQ 量表，dimensionScores 中已经是百分比，直接使用
+                  // 对于 EQ、PAT 量表，dimensionScores 中已经是百分比，直接使用
                   // 其他量表需要归一化
                   let dimPercentage: number;
-                  if (scaleId === 'eq' && result.dimensionScores) {
+                  if ((scaleId === 'eq' || scaleId === 'pat') && result.dimensionScores) {
                     dimPercentage = dimScore;
                   } else {
                     dimPercentage = normalizeDimensionScore(
@@ -877,7 +820,7 @@ export default function ResultPage() {
                         </div>
                       </div>
 
-                      {/* 维度档次和详细描述（仅 EQ 量表） */}
+                      {/* 维度档次和详细描述（EQ 和 PAT 量表） */}
                       {scaleId === 'eq' && levelDesc && (
                         <div className={`p-3 sm:p-4 rounded-xl bg-gradient-to-br ${bgColor} border border-neutral-200/30`}>
                           <div className="flex items-center gap-2 mb-2">
@@ -892,6 +835,111 @@ export default function ResultPage() {
                             {levelDesc}
                           </p>
                         </div>
+                      )}
+
+                      {/* PAT 量表维度详细解析 */}
+                      {scaleId === 'pat' && dimension.scoreRanges && (
+                        (() => {
+                          // 找到对应的分数段
+                          const scoreRange = dimension.scoreRanges.find(
+                            range => dimPercentage >= range.min && dimPercentage <= range.max
+                          );
+
+                          if (!scoreRange) return null;
+
+                          // 根据分数确定颜色
+                          let patBarColor = 'from-green-500 to-emerald-600';
+                          let patBgColor = 'from-green-50 to-emerald-50';
+
+                          if (dimPercentage < 36) {
+                            patBarColor = 'from-red-500 to-rose-600';
+                            patBgColor = 'from-red-50 to-rose-50';
+                          } else if (dimPercentage < 61) {
+                            patBarColor = 'from-amber-500 to-orange-600';
+                            patBgColor = 'from-amber-50 to-orange-50';
+                          } else if (dimPercentage < 81) {
+                            patBarColor = 'from-blue-500 to-indigo-600';
+                            patBgColor = 'from-blue-50 to-indigo-50';
+                          }
+
+                          return (
+                            <div className={`p-3 sm:p-5 rounded-xl bg-gradient-to-br ${patBgColor} border border-neutral-200/30 space-y-3 sm:space-y-4`}>
+                              {/* 档次标签 */}
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <span className={`px-2 sm:px-3 py-1 text-xs font-bold rounded-lg bg-gradient-to-r ${patBarColor} text-white shadow-soft`}>
+                                  {scoreRange.level}
+                                </span>
+                                <span className="text-xs sm:text-sm font-semibold text-neutral-700">
+                                  {dimPercentage.toFixed(0)}分 / 100分
+                                </span>
+                              </div>
+
+                              {/* 维度描述 */}
+                              {dimension.fullDescription && (
+                                <div className="p-3 rounded-lg bg-white/60 border border-neutral-200/20">
+                                  <p className="text-xs text-neutral-600 font-medium mb-1">💡 维度说明</p>
+                                  <p className="text-xs sm:text-sm text-neutral-700 leading-relaxed">
+                                    {dimension.fullDescription}
+                                  </p>
+                                </div>
+                              )}
+
+                              {/* 分数段描述 */}
+                              <div>
+                                <p className="text-xs sm:text-sm text-neutral-700 leading-relaxed">
+                                  {scoreRange.description}
+                                </p>
+                              </div>
+
+                              {/* 关键指标 */}
+                              {dimension.keyIndicators && dimension.keyIndicators.length > 0 && (
+                                <div>
+                                  <p className="text-xs font-semibold text-neutral-700 mb-2">🎯 关键指标</p>
+                                  <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                                    {dimension.keyIndicators.map((indicator, idx) => (
+                                      <span
+                                        key={idx}
+                                        className="px-2 py-1 text-[10px] sm:text-xs bg-white/70 text-neutral-600 rounded-md border border-neutral-200/30"
+                                      >
+                                        {indicator}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* 表现特征 */}
+                              {scoreRange.characteristics && scoreRange.characteristics.length > 0 && (
+                                <div>
+                                  <p className="text-xs font-semibold text-neutral-700 mb-2">📋 表现特征</p>
+                                  <ul className="space-y-1.5">
+                                    {scoreRange.characteristics.map((char, idx) => (
+                                      <li key={idx} className="text-xs sm:text-sm text-neutral-700 flex items-start gap-2">
+                                        <span className="text-neutral-400 mt-0.5">•</span>
+                                        <span className="flex-1">{char}</span>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              )}
+
+                              {/* 提升建议 */}
+                              {scoreRange.suggestions && scoreRange.suggestions.length > 0 && (
+                                <div>
+                                  <p className="text-xs font-semibold text-neutral-700 mb-2">💪 提升建议</p>
+                                  <ul className="space-y-1.5">
+                                    {scoreRange.suggestions.map((suggestion, idx) => (
+                                      <li key={idx} className="text-xs sm:text-sm text-neutral-700 flex items-start gap-2">
+                                        <span className="text-emerald-500 mt-0.5">✓</span>
+                                        <span className="flex-1">{suggestion}</span>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })()
                       )}
                     </div>
                   );
