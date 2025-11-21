@@ -838,7 +838,7 @@ export default function ResultPage() {
                       )}
 
                       {/* PAT 量表维度详细解析 */}
-                      {scaleId === 'pat' && dimension.scoreRanges && (
+                      {scaleId === 'pat' && 'scoreRanges' in dimension && dimension.scoreRanges && (
                         (() => {
                           // 找到对应的分数段
                           const scoreRange = dimension.scoreRanges.find(
