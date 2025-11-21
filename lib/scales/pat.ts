@@ -1007,7 +1007,7 @@ export const pat: QuizTemplate = {
 export function calculatePsychologicalAge(score: number): number {
   // 将 0-100 分直接线性映射到 10-70 岁
   // 公式: psychologicalAge = 10 + (score / 100) * 60
-  const psychologicalAge = 10 + (score / 100) * 60;
+  const psychologicalAge = 10 + 60*((score / 100)**1.5);
 
   // 四舍五入并确保在 10-70 范围内
   return Math.max(10, Math.min(70, Math.round(psychologicalAge)));

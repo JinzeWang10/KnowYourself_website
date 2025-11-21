@@ -185,6 +185,37 @@ const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(function ShareCard(
                 </div>
               )}
 
+              {/* 简短解读 */}
+              {description && (
+                <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-soft border border-neutral-100 mb-6" style={{ padding: '10px 8px' }}>
+                  <div className={`text-neutral-700 leading-relaxed ${isZHZ ? 'text-left' : 'text-center'} whitespace-pre-wrap`} style={{
+                    lineHeight: '1.6',
+                    fontSize: '14px',
+                    maxHeight: '200px',
+                    overflow: 'hidden'
+                  }}>
+                    {/* 对于 ZHZ，只显示前几行 */}
+                    {isZHZ ? (
+                      description.split('\n').slice(0, 4).map((line, i) => (
+                        <div key={i}>{line || '\u00A0'}</div>
+                      ))
+                    ) : (
+                      description.length > 200 ? description.substring(0, 197) + '...' : description
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* 雷达图 - 维度分析 */}
+              {radarData && radarData.length > 0 && (
+                <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-soft border border-neutral-100" style={{ padding: '10px 4px' }}>
+                  <h3 className="text-center font-bold text-neutral-900 mb-3" style={{ fontSize: '14px' }}>维度分析</h3>
+                  <div style={{ width: '100%', height: '300px' }}>
+                    <DimensionRadarChart data={radarData} showLegend={false} compact={true} />
+                  </div>
+                </div>
+              )}
+
               {/* PAT心理年龄展示 */}
               {isPAT && patMetadata && (
                 <div className="bg-gradient-to-br from-purple-50 via-pink-50 to-rose-50 rounded-2xl shadow-soft border border-purple-100/50 mb-6" style={{ padding: '20px' }}>
@@ -242,36 +273,9 @@ const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(function ShareCard(
                 </div>
               )}
 
-              {/* 简短解读 */}
-              {description && (
-                <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-soft border border-neutral-100 mb-6" style={{ padding: '10px 8px' }}>
-                  <div className={`text-neutral-700 leading-relaxed ${isZHZ ? 'text-left' : 'text-center'} whitespace-pre-wrap`} style={{
-                    lineHeight: '1.6',
-                    fontSize: '14px',
-                    maxHeight: '200px',
-                    overflow: 'hidden'
-                  }}>
-                    {/* 对于 ZHZ，只显示前几行 */}
-                    {isZHZ ? (
-                      description.split('\n').slice(0, 4).map((line, i) => (
-                        <div key={i}>{line || '\u00A0'}</div>
-                      ))
-                    ) : (
-                      description.length > 200 ? description.substring(0, 197) + '...' : description
-                    )}
-                  </div>
-                </div>
-              )}
+              
 
-              {/* 雷达图 - 维度分析 */}
-              {radarData && radarData.length > 0 && (
-                <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-soft border border-neutral-100" style={{ padding: '10px 4px' }}>
-                  <h3 className="text-center font-bold text-neutral-900 mb-3" style={{ fontSize: '14px' }}>维度分析</h3>
-                  <div style={{ width: '100%', height: '300px' }}>
-                    <DimensionRadarChart data={radarData} showLegend={false} compact={true} />
-                  </div>
-                </div>
-              )}
+              
             </div>
           </div>
 

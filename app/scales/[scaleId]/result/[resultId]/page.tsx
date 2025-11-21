@@ -310,18 +310,38 @@ export default function ResultPage() {
             }
 
             // 对于 PAT 量表，使用新的年龄解读
-            const description = isPAT && patMetadata?.ageInterpretation
-              ? patMetadata.ageInterpretation.description
-              : (scoreLevel?.description || '');
+            let description = '';
+            let level = '';
+            let levelColor = '#6366F1';
 
-            const level = isPAT && patMetadata?.ageInterpretation
-              ? patMetadata.ageInterpretation.title
-              : (scoreLevel?.level || '');
-
-            const levelColor = isPAT && patMetadata?.ageInterpretation
-              ? (patMetadata.ageInterpretation.level === 'A' || patMetadata.ageInterpretation.level === 'B' ? '#10b981' :
-                 patMetadata.ageInterpretation.level === 'C' ? '#f59e0b' : '#ef4444')
-              : (scoreLevel?.color || '#6366F1');
+            if (isPAT) {
+              if (patMetadata?.ageInterpretation) {
+                // 有完整的年龄解读数据
+                description = patMetadata.ageInterpretation.description;
+                level = patMetadata.ageInterpretation.title;
+                levelColor = patMetadata.ageInterpretation.level === 'A' || patMetadata.ageInterpretation.level === 'B'
+                  ? '#10b981'
+                  : patMetadata.ageInterpretation.level === 'C'
+                  ? '#f59e0b'
+                  : '#ef4444';
+              } else if (patMetadata?.psychologicalAge) {
+                // 只有心理年龄数据，生成通用描述
+                description = `你的心理年龄为 ${patMetadata.psychologicalAge} 岁，展现出相应的心理成熟度特征。这个结果反映了你在情绪管理、自我认知、责任意识等方面的综合表现。`;
+                level = `心理年龄 ${patMetadata.psychologicalAge} 岁`;
+                // 根据心理年龄判断颜色
+                levelColor = patMetadata.psychologicalAge >= 30 ? '#10b981' : patMetadata.psychologicalAge >= 20 ? '#f59e0b' : '#6366F1';
+              } else {
+                // 完全没有元数据，使用分数级别
+                description = scoreLevel?.description || '测评已完成，请查看详细维度分析了解你的心理成熟度。';
+                level = scoreLevel?.level || '已完成';
+                levelColor = scoreLevel?.color || '#6366F1';
+              }
+            } else {
+              // 非 PAT 量表
+              description = scoreLevel?.description || '';
+              level = scoreLevel?.level || '';
+              levelColor = scoreLevel?.color || '#6366F1';
+            }
 
             return (
               <ShareCard
