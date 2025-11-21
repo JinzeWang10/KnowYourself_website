@@ -87,6 +87,28 @@ export default function DimensionRadarChart({
     const offsetX = (x - cx) * radius / Math.sqrt((x - cx) ** 2 + (y - cy) ** 2);
     const offsetY = (y - cy) * radius / Math.sqrt((x - cx) ** 2 + (y - cy) ** 2);
 
+    const text = payload.value;
+    const maxLength = 5; // 超过5个字符则换行
+
+    // 如果文本长度超过限制，拆分为两行
+    if (text.length > maxLength) {
+      const mid = Math.ceil(text.length / 2);
+      const line1 = text.substring(0, mid);
+      const line2 = text.substring(mid);
+
+      return (
+        <text
+          x={x + offsetX}
+          y={y + offsetY}
+          textAnchor={x > cx ? 'start' : x < cx ? 'end' : 'middle'}
+          className="fill-gray-700 text-sm font-medium"
+        >
+          <tspan x={x + offsetX} dy="-0.6em">{line1}</tspan>
+          <tspan x={x + offsetX} dy="1.2em">{line2}</tspan>
+        </text>
+      );
+    }
+
     return (
       <text
         x={x + offsetX}
@@ -189,20 +211,7 @@ export default function DimensionRadarChart({
       {/* 图例说明 - 精美卡片样式（非紧凑模式显示） */}
       {!compact && (
         <>
-          <div className="mt-6 flex flex-wrap justify-center gap-3">
-            <div className="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-200/50 shadow-soft">
-              <div className="w-3 h-3 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 shadow-soft"></div>
-              <span className="text-sm font-medium text-neutral-700">较低水平 (0-33)</span>
-            </div>
-            <div className="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-200/50 shadow-soft">
-              <div className="w-3 h-3 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 shadow-soft"></div>
-              <span className="text-sm font-medium text-neutral-700">中等水平 (34-66)</span>
-            </div>
-            <div className="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-purple-50 to-violet-50 rounded-xl border border-purple-200/50 shadow-soft">
-              <div className="w-3 h-3 rounded-full bg-gradient-to-br from-purple-500 to-violet-600 shadow-soft"></div>
-              <span className="text-sm font-medium text-neutral-700">较高水平 (67-100)</span>
-            </div>
-          </div>
+
 
           {/* 说明文字 */}
           <div className="mt-4 p-3 bg-blue-50/50 rounded-xl border border-blue-100">
