@@ -17,12 +17,25 @@ export interface QuizOption {
   [key: string]: any; // 允许其他扩展字段
 }
 
+// 维度得分段
+export interface DimensionScoreRange {
+  min: number;
+  max: number;
+  level: string;
+  description: string;
+  characteristics: string[];
+  suggestions: string[];
+}
+
 // 量表维度
 export interface ScaleDimension {
   id: string;
   name: string;
   description: string;
   questionIds: string[];
+  fullDescription?: string; // 维度的详细说明
+  keyIndicators?: string[]; // 关键指标
+  scoreRanges?: DimensionScoreRange[]; // 分数段解析
 }
 
 // 评分范围
@@ -69,7 +82,7 @@ export interface QuizTemplate {
       max: number;
       description: string;
     };
-    ranges: ScoreRange[];
+    ranges?: ScoreRange[]; // 可选，某些量表（如PAT）可能不使用
   };
   references?: Reference[];
   instructions?: string;

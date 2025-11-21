@@ -16,7 +16,10 @@
       "Bash(curl:*)",
       "Bash(node:*)",
       "Bash(git fetch:*)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(git remote set-url:*)",
+      "Bash(taskkill:*)",
+      "Bash(tasklist)"
     ],
     "deny": [],
     "ask": []

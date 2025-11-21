@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { getScaleById, calculateScore, calculateDimensionScores, getScoreLevel, normalizeScore } from '@/lib/scales';
 import { calculateANI } from '@/lib/calculateANI';
 import { calculateZHZResults } from '@/lib/scales/zhz';
-import { calculatePsychologicalAge } from '@/lib/scales/pat';
+import { calculatePsychologicalAge, getAgeInterpretation } from '@/lib/scales/pat';
 import { submitAssessmentRecord } from '@/lib/api-client';
 import { getOrCreateUserId } from '@/lib/user-id';
 import type { QuizResult, UserInfo } from '@/types/quiz';
@@ -373,21 +373,110 @@ export default function QuizPage() {
       return;
     }
 
+    // PAT量表使用自定义计算（支持反向计分和维度加权）
+    if (scaleId === 'pat' && scale.calculateResults) {
+      const patResult = scale.calculateResults(convertedAnswers);
+      const psychologicalAge = calculatePsychologicalAge(patResult.totalScore);
+
+      let metadata: any = undefined;
+      let summaryText = '测评完成';
+      let recommendationsList: string[] = patResult.recommendations || [];
+
+      if (userInfo) {
+        const ageInterpretation = getAgeInterpretation(psychologicalAge, userInfo.age);
+        metadata = {
+          actualAge: userInfo.age,
+          psychologicalAge,
+          ageDifference: psychologicalAge - userInfo.age,
+          ageCategory: ageInterpretation.ageCategory,
+          ageInterpretation: {
+            level: ageInterpretation.level,
+            title: ageInterpretation.title,
+            description: ageInterpretation.description,
+          },
+        };
+
+        // 使用新的年龄解读作为摘要
+        summaryText = `${ageInterpretation.title}`;
+        recommendationsList = [];
+      }
+
+      // 创建结果对象
+      const result: QuizResult = {
+        id: `result-${Date.now()}`,
+        quizId: scale.id,
+        quizTitle: scale.title,
+        score: patResult.totalScore,
+        level: patResult.metadata?.level || '未知',
+        completedAt: new Date(),
+        answers: Object.entries(convertedAnswers).map(([questionId, answer]) => ({
+          questionId,
+          answer,
+        })),
+        dimensionScores: patResult.dimensionScores?.reduce((acc, item: any) => {
+          acc[item.dimension] = item.normalized; // 使用归一化后的分数（0-100）
+          return acc;
+        }, {} as Record<string, number>) || {},
+        report: {
+          summary: summaryText,
+          details: [],
+          recommendations: recommendationsList,
+        },
+        metadata,
+      };
+
+      // 提交到后台（如果有用户信息）
+      if (userInfo) {
+        const userId = getOrCreateUserId();
+        const normalizedScore = normalizeScore(scale, patResult.totalScore);
+        const submission: AssessmentSubmission = {
+          userId,
+          gender: userInfo.gender,
+          age: userInfo.age,
+          region: undefined,
+          record: {
+            id: result.id,
+            userId,
+            scaleId: scale.id,
+            scaleTitle: scale.title,
+            totalScore: patResult.totalScore,
+            normalizedScore,
+            level: patResult.metadata?.level || '未知',
+            dimensionScores: result.dimensionScores,
+            completedAt: new Date().toISOString(),
+            answers: Object.entries(convertedAnswers).map(([questionId, answer]) => ({
+              questionId,
+              answer,
+            })),
+          },
+        };
+
+        // 异步提交，不阻塞用户
+        submitAssessmentRecord(submission).catch(err => {
+          console.error('提交测评记录失败:', err);
+        });
+      }
+
+      // 保存到历史记录
+      const history = JSON.parse(localStorage.getItem('quiz-history') || '[]');
+      const existingIndex = history.findIndex((r: QuizResult) => r.id === result.id);
+      if (existingIndex === -1) {
+        history.push(result);
+        localStorage.setItem('quiz-history', JSON.stringify(history));
+      }
+
+      // 清除进度
+      localStorage.removeItem(`quiz-progress-${scaleId}`);
+
+      // 跳转到结果页
+      router.push(`/scales/${scaleId}/result/${result.id}`);
+      return;
+    }
+
     // 其他量表使用常规计算
     const totalScore = calculateScore(scale, convertedAnswers);
     const dimensionScores = calculateDimensionScores(scale, convertedAnswers);
     const scoreLevel = getScoreLevel(scale, totalScore);
-
-    // PAT量表：计算心理年龄
-    let metadata: any = undefined;
-    if (scaleId === 'pat' && userInfo) {
-      const psychologicalAge = calculatePsychologicalAge(totalScore, userInfo.age);
-      metadata = {
-        actualAge: userInfo.age,
-        psychologicalAge,
-        ageDifference: psychologicalAge - userInfo.age,
-      };
-    }
 
     // 创建结果对象
     const result: QuizResult = {
@@ -407,7 +496,6 @@ export default function QuizPage() {
         details: [],
         recommendations: scoreLevel?.suggestions || [],
       },
-      metadata,
     };
 
     // 提交到后台（如果有用户信息）

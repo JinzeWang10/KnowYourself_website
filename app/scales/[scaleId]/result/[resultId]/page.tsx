@@ -693,7 +693,7 @@ export default function ResultPage() {
               </div>
 
               <div className="space-y-4 sm:space-y-6">
-                {scale.dimensions.map((dimension, index) => {
+                {scale.dimensions.map((dimension, index): React.ReactElement => {
                   const dimScore = dimensionScores[dimension.id] || 0;
 
                   // 对于 EQ、PAT 量表，dimensionScores 中已经是百分比，直接使用

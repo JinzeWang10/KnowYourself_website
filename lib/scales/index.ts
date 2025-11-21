@@ -89,7 +89,7 @@ export function normalizeScore(scale: QuizTemplate, rawScore: number): number {
 
 // 获取分数对应的等级
 export function getScoreLevel(scale: QuizTemplate, score: number) {
-  if (!scale.scoring) return undefined;
+  if (!scale.scoring || !scale.scoring.ranges) return undefined;
   const range = scale.scoring.ranges.find(r => score >= r.min && score <= r.max);
   return range || scale.scoring.ranges[0];
 }
