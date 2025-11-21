@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -839,9 +839,9 @@ export default function ResultPage() {
 
                       {/* PAT 量表维度详细解析 */}
                       {scaleId === 'pat' && 'scoreRanges' in dimension && dimension.scoreRanges && (
-                        (() => {
+                        ((): React.ReactNode => {
                           // 找到对应的分数段
-                          const scoreRange = dimension.scoreRanges.find(
+                          const scoreRange = dimension.scoreRanges!.find(
                             range => dimPercentage >= range.min && dimPercentage <= range.max
                           );
 
