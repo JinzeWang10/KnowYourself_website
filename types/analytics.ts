@@ -25,7 +25,7 @@ export interface AssessmentRecord {
   dimensionScores?: Record<string, number>;
 
   // 时间信息
-  completedAt: string; // ISO 8601 格式
+  completedAt?: string; // ISO 8601 格式（可选，后端会自动使用服务器时间）
   duration?: number; // 测评用时（秒）
 
   // 答题记录

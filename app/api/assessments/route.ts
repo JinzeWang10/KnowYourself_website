@@ -36,10 +36,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 添加时间戳（如果未提供）
-    if (!record.completedAt) {
-      record.completedAt = new Date().toISOString();
-    }
+    // 强制使用服务器时间（忽略客户端提交的时间）
+    const serverTime = new Date();
+    record.completedAt = serverTime.toISOString();
 
     // 生成唯一ID（如果未提供）
     if (!record.id) {

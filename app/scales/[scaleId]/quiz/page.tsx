@@ -188,7 +188,7 @@ export default function QuizPage() {
             normalizedScore: zhzResult.totalScore,
             level: topCharacterName,
             dimensionScores: result.dimensionScores,
-            completedAt: new Date().toISOString(),
+            // completedAt 由服务器自动设置
             answers: Object.entries(convertedAnswers).map(([questionId, answer]) => ({
               questionId,
               answer,
@@ -264,7 +264,7 @@ export default function QuizPage() {
             normalizedScore,
             level: aniResult.level,
             dimensionScores: result.dimensionScores,
-            completedAt: new Date().toISOString(),
+            // completedAt 由服务器自动设置
             answers: Object.entries(convertedAnswers).map(([questionId, answer]) => ({
               questionId,
               answer,
@@ -344,7 +344,7 @@ export default function QuizPage() {
             normalizedScore: eqResult.totalScore, // EQ已经是0-100范围
             level: scoreLevel?.level || '未知',
             dimensionScores: result.dimensionScores,
-            completedAt: new Date().toISOString(),
+            // completedAt 由服务器自动设置
             answers: Object.entries(convertedAnswers).map(([questionId, answer]) => ({
               questionId,
               answer,
@@ -443,7 +443,7 @@ export default function QuizPage() {
             normalizedScore,
             level: patResult.metadata?.level || '未知',
             dimensionScores: result.dimensionScores,
-            completedAt: new Date().toISOString(),
+            // completedAt 由服务器自动设置
             answers: Object.entries(convertedAnswers).map(([questionId, answer]) => ({
               questionId,
               answer,
@@ -516,7 +516,7 @@ export default function QuizPage() {
           normalizedScore,
           level: scoreLevel.level,
           dimensionScores,
-          completedAt: new Date().toISOString(),
+          // completedAt 由服务器自动设置
           answers: Object.entries(convertedAnswers).map(([questionId, answer]) => ({
             questionId,
             answer,
