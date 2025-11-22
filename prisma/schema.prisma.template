@@ -1,0 +1,84 @@
+// Prisma Schema for Assessment Records Database
+// 测评记录数据库模型定义
+//
+// 使用说明：
+// 1. 本地开发：复制此文件为 schema.prisma，使用 SQLite (provider = "sqlite")
+// 2. 生产环境：复制此文件为 schema.prisma，使用 PostgreSQL (provider = "postgresql")
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  // 本地开发使用: provider = "sqlite"
+  // 生产环境使用: provider = "postgresql"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// 匿名用户表
+model AnonymousUser {
+  // 用户唯一标识（前端生成的匿名 ID）
+  id               String   @id
+
+  // 用户基本信息
+  gender           String   // 'male' | 'female' | 'other' | 'prefer_not_to_say'
+  age              Int
+
+  // 可选：地理位置（仅国家/地区级别）
+  region           String?
+
+  // 时间信息
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  // 关联的测评记录
+  assessments      AssessmentRecord[]
+
+  // 索引优化
+  @@index([gender])
+  @@index([age])
+  @@index([createdAt])
+
+  @@map("anonymous_users")
+}
+
+// 测评记录表
+model AssessmentRecord {
+  // 测评记录唯一标识
+  id               String   @id
+
+  // 关联用户
+  userId           String
+  user             AnonymousUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // 量表信息
+  scaleId          String
+  scaleTitle       String
+
+  // 测评结果
+  totalScore       Float
+  normalizedScore  Float
+  level            String
+
+  // 维度分数（JSON格式，可选）
+  dimensionScores  Json?
+
+  // 答题记录（JSON格式）
+  answers          Json
+
+  // 时间信息
+  completedAt      DateTime
+
+  // 可选：测评用时（秒）
+  duration         Int?
+
+  // 索引优化查询性能
+  @@index([userId])
+  @@index([scaleId])
+  @@index([completedAt])
+  @@index([scaleId, totalScore])
+  @@index([userId, completedAt])
+
+  @@map("assessment_records")
+}
