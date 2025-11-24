@@ -38,7 +38,8 @@ export async function POST(request: NextRequest) {
 
     // 强制使用服务器时间（忽略客户端提交的时间）
     const serverTime = new Date();
-    record.completedAt = serverTime.toISOString();
+    const completedAt = serverTime.toISOString();
+    record.completedAt = completedAt;
 
     // 生成唯一ID（如果未提供）
     if (!record.id) {
@@ -90,7 +91,7 @@ export async function POST(request: NextRequest) {
           level: record.level,
           dimensionScores: record.dimensionScores || undefined,
           answers: record.answers,
-          completedAt: new Date(record.completedAt),
+          completedAt: new Date(completedAt),
           duration: record.duration || null,
         },
       });
