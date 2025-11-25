@@ -747,8 +747,8 @@ export default function ResultPage() {
           )}
           */}
 
-          {/* Radar Chart for Dimensions - ZHZ测评和PAT测评不显示雷达图 */}
-          {!isZHZ && !isPAT && scale.dimensions && scale.dimensions.length > 0 && (
+          {/* Radar Chart for Dimensions - ZHZ测评、PAT测评和Workhorse测评不显示雷达图 */}
+          {!isZHZ && !isPAT && scaleId !== 'workhorse' && scale.dimensions && scale.dimensions.length > 0 && (
             <div className="bg-white/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-soft-lg p-5 sm:p-10 mb-6 sm:mb-8 border border-neutral-100/50 animate-slide-up animation-delay-100">
               <div className="flex items-center gap-2 sm:gap-3 mb-6 sm:mb-8">
                 <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center shadow-soft">
@@ -788,8 +788,8 @@ export default function ResultPage() {
             </div>
           )}
 
-          {/* Dimension Scores - ZHZ量表在分享卡片中已有，其他量表使用传统进度条 */}
-          {!isZHZ && scale.dimensions && scale.dimensions.length > 0 && (
+          {/* Dimension Scores - ZHZ量表和Workhorse量表在分享卡片中已有，其他量表使用传统进度条 */}
+          {!isZHZ && scaleId !== 'workhorse' && scale.dimensions && scale.dimensions.length > 0 && (
             <div className="bg-white/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-soft-lg p-5 sm:p-10 mb-6 sm:mb-8 border border-neutral-100/50 animate-slide-up animation-delay-200">
               <div className="flex items-center gap-2 sm:gap-3 mb-6 sm:mb-8">
                 <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-soft">
