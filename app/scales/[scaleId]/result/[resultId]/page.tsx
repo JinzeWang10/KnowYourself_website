@@ -517,6 +517,92 @@ export default function ResultPage() {
                     </div>
                   )}
 
+                  {/* Workhorse 量表维度分析 */}
+                  {scaleId === 'workhorse' && result.metadata?.dimensionEvaluations && (
+                    <>
+                      {/* 综合简评 */}
+                      <div className="p-5 sm:p-8 bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 rounded-xl sm:rounded-2xl border border-purple-200/30 shadow-soft mb-4 sm:mb-6">
+                        <h3 className="font-bold text-neutral-900 mb-4 sm:mb-6 text-base sm:text-lg flex items-center gap-2">
+                          <span className="text-xl sm:text-2xl">📊</span>
+                          综合分析
+                        </h3>
+                        <p className="text-sm sm:text-base text-neutral-700 leading-relaxed">
+                          {result.interpretation}
+                        </p>
+                      </div>
+
+                      {/* 各维度详细评价 */}
+                      <div className="space-y-4 sm:space-y-5">
+                        <h3 className="font-bold text-neutral-900 text-base sm:text-lg flex items-center gap-2">
+                          <span className="text-xl sm:text-2xl">🔍</span>
+                          维度详细分析
+                        </h3>
+                        {result.metadata.dimensionEvaluations.map((dimEval: any, index: number) => {
+                          // 根据等级确定颜色
+                          const getLevelColor = (level: string) => {
+                            if (level === '轻松' || level === '优秀' || level === '健康' || level === '广阔' || level === '良好') {
+                              return 'text-green-600 bg-green-100 border-green-300';
+                            } else if (level === '适中' || level === '良好' || level === '普通' || level === '有限' || level === '轻度疲惫') {
+                              return 'text-amber-600 bg-amber-100 border-amber-300';
+                            } else if (level === '较重' || level === '一般' || level === '压抑' || level === '狭窄' || level === '中度倦怠') {
+                              return 'text-orange-600 bg-orange-100 border-orange-300';
+                            } else {
+                              return 'text-red-600 bg-red-100 border-red-300';
+                            }
+                          };
+
+                          return (
+                            <div key={dimEval.id} className="p-5 sm:p-6 bg-white/80 rounded-xl border border-neutral-200/50 shadow-soft hover:shadow-soft-lg transition-shadow">
+                              {/* 维度标题和等级标签 */}
+                              <div className="flex items-center justify-between mb-3 sm:mb-4">
+                                <h4 className="font-bold text-neutral-900 text-base sm:text-lg">
+                                  {dimEval.name}
+                                </h4>
+                                <span className={`px-3 py-1 rounded-full text-xs sm:text-sm font-bold border ${getLevelColor(dimEval.level)}`}>
+                                  {dimEval.level}
+                                </span>
+                              </div>
+
+                              {/* 维度评价 */}
+                              <p className="text-sm sm:text-base text-neutral-700 leading-relaxed mb-4">
+                                {dimEval.description}
+                              </p>
+
+                              {/* 关键特征 */}
+                              {dimEval.characteristics && dimEval.characteristics.length > 0 && (
+                                <div className="mb-4">
+                                  <p className="text-xs sm:text-sm font-semibold text-neutral-600 mb-2">关键特征：</p>
+                                  <div className="flex flex-wrap gap-2">
+                                    {dimEval.characteristics.map((char: string, charIndex: number) => (
+                                      <span key={charIndex} className="px-2 py-1 bg-neutral-100 text-neutral-700 text-xs rounded-md">
+                                        {char}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* 改善建议 */}
+                              {dimEval.suggestions && dimEval.suggestions.length > 0 && (
+                                <div>
+                                  <p className="text-xs sm:text-sm font-semibold text-neutral-600 mb-2">建议：</p>
+                                  <ul className="space-y-1.5 text-sm text-neutral-700">
+                                    {dimEval.suggestions.map((suggestion: string, sugIndex: number) => (
+                                      <li key={sugIndex} className="flex items-start gap-2">
+                                        <span className="text-primary mt-0.5">•</span>
+                                        <span className="flex-1">{suggestion}</span>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </>
+                  )}
+
                   {/* EQ 量表整体评价（综合三个维度） */}
                   {scaleId === 'eq' && scale.dimensions && (
                     <div className="p-5 sm:p-8 bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 rounded-xl sm:rounded-2xl border border-purple-200/30 shadow-soft mt-4 sm:mt-6">

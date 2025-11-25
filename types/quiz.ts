@@ -36,6 +36,8 @@ export interface ScaleDimension {
   fullDescription?: string; // 维度的详细说明
   keyIndicators?: string[]; // 关键指标
   scoreRanges?: DimensionScoreRange[]; // 分数段解析
+  weight?: number; // 维度权重(可选,用于加权计算)
+  maxScore?: number; // 维度满分(可选,用于归一化)
 }
 
 // 评分范围
@@ -45,6 +47,8 @@ export interface ScoreRange {
   level: string;
   description: string;
   color: string;
+  emoji?: string; // 表情符号（可选）
+  title?: string; // 副标题（可选）
   psychologicalTraits?: string; // 心理特征
   suggestions?: string[];
 }

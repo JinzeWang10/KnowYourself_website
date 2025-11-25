@@ -7,12 +7,14 @@ import { pat } from './pat';
 import { zhz } from './zhz';
 import { eq } from './eq';
 import { bes } from './bes';
+import { workhorse } from './workhorse';
 
 // 所有可用的量表
 const scales: QuizTemplate[] = [
   zhz,
   eq,
   bes,
+  workhorse,
   pat,
   essScale,
   ini,

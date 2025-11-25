@@ -19,7 +19,9 @@
       "Bash(npx tsc:*)",
       "Bash(git remote set-url:*)",
       "Bash(taskkill:*)",
-      "Bash(tasklist)"
+      "Bash(tasklist)",
+      "Bash(copy prismaschema.prisma prismaschema.prisma.template)",
+      "Bash(copy:*)"
     ],
     "deny": [],
     "ask": []

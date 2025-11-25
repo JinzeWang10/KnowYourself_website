@@ -21,6 +21,7 @@ export default function ScalesPage() {
     'ess': '💭',
     'ini': '😴',
     'bes': '🍽️',
+    'workhorse': '🐴',
   };
 
   // 量表主题色配置
@@ -54,6 +55,11 @@ export default function ScalesPage() {
       gradient: 'from-orange-50/80 via-red-50/60 to-white/80',
       border: 'from-orange-400 via-red-400 to-pink-400',
       glow: 'group-hover:shadow-[0_0_40px_rgba(249,115,22,0.25)]',
+    },
+    'workhorse': {
+      gradient: 'from-gray-50/80 via-slate-50/60 to-white/80',
+      border: 'from-gray-400 via-slate-400 to-zinc-400',
+      glow: 'group-hover:shadow-[0_0_40px_rgba(100,116,139,0.25)]',
     },
   };
 
