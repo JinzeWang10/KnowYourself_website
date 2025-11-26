@@ -32,7 +32,9 @@ export default function QuizPage() {
         try {
           const data = JSON.parse(saved);
           setAnswers(data.answers || {});
-          setCurrentIndex(data.currentIndex || 0);
+          // 确保 currentIndex 在有效范围内
+          const savedIndex = data.currentIndex || 0;
+          setCurrentIndex(Math.min(savedIndex, scale.questions.length - 1));
         } catch (e) {
           // Failed to restore progress
         }
@@ -73,6 +75,22 @@ export default function QuizPage() {
 
   const currentQuestion = scale.questions[currentIndex];
   const progress = ((currentIndex + 1) / scale.questions.length) * 100;
+
+  // 安全检查：如果 currentQuestion 不存在，返回错误页面
+  if (!currentQuestion) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">题目加载失败</h1>
+          <p className="text-gray-600 mb-4">当前题目索引超出范围</p>
+          <Link href={`/scales/${scaleId}`} className="text-primary hover:underline">
+            返回量表介绍
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   const isAnswered = answers[currentQuestion.id] !== undefined;
 
   // 检测是否为Likert量表（需要question.type明确标记为'likert'）
@@ -442,6 +460,87 @@ export default function QuizPage() {
             totalScore: patResult.totalScore,
             normalizedScore,
             level: patResult.metadata?.level || '未知',
+            dimensionScores: result.dimensionScores,
+            // completedAt 由服务器自动设置
+            answers: Object.entries(convertedAnswers).map(([questionId, answer]) => ({
+              questionId,
+              answer,
+            })),
+          },
+        };
+
+        // 异步提交，不阻塞用户
+        submitAssessmentRecord(submission).catch(err => {
+          console.error('提交测评记录失败:', err);
+        });
+      }
+
+      // 保存到历史记录
+      const history = JSON.parse(localStorage.getItem('quiz-history') || '[]');
+      const existingIndex = history.findIndex((r: QuizResult) => r.id === result.id);
+      if (existingIndex === -1) {
+        history.push(result);
+        localStorage.setItem('quiz-history', JSON.stringify(history));
+      }
+
+      // 清除进度
+      localStorage.removeItem(`quiz-progress-${scaleId}`);
+
+      // 跳转到结果页
+      router.push(`/scales/${scaleId}/result/${result.id}`);
+      return;
+    }
+
+    // Workhorse 量表使用自定义计算
+    if (scaleId === 'workhorse' && scale.calculateResults) {
+      const workhorseResult = scale.calculateResults(convertedAnswers);
+
+      // 创建结果对象
+      const result: QuizResult = {
+        id: `result-${Date.now()}`,
+        quizId: scale.id,
+        quizTitle: scale.title,
+        score: workhorseResult.totalScore,
+        level: workhorseResult.metadata?.level || '未知',
+        completedAt: new Date(),
+        answers: Object.entries(convertedAnswers).map(([questionId, answer]) => ({
+          questionId,
+          answer,
+        })),
+        dimensionScores: workhorseResult.dimensionScores?.reduce((acc, item: any, index: number) => {
+          // 使用维度 ID 作为 key，而不是中文名称
+          const dimensionId = scale.dimensions?.[index]?.id;
+          if (dimensionId) {
+            acc[dimensionId] = item.score;
+          }
+          return acc;
+        }, {} as Record<string, number>) || {},
+        report: {
+          summary: workhorseResult.interpretation,
+          details: [],
+          recommendations: workhorseResult.recommendations || [],
+        },
+        interpretation: workhorseResult.interpretation,
+        metadata: workhorseResult.metadata,
+      };
+
+      // 提交到后台（如果有用户信息）
+      if (userInfo) {
+        const userId = getOrCreateUserId();
+        const normalizedScore = normalizeScore(scale, workhorseResult.totalScore);
+        const submission: AssessmentSubmission = {
+          userId,
+          gender: userInfo.gender,
+          age: userInfo.age,
+          region: undefined,
+          record: {
+            id: result.id,
+            userId,
+            scaleId: scale.id,
+            scaleTitle: scale.title,
+            totalScore: workhorseResult.totalScore,
+            normalizedScore,
+            level: workhorseResult.metadata?.level || '未知',
             dimensionScores: result.dimensionScores,
             // completedAt 由服务器自动设置
             answers: Object.entries(convertedAnswers).map(([questionId, answer]) => ({
