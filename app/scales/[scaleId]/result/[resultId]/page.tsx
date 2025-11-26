@@ -248,11 +248,11 @@ export default function ResultPage() {
               radarData = scale.dimensions?.map((dimension) => {
                 const dimScore = dimensionScores[dimension.id] || 0;
 
-                // 对于 EQ、PAT 量表，dimensionScores 中已经是百分比（0-100），不需要再归一化
+                // 对于 EQ、PAT、Workhorse 量表，dimensionScores 中已经是百分比（0-100），不需要再归一化
                 // 对于其他量表，需要使用 normalizeDimensionScore 转换
                 let normalizedValue: number;
-                if ((scaleId === 'eq' || scaleId === 'pat') && result.dimensionScores) {
-                  // EQ、PAT 量表直接使用已计算的百分比
+                if ((scaleId === 'eq' || scaleId === 'pat' || scaleId === 'workhorse') && result.dimensionScores) {
+                  // EQ、PAT、Workhorse 量表直接使用已计算的百分比
                   normalizedValue = dimScore;
                 } else {
                   // 其他量表需要归一化
@@ -338,7 +338,13 @@ export default function ResultPage() {
               }
             } else {
               // 非 PAT 量表
-              description = scoreLevel?.description || '';
+              // Workhorse 量表使用个性化简评（result.interpretation），其他量表使用固定描述
+              if (scaleId === 'workhorse' && result.interpretation) {
+                // 移除 Markdown 格式符号（如 ** 用于加粗）
+                description = result.interpretation.replace(/\*\*/g, '');
+              } else {
+                description = scoreLevel?.description || '';
+              }
               level = scoreLevel?.level || '';
               levelColor = scoreLevel?.color || '#6366F1';
             }
@@ -520,17 +526,6 @@ export default function ResultPage() {
                   {/* Workhorse 量表维度分析 */}
                   {scaleId === 'workhorse' && result.metadata?.dimensionEvaluations && (
                     <>
-                      {/* 综合简评 */}
-                      <div className="p-5 sm:p-8 bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 rounded-xl sm:rounded-2xl border border-purple-200/30 shadow-soft mb-4 sm:mb-6">
-                        <h3 className="font-bold text-neutral-900 mb-4 sm:mb-6 text-base sm:text-lg flex items-center gap-2">
-                          <span className="text-xl sm:text-2xl">📊</span>
-                          综合分析
-                        </h3>
-                        <p className="text-sm sm:text-base text-neutral-700 leading-relaxed">
-                          {result.interpretation}
-                        </p>
-                      </div>
-
                       {/* 各维度详细评价 */}
                       <div className="space-y-4 sm:space-y-5">
                         <h3 className="font-bold text-neutral-900 text-base sm:text-lg flex items-center gap-2">
@@ -762,10 +757,10 @@ export default function ResultPage() {
                 const radarData: RadarDataPoint[] = scale.dimensions.map((dimension) => {
                   const dimScore = dimensionScores[dimension.id] || 0;
 
-                  // 对于 EQ 量表，dimensionScores 中已经是百分比，直接使用
+                  // 对于 EQ、PAT、Workhorse 量表，dimensionScores 中已经是百分比，直接使用
                   // 其他量表需要归一化
                   let normalizedValue: number;
-                  if (scaleId === 'eq' && result.dimensionScores) {
+                  if ((scaleId === 'eq' || scaleId === 'pat' || scaleId === 'workhorse') && result.dimensionScores) {
                     normalizedValue = dimScore;
                   } else {
                     normalizedValue = normalizeDimensionScore(
