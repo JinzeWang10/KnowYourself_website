@@ -507,7 +507,7 @@ export default function ResultPage() {
                             性格优势
                           </h3>
                           <div className="space-y-3 sm:space-y-4">
-                            {detailedTraits.advantages.map((advantage, index) => (
+                            {detailedTraits.advantages.map((advantage: string, index: number) => (
                               <div key={index} className="flex items-start gap-3 sm:gap-4 group hover:translate-x-1 transition-transform">
                                 <span className="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 text-white text-xs sm:text-sm flex items-center justify-center font-bold shadow-soft group-hover:shadow-glow transition-shadow">
                                   {index + 1}
@@ -527,7 +527,7 @@ export default function ResultPage() {
                             潜在风险
                           </h3>
                           <div className="space-y-3 sm:space-y-4">
-                            {detailedTraits.risks.map((risk, index) => (
+                            {detailedTraits.risks.map((risk: string, index: number) => (
                               <div key={index} className="flex items-start gap-3 sm:gap-4 group hover:translate-x-1 transition-transform">
                                 <span className="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 text-white text-xs sm:text-sm flex items-center justify-center font-bold shadow-soft group-hover:shadow-glow transition-shadow">
                                   {index + 1}
@@ -569,7 +569,7 @@ export default function ResultPage() {
                             性格优势
                           </h3>
                           <div className="space-y-3 sm:space-y-4">
-                            {detailedTraits.advantages.map((advantage, index) => (
+                            {detailedTraits.advantages.map((advantage: string, index: number) => (
                               <div key={index} className="flex items-start gap-3 sm:gap-4 group hover:translate-x-1 transition-transform">
                                 <span className="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 text-white text-xs sm:text-sm flex items-center justify-center font-bold shadow-soft group-hover:shadow-glow transition-shadow">
                                   {index + 1}
@@ -589,7 +589,7 @@ export default function ResultPage() {
                             潜在风险
                           </h3>
                           <div className="space-y-3 sm:space-y-4">
-                            {detailedTraits.risks.map((risk, index) => (
+                            {detailedTraits.risks.map((risk: string, index: number) => (
                               <div key={index} className="flex items-start gap-3 sm:gap-4 group hover:translate-x-1 transition-transform">
                                 <span className="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 text-white text-xs sm:text-sm flex items-center justify-center font-bold shadow-soft group-hover:shadow-glow transition-shadow">
                                   {index + 1}
