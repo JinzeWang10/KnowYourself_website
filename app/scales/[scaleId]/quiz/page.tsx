@@ -572,6 +572,83 @@ export default function QuizPage() {
       return;
     }
 
+    // Zootopia 量表使用自定义计算（包含角色匹配）
+    if (scaleId === 'zootopia' && scale.calculateResults) {
+      const zootopiaResult = scale.calculateResults(convertedAnswers);
+
+      // 获取最相似的角色名称
+      const topCharacterName = zootopiaResult.metadata?.primaryResult?.characterName || '未知角色';
+
+      // 创建结果对象
+      const result: QuizResult = {
+        id: `result-${Date.now()}`,
+        quizId: scale.id,
+        quizTitle: scale.title,
+        score: zootopiaResult.totalScore,
+        level: topCharacterName,
+        completedAt: new Date(),
+        answers: Object.entries(convertedAnswers).map(([questionId, answer]) => ({
+          questionId,
+          answer,
+        })),
+        dimensionScores: zootopiaResult.dimensionScores?.reduce((acc, item) => {
+          acc[item.dimension] = item.score;
+          return acc;
+        }, {} as Record<string, number>) || {},
+        report: {
+          summary: zootopiaResult.interpretation || '测评完成',
+          details: [],
+          recommendations: zootopiaResult.recommendations || [],
+        },
+        metadata: zootopiaResult.metadata,
+      };
+
+      // 提交到后台（如果有用户信息）
+      if (userInfo) {
+        const userId = getOrCreateUserId();
+        const submission: AssessmentSubmission = {
+          userId,
+          gender: userInfo.gender,
+          age: userInfo.age,
+          region: undefined,
+          record: {
+            id: result.id,
+            userId,
+            scaleId: scale.id,
+            scaleTitle: scale.title,
+            totalScore: zootopiaResult.totalScore,
+            normalizedScore: zootopiaResult.totalScore,
+            level: topCharacterName,
+            dimensionScores: result.dimensionScores,
+            // completedAt 由服务器自动设置
+            answers: Object.entries(convertedAnswers).map(([questionId, answer]) => ({
+              questionId,
+              answer,
+            })),
+          },
+        };
+
+        submitAssessmentRecord(submission).catch(err => {
+          console.error('提交测评记录失败:', err);
+        });
+      }
+
+      // 保存到历史记录
+      const history = JSON.parse(localStorage.getItem('quiz-history') || '[]');
+      const existingIndex = history.findIndex((r: QuizResult) => r.id === result.id);
+      if (existingIndex === -1) {
+        history.push(result);
+        localStorage.setItem('quiz-history', JSON.stringify(history));
+      }
+
+      // 清除进度
+      localStorage.removeItem(`quiz-progress-${scaleId}`);
+
+      // 跳转到结果页
+      router.push(`/scales/${scaleId}/result/${result.id}`);
+      return;
+    }
+
     // 其他量表使用常规计算
     const totalScore = calculateScore(scale, convertedAnswers);
     const dimensionScores = calculateDimensionScores(scale, convertedAnswers);

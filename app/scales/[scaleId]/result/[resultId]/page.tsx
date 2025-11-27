@@ -7,12 +7,19 @@ import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import { getScaleById, calculateDimensionScores, normalizeScore, normalizeDimensionScore, getScaleScoreRange } from '@/lib/scales';
 import { getCharacterImagePath, getCharacterCoreTrait, getCharacterSubtitle, getCharacterEmoji, getCharacterDetailedTraits } from '@/lib/scales/zhz';
+import {
+  CHARACTER_PROFILES as ZOOTOPIA_PROFILES,
+  CHARACTER_CORE_TRAITS as ZOOTOPIA_CORE_TRAITS,
+  CHARACTER_DETAILED_TRAITS as ZOOTOPIA_DETAILED_TRAITS,
+  CHARACTER_IMAGE_MAP as ZOOTOPIA_IMAGE_MAP
+} from '@/lib/scales/zootopia';
 // import { getPercentileRank } from '@/lib/api-client';
 import { exportWithFeedback } from '@/lib/export-image';
 import type { QuizResult } from '@/types/quiz';
 import type { RadarDataPoint } from '@/components/DimensionRadarChart';
 import ShareCard from '@/components/ShareCard';
 import ZHZShareCard from '@/components/ZHZShareCard';
+import ZootopiaShareCard from '@/components/ZootopiaShareCard';
 
 // 动态导入雷达图组件（仅客户端）
 const DimensionRadarChart = dynamic(
@@ -165,6 +172,17 @@ export default function ResultPage() {
   const isZHZ = scaleId === 'zhz';
   const zhzMetadata = isZHZ && result.metadata ? result.metadata : null;
 
+  // 检查是否是 Zootopia 量表，需要特殊处理
+  const isZootopia = scaleId === 'zootopia';
+  const zootopiaMetadata = isZootopia && result.metadata ? result.metadata : null;
+
+  // 调试日志
+  if (isZootopia) {
+    console.log('🦊 Zootopia scale detected');
+    console.log('🦊 Result metadata:', result.metadata);
+    console.log('🦊 Zootopia metadata:', zootopiaMetadata);
+  }
+
   // 检查是否是 PAT 量表，需要展示心理年龄
   const isPAT = scaleId === 'pat';
   const patMetadata = isPAT && result.metadata ? result.metadata : null;
@@ -243,6 +261,13 @@ export default function ResultPage() {
                 value: Math.round((zhzMetadata.userVector[dimension.id] || 0) * 100 * 10) / 10,
                 fullMark: 100,
               }));
+            } else if (isZootopia && zootopiaMetadata && zootopiaMetadata.primaryResult && zootopiaMetadata.primaryResult.dimensionScores) {
+              // 对于 Zootopia 量表，使用 metadata 中的 dimensionScores（0-1范围，需要转换为0-100）
+              radarData = scale.dimensions?.map((dimension) => ({
+                dimension: dimension.name,
+                value: Math.round((zootopiaMetadata.primaryResult.dimensionScores[dimension.id] || 0) * 100 * 10) / 10,
+                fullMark: 100,
+              }));
             } else {
               // 其他量表使用标准计算
               radarData = scale.dimensions?.map((dimension) => {
@@ -305,6 +330,49 @@ export default function ResultPage() {
                   completedAt={typeof result.completedAt === 'string' ? result.completedAt : new Date(result.completedAt).toISOString()}
                   radarData={radarData}
                   coreKeywords={coreKeywords}
+                />
+              );
+            }
+
+            // 对于 Zootopia 量表，使用专属的 ZootopiaShareCard
+            if (isZootopia && zootopiaMetadata && zootopiaMetadata.primaryResult) {
+              console.log('🦊 Zootopia metadata found:', zootopiaMetadata);
+              console.log('🦊 Radar data:', radarData);
+              const primaryResult = zootopiaMetadata.primaryResult;
+              const secondaryMatches = zootopiaMetadata.secondaryMatches || [];
+
+              // 提取核心关键词（可以从特质文本中提取或预定义）
+              const coreKeywords: string[] = [];
+              // 简单示例：从角色 subtitle 提取关键词
+              const subtitle = ZOOTOPIA_PROFILES[primaryResult.characterId as keyof typeof ZOOTOPIA_PROFILES]?.subtitle || '';
+              if (subtitle) {
+                const keywordMatch = subtitle.match(/(.+?)的(.+)/);
+                if (keywordMatch) {
+                  coreKeywords.push(keywordMatch[1], keywordMatch[2]);
+                }
+              }
+
+              return (
+                <ZootopiaShareCard
+                  ref={shareCardRef}
+                  scaleTitle={scale.title}
+                  mainCharacter={{
+                    id: primaryResult.characterId,
+                    name: primaryResult.characterName,
+                    similarity: primaryResult.similarity,
+                    imagePath: `/zootopia/${ZOOTOPIA_IMAGE_MAP[primaryResult.characterId as keyof typeof ZOOTOPIA_IMAGE_MAP] || 'placeholder.svg'}`,
+                    coreTrait: primaryResult.coreTrait || ZOOTOPIA_CORE_TRAITS[primaryResult.characterId as keyof typeof ZOOTOPIA_CORE_TRAITS] || ''
+                  }}
+                  otherCharacters={secondaryMatches.map((match: any) => ({
+                    id: match.characterId,
+                    name: match.characterName,
+                    similarity: match.similarity,
+                    imagePath: `/zootopia/${ZOOTOPIA_IMAGE_MAP[match.characterId as keyof typeof ZOOTOPIA_IMAGE_MAP] || 'placeholder.svg'}`,
+                    coreTrait: ZOOTOPIA_CORE_TRAITS[match.characterId as keyof typeof ZOOTOPIA_CORE_TRAITS] || ''
+                  }))}
+                  completedAt={typeof result.completedAt === 'string' ? result.completedAt : new Date(result.completedAt).toISOString()}
+                  radarData={radarData}
+                  coreKeywords={coreKeywords.length > 0 ? coreKeywords : undefined}
                 />
               );
             }
@@ -430,6 +498,68 @@ export default function ResultPage() {
 
                   {(() => {
                     const detailedTraits = getCharacterDetailedTraits(zhzMetadata.topCharacters[0].id);
+                    return detailedTraits ? (
+                      <>
+                        {/* 性格优势 */}
+                        <div className="p-5 sm:p-8 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl sm:rounded-2xl border border-green-200/30 shadow-soft mb-4 sm:mb-6">
+                          <h3 className="font-bold text-neutral-900 mb-4 sm:mb-6 text-base sm:text-lg flex items-center gap-2">
+                            <span className="text-xl sm:text-2xl">✨</span>
+                            性格优势
+                          </h3>
+                          <div className="space-y-3 sm:space-y-4">
+                            {detailedTraits.advantages.map((advantage, index) => (
+                              <div key={index} className="flex items-start gap-3 sm:gap-4 group hover:translate-x-1 transition-transform">
+                                <span className="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 text-white text-xs sm:text-sm flex items-center justify-center font-bold shadow-soft group-hover:shadow-glow transition-shadow">
+                                  {index + 1}
+                                </span>
+                                <span className="text-sm sm:text-base text-neutral-700 leading-relaxed flex-1 pt-0.5">
+                                  {advantage}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* 潜在风险 */}
+                        <div className="p-5 sm:p-8 bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl sm:rounded-2xl border border-amber-200/30 shadow-soft">
+                          <h3 className="font-bold text-neutral-900 mb-4 sm:mb-6 text-base sm:text-lg flex items-center gap-2">
+                            <span className="text-xl sm:text-2xl">⚠️</span>
+                            潜在风险
+                          </h3>
+                          <div className="space-y-3 sm:space-y-4">
+                            {detailedTraits.risks.map((risk, index) => (
+                              <div key={index} className="flex items-start gap-3 sm:gap-4 group hover:translate-x-1 transition-transform">
+                                <span className="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 text-white text-xs sm:text-sm flex items-center justify-center font-bold shadow-soft group-hover:shadow-glow transition-shadow">
+                                  {index + 1}
+                                </span>
+                                <span className="text-sm sm:text-base text-neutral-700 leading-relaxed flex-1 pt-0.5">
+                                  {risk}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </>
+                    ) : null;
+                  })()}
+                </>
+              ) : isZootopia && zootopiaMetadata && zootopiaMetadata.primaryResult ? (
+                <>
+                  {/* Zootopia 测评专属解读 */}
+                  {/* 核心特质 */}
+                  <div className="p-5 sm:p-8 bg-gradient-to-br from-neutral-50 to-blue-50/30 rounded-xl sm:rounded-2xl border border-blue-200/30 shadow-soft mb-4 sm:mb-6">
+                    <h3 className="font-bold text-neutral-900 mb-3 sm:mb-4 text-base sm:text-lg flex items-center gap-2">
+                      <span className="text-xl sm:text-2xl">🎯</span>
+                      核心特质
+                    </h3>
+                    <p className="text-sm sm:text-base text-neutral-700 leading-relaxed">
+                      {zootopiaMetadata.primaryResult.coreTrait || ZOOTOPIA_CORE_TRAITS[zootopiaMetadata.primaryResult.characterId as keyof typeof ZOOTOPIA_CORE_TRAITS] || ''}
+                    </p>
+                  </div>
+
+                  {(() => {
+                    const detailedTraits = zootopiaMetadata.primaryResult.detailedTraits ||
+                      ZOOTOPIA_DETAILED_TRAITS[zootopiaMetadata.primaryResult.characterId as keyof typeof ZOOTOPIA_DETAILED_TRAITS];
                     return detailedTraits ? (
                       <>
                         {/* 性格优势 */}
@@ -742,8 +872,8 @@ export default function ResultPage() {
           )}
           */}
 
-          {/* Radar Chart for Dimensions - ZHZ测评、PAT测评和Workhorse测评不显示雷达图 */}
-          {!isZHZ && !isPAT && scaleId !== 'workhorse' && scale.dimensions && scale.dimensions.length > 0 && (
+          {/* Radar Chart for Dimensions - ZHZ测评、Zootopia测评、PAT测评和Workhorse测评不显示雷达图 */}
+          {!isZHZ && !isZootopia && !isPAT && scaleId !== 'workhorse' && scale.dimensions && scale.dimensions.length > 0 && (
             <div className="bg-white/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-soft-lg p-5 sm:p-10 mb-6 sm:mb-8 border border-neutral-100/50 animate-slide-up animation-delay-100">
               <div className="flex items-center gap-2 sm:gap-3 mb-6 sm:mb-8">
                 <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center shadow-soft">
@@ -783,8 +913,8 @@ export default function ResultPage() {
             </div>
           )}
 
-          {/* Dimension Scores - ZHZ量表和Workhorse量表在分享卡片中已有，其他量表使用传统进度条 */}
-          {!isZHZ && scaleId !== 'workhorse' && scale.dimensions && scale.dimensions.length > 0 && (
+          {/* Dimension Scores - ZHZ量表、Zootopia量表和Workhorse量表在分享卡片中已有，其他量表使用传统进度条 */}
+          {!isZHZ && !isZootopia && scaleId !== 'workhorse' && scale.dimensions && scale.dimensions.length > 0 && (
             <div className="bg-white/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-soft-lg p-5 sm:p-10 mb-6 sm:mb-8 border border-neutral-100/50 animate-slide-up animation-delay-200">
               <div className="flex items-center gap-2 sm:gap-3 mb-6 sm:mb-8">
                 <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-soft">

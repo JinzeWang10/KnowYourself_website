@@ -8,14 +8,16 @@ import { zhz } from './zhz';
 import { eq } from './eq';
 import { bes } from './bes';
 import { workhorse } from './workhorse';
+import { zootopia } from './zootopia';
 
 // 所有可用的量表
 const scales: QuizTemplate[] = [
+  zootopia,
   zhz,
-  eq,
-  bes,
   workhorse,
   pat,
+  eq,
+  bes,
   essScale,
   ini,
   ani,
