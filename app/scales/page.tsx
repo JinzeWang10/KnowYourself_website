@@ -15,6 +15,7 @@ export default function ScalesPage() {
 
   // 量表图标映射
   const scaleIcons: Record<string, string> = {
+    'zootopia': '🦊',
     'zhz': '🌹',
     'ani': '🎯',
     'scl90': '🧠',
@@ -26,6 +27,11 @@ export default function ScalesPage() {
 
   // 量表主题色配置
   const scaleThemes: Record<string, { gradient: string; border: string; glow: string }> = {
+    'zootopia': {
+      gradient: 'from-green-50/80 via-blue-50/60 to-purple-50/80',
+      border: 'from-green-400 via-blue-400 to-purple-400',
+      glow: 'group-hover:shadow-[0_0_40px_rgba(34,197,94,0.25)]',
+    },
     'zhz': {
       gradient: 'from-rose-50/80 via-pink-50/60 to-white/80',
       border: 'from-rose-400 via-pink-400 to-fuchsia-400',
