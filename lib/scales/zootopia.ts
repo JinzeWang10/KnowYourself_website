@@ -54,7 +54,7 @@ export const CHARACTER_PROFILES = {
     subtitle: '机智灵活的游刃派谈判者',
     scores: {
       pace: 0.75,
-      orderliness: 0.45,
+      orderliness: 0.20,
       sincerity: 0.30,
       extraversion: 0.55,
     }
@@ -71,7 +71,7 @@ export const CHARACTER_PROFILES = {
     }
   },
   'clawhauser': {
-    name: '雪豹警官 Clawhauser',
+    name: '豹子警官 Clawhauser',
     emoji: '🐆',
     subtitle: '热情外向的温暖社交家',
     scores: {
@@ -98,7 +98,7 @@ export const CHARACTER_PROFILES = {
     subtitle: '沉静稳重的战略掌控者',
     scores: {
       pace: 0.40,
-      orderliness: 0.20,
+      orderliness: 0.10,
       sincerity: 0.40,
       extraversion: 0.10,
     }
