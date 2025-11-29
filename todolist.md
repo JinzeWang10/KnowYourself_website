@@ -21,3 +21,8 @@ Emotion Recognition Test 看人脸判断情绪 可结合 AI 生成头像实现--
 
 https://psychology-tools.com/test/big-5-personality-test
 https://m.psyctest.cn/tag/%E9%87%8F%E8%A1%A8/
+
+现在有很多题目描述的都是相似的场景。
+每个角色的描述是否与实际相符
+五个维度是否是相关的呢？感觉理想主义这个维度不好说。
+现在测评结果，相似度非常高呀。请你输出一下各角色间的相似度。

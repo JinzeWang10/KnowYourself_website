@@ -523,349 +523,387 @@ getCharacterDetailedTraits(characterId: string): { advantages: string[]; risks: 
 
 ### 第一部分：强迫选择题（20 题）
 
-Q1：你在街上散步时看到朱迪正劝说一只乱扔垃圾的小动物，此时你的反应是？
+Q1
+
+你在街上散步时看到朱迪正在劝说一只乱扔垃圾的小动物，你会？
 
 主动上前支持朱迪，一起劝说
 {"pace": 0.18, "orderliness": 0.20, "sincerity": 0.15, "extraversion": 0.20}
 
 观察情况，不插手
-{"pace": -0.10, "sincerity": -0.08}
+{"pace": -0.10, "sincerity": -0.05}
 
 拍照发社交平台提醒大家
-{"extraversion": 0.15, "sincerity": 0.05}
+{"extraversion": 0.15, "orderliness": 0.05}
 
-偷偷把垃圾捡起来，但不说话
-{"orderliness": 0.12, "sincerity": 0.10}
+默默将垃圾捡起来再离开
+{"sincerity": 0.12, "orderliness": 0.10}
 
-笑着离开，不理会
+转头离开，不想管
 {"pace": -0.12, "sincerity": -0.10}
 
-Q2：和尼克搭档执勤时，你们抓住一个试图占小便宜的狐狸。你倾向于如何处理？
+Q2
 
-立即按规定处罚
-{"orderliness": 0.20, "sincerity": 0.15}
+和尼克搭档执勤，一个小动物试图占小便宜被你们抓住，你会？
 
-先口头警告，看他态度
-{"sincerity": 0.12, "extraversion": 0.10}
+按规定立即处罚
+{"orderliness": 0.20, "pace": 0.15}
 
-问尼克的意见，让他决定
-{"pace": -0.08, "orderliness": -0.05}
+先口头提醒，看对方态度
+{"sincerity": 0.10, "extraversion": 0.08}
 
-讲个笑话让气氛轻松点，再教育他
+征求尼克意见，让他决定
+{"extraversion": 0.05, "pace": -0.08}
+
+用玩笑缓解气氛，再教育
 {"extraversion": 0.15, "sincerity": -0.05}
 
-睁一只眼闭一只眼，小事化了
-{"orderliness": -0.15, "sincerity": -0.12}
+小事化了，不追究
+{"orderliness": -0.12, "sincerity": -0.10}
 
-Q3：马市长委派你策划一场市政活动，你的工作方式更可能是？
+Q3
 
-严格按照规章制度安排活动
-{"orderliness": 0.20, "pace": 0.10}
+马市长交给你一场市政活动，你会如何组织？
 
-制定详细计划确保顺利完成
+按制度严格推进
 {"orderliness": 0.18, "pace": 0.12}
 
-观察民众反应，灵活调整
-{"orderliness": -0.08, "extraversion": 0.10}
+做详细计划确保顺利完成
+{"orderliness": 0.15, "sincerity": 0.05}
 
-安排趣味节目让大家开心
-{"extraversion": 0.18}
+按现场反馈灵活微调
+{"pace": 0.05, "extraversion": 0.10}
 
-利用活动为自己宣传
-{"sincerity": -0.15, "extraversion": 0.10}
-
-Q4：闪电因为办事太慢被旁边的动物嘲笑，你恰好在场，你会？
-
-上前制止嘲笑者，这样不尊重
-{"sincerity": 0.15, "extraversion": 0.10}
-
-安慰闪电说每个人节奏不同
-{"sincerity": 0.15, "pace": 0.05, "extraversion": 0.12}
-
-帮闪电把事情做完
-{"pace": 0.18}
-
-开个玩笑把话题岔开
-{"extraversion": 0.15, "sincerity": -0.08}
-
-装作没看见，避免尴尬
-{"pace": -0.12, "sincerity": -0.12, "extraversion": -0.15}
-
-Q5：在疯狂动物城图书馆，你发现借阅的书被前一位读者严重损坏，而管理员没注意到。你会？
-
-主动告知管理员，要求追责
-{"orderliness": 0.18, "sincerity": 0.15}
-
-悄悄换一本完好的
-{"sincerity": -0.08, "orderliness": 0.05}
-
-拍照发朋友圈吐槽
-{"extraversion": 0.15, "sincerity": -0.05}
-
-自己修补好再还
-{"orderliness": 0.12, "sincerity": 0.12}
-
-不管，反正不是我弄的
-{"orderliness": -0.15, "sincerity": -0.10}
-
-Q6：雪豹警官正在帮一只小动物找回走失的宠物，你路过时看到这一幕。你会？
-
-立刻加入搜索队伍
-{"pace": 0.18, "sincerity": 0.12, "extraversion": 0.10}
-
-询问情况，提供线索或建议
-{"sincerity": 0.10, "extraversion": 0.12}
-
-拍照发到社区群帮忙扩散
+加入欢乐互动环节
 {"extraversion": 0.15}
 
-说句"加油"然后继续赶路
-{"pace": 0.08}
+借机突出自己
+{"sincerity": -0.12, "extraversion": 0.08}
 
-走开，警察会处理的
+Q4
+
+闪电因做事太慢被嘲笑，你在旁边会？
+
+阻止嘲笑者，维护闪电
+{"sincerity": 0.12, "extraversion": 0.12}
+
+安抚闪电，告诉他别介意
+{"sincerity": 0.15}
+
+帮闪电把事情做完
+{"pace": 0.15}
+
+用幽默把话题带开
+{"extraversion": 0.15, "sincerity": -0.05}
+
+装作没看到
+{"pace": -0.10, "sincerity": -0.10}
+
+Q5
+
+你在图书馆发现借到的书被前一位读者严重损坏，你会？
+
+告知管理员查清情况
+{"orderliness": 0.18, "sincerity": 0.12}
+
+换一本不破的
+{"sincerity": -0.10}
+
+发朋友圈吐槽
+{"extraversion": 0.15}
+
+自己修补好再还
+{"sincerity": 0.12, "pace": -0.05}
+
+不管它
+{"orderliness": -0.12, "sincerity": -0.08}
+
+Q6
+
+你看到雪豹警官在帮一只小动物找走失的宠物，你会？
+
+立即加入搜寻
+{"pace": 0.18, "extraversion": 0.10}
+
+提供线索或建议
+{"sincerity": 0.10, "extraversion": 0.10}
+
+拍照发群寻求扩散
+{"extraversion": 0.15}
+
+鼓励几句后继续赶路
+{"sincerity": -0.05}
+
+快速离开，不参与
 {"pace": -0.05, "sincerity": -0.10}
 
-Q7：在警局茶水间，你无意中发现尼克在偷偷做一些违规的小交易。你的第一反应是？
+Q7
 
-当场严肃指出，要求他停止
-{"orderliness": 0.18, "sincerity": 0.15, "extraversion": 0.10}
+在茶水间，你发现尼克似乎在做违规的小动作，你会？
 
-私下找他谈，了解情况
+直接制止
+{"orderliness": 0.18, "sincerity": 0.15}
+
+私下沟通了解情况
 {"sincerity": 0.12}
 
-向上级报告这件事
-{"orderliness": 0.18}
+报告给上级
+{"orderliness": 0.15}
 
-装作没看见，不想惹麻烦
-{"sincerity": -0.15, "orderliness": -0.15}
+假装没看到
+{"orderliness": -0.12, "sincerity": -0.12}
 
-我也要参与其中分一杯羹
-{"sincerity": -0.12, "orderliness": -0.18}
-
-Q8：开出租车时，你发现闪电在后座睡着了，马上就要到站。此时你会？
-
-温柔地叫醒他"先生，到地方了"
-{"sincerity": 0.15, "extraversion": 0.10}
-
-直接按喇叭或拍座椅叫醒
-{"pace": 0.15, "sincerity": -0.05, "extraversion": 0.05}
-
-开个玩笑把他叫醒，再客套几句缓解尴尬
-{"pace": 0.05, "sincerity": -0.08, "extraversion": 0.15}
-
-继续往前开，等他醒了再折返
-{"pace": -0.15, "orderliness": -0.08, "sincerity": 0.08}
-
-停表熄火，自己也休息等他醒
-{"pace": -0.18, "orderliness": 0.05, "extraversion": -0.10}
-
-Q9：朱迪和尼克在健身房为训练方法争论不休，作为教练的你会怎么介入？
-
-立即制止，告诉他们标准做法
-{"pace": 0.15, "orderliness": 0.18, "sincerity": 0.10, "extraversion": 0.12}
-
-让他们各自尝试，用效果说话
-{"pace": -0.05, "orderliness": -0.08, "sincerity": 0.10, "extraversion": 0.05}
-
-加入讨论，分享自己的经验
-{"sincerity": 0.12, "extraversion": 0.15}
-
-嘲笑他们，这都不懂还来瞎练
-{"sincerity": -0.15, "extraversion": 0.08}
-
-不管他们，爱怎么练怎么练
-{"orderliness": -0.12, "extraversion": -0.15}
-
-Q10：你的室友总在深夜弹钢琴，已经严重影响你休息。你会？
-
-第二天严肃地提出抗议
-{"pace": 0.12, "orderliness": 0.12, "sincerity": 0.15, "extraversion": 0.08}
-
-写纸条贴在门上委婉提醒
-{"pace": 0.05, "orderliness": 0.08, "sincerity": -0.05, "extraversion": -0.12}
-
-买副耳塞忍着
-{"pace": -0.10, "orderliness": -0.08, "extraversion": -0.15}
-
-在群聊里发段子暗示
-{"sincerity": -0.12, "extraversion": 0.12}
-
-也在深夜放音乐回敬
-{"orderliness": -0.15, "sincerity": -0.10}
-
-Q11：你住的楼下有人长期违规停车，挡住了消防通道。面对这种情况，你会？
-
-直接找车主严肃交涉
-{"pace": 0.18, "orderliness": 0.15, "sincerity": 0.12, "extraversion": 0.12}
-
-拍照向物业或交警投诉
-{"orderliness": 0.18, "pace": 0.12}
-
-在业主群里发消息提醒
-{"extraversion": 0.15, "pace": 0.08}
-
-贴个幽默纸条"消防车过不去啦"
-{"extraversion": 0.12, "sincerity": -0.08}
-
-算了，反正也不常出事
-{"orderliness": -0.18, "sincerity": -0.08, "pace": -0.12}
-
-Q12：协助马市长组织的摄影比赛中，你意外发现有参赛者使用 AI 作弊。此时你会？
-
-立即取消该选手资格
-{"pace": 0.18, "orderliness": 0.18, "sincerity": 0.12}
-
-私下提醒他主动退赛
-{"sincerity": 0.10, "pace": 0.08, "orderliness": 0.12}
-
-向组委会汇报，让他们决定
-{"orderliness": 0.15, "pace": 0.10}
-
-睁一只眼闭一只眼，比赛重在参与
-{"sincerity": -0.12, "orderliness": -0.18}
-
-发到群里让大家评评理
-{"extraversion": 0.18, "sincerity": -0.08, "orderliness": -0.05}
-
-Q13：和雪豹警官搭档时，你注意到他在执行任务中犯了一个可能导致危险的错误。你会？
-
-立即大声提醒制止
-{"pace": 0.20, "orderliness": 0.15, "sincerity": 0.15, "extraversion": 0.12}
-
-私下委婉指出错误
-{"sincerity": 0.12, "pace": 0.08, "orderliness": 0.10}
-
-自己默默补救，不让他难堪
-{"pace": 0.15, "sincerity": 0.08}
-
-事后向上级汇报这个隐患
-{"orderliness": 0.15, "sincerity": 0.08, "extraversion": 0.05}
-
-相信他的经验，不多管
-{"pace": -0.10, "orderliness": -0.12, "extraversion": -0.10}
-
-Q14：项目截止日临近，但闪电完成任务的速度依然慢得出奇。你的选择是？
-
-自己接手快速完成
-{"pace": 0.20, "orderliness": -0.05, "extraversion": -0.08}
-
-继续耐心等他做完
-{"pace": -0.18, "orderliness": 0.08, "sincerity": 0.12}
-
-提供帮助加快进度
-{"pace": 0.12, "sincerity": 0.12, "extraversion": 0.10}
-
-催促并设定明确时间节点
-{"pace": 0.15, "orderliness": 0.12, "extraversion": 0.08}
-
-向上级申请延期
-{"pace": -0.08, "orderliness": 0.10, "sincerity": 0.08, "extraversion": 0.05}
-
-Q15：朱迪邀请你周末参加"动物城马拉松"，但你本来计划宅家休息。你会？
-
-立刻答应，调整自己计划
-{"pace": 0.15, "sincerity": 0.10, "extraversion": 0.12}
-
-婉拒，保持自己节奏
-{"pace": -0.10, "orderliness": 0.08, "extraversion": -0.12}
-
-说考虑考虑，其实不想去
+参与分一杯羹
 {"sincerity": -0.15}
 
-反邀她来家里玩游戏
-{"extraversion": 0.12, "sincerity": 0.10}
+Q8
 
-答应陪她但只走一半
-{"pace": 0.05, "sincerity": -0.08}
+你开出租车时，闪电在后座睡着了马上到站，你会？
 
-Q16：公园里有只小兔子不小心掉进了水池，夏奇羊二话不说跳下去救起了他。你在旁边看到后？
+轻声叫醒
+{"sincerity": 0.15}
 
-上前帮忙照顾受惊的小兔子
-{"pace": 0.15, "sincerity": 0.12, "extraversion": 0.10}
+拍座椅或按喇叭
+{"pace": 0.15, "sincerity": -0.05}
 
-大声夸赞夏奇羊的勇敢
-{"sincerity": 0.10, "extraversion": 0.18}
+用玩笑唤醒他
+{"extraversion": 0.15, "sincerity": -0.08}
 
-递毛巾或外套给夏奇羊
-{"pace": 0.12, "sincerity": 0.12}
+继续开远点等他醒
+{"pace": -0.12}
 
-拍照记录这个英雄瞬间
+停车自己也休息
+{"pace": -0.18}
+
+Q9
+
+在健身房，朱迪和尼克为训练方法争论，你会？
+
+直接告诉他们标准做法
+{"orderliness": 0.15, "pace": 0.15}
+
+让他们各自尝试
+{"orderliness": -0.05}
+
+加入讨论分享经验
+{"extraversion": 0.15}
+
+嘲笑他们
+{"sincerity": -0.15}
+
+不干涉
+{"orderliness": -0.12}
+
+Q10
+
+室友深夜弹钢琴影响你休息，你会？
+
+正面提出问题
+{"sincerity": 0.12, "pace": 0.12}
+
+写纸条提醒
+{"orderliness": 0.08}
+
+买耳塞忍着
+{"pace": -0.10}
+
+在群里暗示
+{"extraversion": 0.12, "sincerity": -0.12}
+
+也深夜制造噪音
+{"sincerity": -0.10}
+
+Q11
+
+有人长期违法停车堵消防通道，你会？
+
+直接找车主交涉
+{"pace": 0.18, "extraversion": 0.10}
+
+投诉物业或交警
+{"orderliness": 0.18, "pace": 0.12}
+
+在业主群提醒
+{"extraversion": 0.15}
+
+贴幽默纸条提醒
 {"extraversion": 0.12}
 
-心里感慨一下就离开了
-{"pace": -0.08, "sincerity": -0.05, "extraversion": -0.15}
+无视
+{"sincerity": -0.08}
 
-Q17：朱迪最近为了破案连续加班好几天，精神状态很差。作为朋友，你会？
+Q12
 
-主动提出帮她分担案件工作
-{"pace": 0.15, "sincerity": 0.15, "extraversion": 0.10}
+摄影比赛中你发现有人使用 AI 作弊，你会？
 
-送吃的喝的，陪她聊天放松
-{"sincerity": 0.12, "extraversion": 0.15}
+取消资格
+{"orderliness": 0.18, "pace": 0.15}
 
-建议她先休息，别累坏身体
-{"sincerity": 0.12, "pace": 0.05}
+私下劝他退赛
+{"sincerity": 0.10}
 
-给她打气"你一定能破案"
-{"sincerity": 0.10, "extraversion": 0.12}
+上报组委会
+{"orderliness": 0.15}
 
-等她忙完再联系
-{"pace": -0.12, "sincerity": -0.08, "extraversion": -0.15}
+视而不见
+{"orderliness": -0.15}
 
-Q18：你偶然得知好友尼克最近又开始做一些"灰色地带"的小生意。你打算？
+发群里公开讨论
+{"extraversion": 0.18}
 
-严肃警告他这样不行
-{"sincerity": 0.15, "orderliness": 0.18}
+Q13
 
-了解情况，分析风险劝他停手
-{"sincerity": 0.12, "orderliness": 0.12}
+执行任务时，你发现雪豹警官犯了可能导致危险的错误，你会？
 
-理解他的难处，但保持距离
-{"sincerity": 0.08, "orderliness": 0.05}
+立即提醒制止
+{"pace": 0.20, "sincerity": 0.12}
 
-只要不伤害别人，随他去吧
-{"sincerity": -0.08, "orderliness": -0.15}
+私下指出
+{"sincerity": 0.10}
 
-帮他想合法的赚钱办法
-{"sincerity": 0.15, "orderliness": 0.12, "pace": 0.10, "extraversion": 0.12}
+等任务结束后复盘
+{"orderliness": 0.08}
 
-Q19：街头发生了一起口角，朱迪和尼克正在调解。路过的你会？
+自己默默补救
+{"pace": 0.05, "sincerity": 0.05}
 
-上前帮忙一起调解
-{"sincerity": 0.12, "pace": 0.15, "extraversion": 0.15}
+不提醒
+{"sincerity": -0.12}
 
-站在旁边以防万一
-{"sincerity": 0.08, "pace": 0.08}
+Q14
 
-录视频留存证据
-{"orderliness": 0.12, "pace": 0.10}
+你在广场看到一只小动物迷路了，你会？
 
-问一句"需要帮忙吗"再决定
-{"sincerity": 0.10, "extraversion": 0.12}
+带他去找警察
+{"sincerity": 0.15, "pace": 0.12}
 
-绕道走，别卷入麻烦
-{"sincerity": -0.10, "pace": -0.08, "extraversion": -0.15}
+问清情况后提供建议
+{"sincerity": 0.12}
 
-Q20：夏奇羊自发在社区组织了一场公益清洁活动，你恰好看到招募信息。你的反应是？
+拍照发群扩散
+{"extraversion": 0.15}
 
-立即报名主动加入
-{"pace": 0.15, "sincerity": 0.15, "extraversion": 0.12}
+给他指个大概方向
+{"pace": -0.05}
 
-赞赏但不参与
-{"sincerity": -0.05, "pace": -0.05}
+继续路过
+{"sincerity": -0.10}
 
-提出改进建议
-{"orderliness": 0.08, "sincerity": 0.08, "pace": 0.05, "extraversion": 0.10}
+Q15
 
-拍照记录发朋友圈支持
-{"extraversion": 0.15, "pace": 0.08}
+工作中你发现一份关键报告存在错误，你会？
 
-无动于衷
-{"sincerity": -0.10, "pace": -0.12, "extraversion": -0.15}
+立即反馈并要求整改
+{"orderliness": 0.18}
 
----
+自己默默修好
+{"pace": 0.05}
 
-### 第二部分：锚点量表题（5 题）
+通知团队大家讨论
+{"extraversion": 0.15}
+
+等别人发现
+{"orderliness": -0.10}
+
+视而不见
+{"sincerity": -0.10}
+
+Q16
+
+闪电向你借钱但含糊其辞，你会？
+
+坦率拒绝
+{"sincerity": 0.12}
+
+问清楚用途再决定
+{"orderliness": 0.10}
+
+还是借给他
+{"sincerity": 0.08}
+
+转移话题装作没听懂
+{"pace": -0.05}
+
+直接忽略
+{"sincerity": -0.12}
+
+Q17
+
+你参加志愿活动，组织者临时缺人，你会？
+
+立即补位
+{"pace": 0.15, "extraversion": 0.10}
+
+问清楚要做什么再决定
+{"orderliness": 0.10}
+
+帮忙联系其他志愿者
+{"extraversion": 0.12}
+
+继续做自己的部分
+{"pace": -0.05}
+
+什么也不做
+{"sincerity": -0.10}
+
+Q18
+
+尼克邀请你参加他的聚会，你其实不太想去，你会？
+
+直接拒绝
+{"sincerity": 0.15}
+
+找个借口推掉
+{"sincerity": -0.08}
+
+勉强去一下
+{"extraversion": 0.10}
+
+建议改成别的活动
+{"extraversion": 0.05}
+
+不回复
+{"sincerity": -0.12}
+
+Q19
+
+你在公交上看到有人插队，你会？
+
+直接制止
+{"pace": 0.15}
+
+委婉提醒
+{"sincerity": 0.10}
+
+用玩笑化解
+{"extraversion": 0.12}
+
+拍照吐槽
+{"extraversion": 0.15}
+
+默默忍受
+{"pace": -0.10}
+
+Q20
+
+你和大先生在同个会议上，他明显情绪不佳，你会？
+
+主动询问是否需要协助
+{"sincerity": 0.15, "extraversion": 0.08}
+
+等他来找你
+{"pace": -0.05}
+
+给他倒一杯水缓和氛围
+{"sincerity": 0.12}
+
+用笑话试图让他放松
+{"extraversion": 0.15}
+
+不干涉
+{"pace": -0.10}
+
+### 第二部分：锚点量表题（ 4 题）
 
 请根据你平时的行为和性格，对以下陈述打分：1=完全不同意，5=完全同意
 
