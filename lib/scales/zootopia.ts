@@ -256,7 +256,7 @@ export const CHARACTER_DETAILED_TRAITS: Record<string, {
 
 // 题目列表
 const questions: QuizTemplate['questions'] = [
-  // Q1-Q20: 强迫选择题
+  // Q1-Q16: 强迫选择题（情景题）
   {
     id: 'zootopia_q1',
     type: 'scale',
@@ -392,40 +392,7 @@ const questions: QuizTemplate['questions'] = [
   {
     id: 'zootopia_q5',
     type: 'scale',
-    question: '你在图书馆发现借到的书被前一位读者严重损坏，你会？',
-    options: [
-      {
-        value: 1,
-        label: '告知管理员查清情况',
-        scores: { orderliness: 0.18, sincerity: 0.12 }
-      },
-      {
-        value: 2,
-        label: '换一本不破的',
-        scores: { sincerity: -0.10 }
-      },
-      {
-        value: 3,
-        label: '发朋友圈吐槽',
-        scores: { extraversion: 0.15 }
-      },
-      {
-        value: 4,
-        label: '自己修补好再还',
-        scores: { sincerity: 0.12, pace: -0.05 }
-      },
-      {
-        value: 5,
-        label: '不管它',
-        scores: { orderliness: -0.12, sincerity: -0.08 }
-      }
-    ],
-    required: true
-  },
-  {
-    id: 'zootopia_q6',
-    type: 'scale',
-    question: '你看到雪豹警官在帮一只小动物找走失的宠物，你会？',
+    question: '你看到豹子警官在帮一只小动物找走失的宠物，你会？',
     options: [
       {
         value: 1,
@@ -434,62 +401,62 @@ const questions: QuizTemplate['questions'] = [
       },
       {
         value: 2,
-        label: '提供线索或建议',
-        scores: { sincerity: 0.10, extraversion: 0.10 }
+        label: '先观察情况，判断如何帮忙最有效',
+        scores: { pace: -0.05, orderliness: 0.08 }
       },
       {
         value: 3,
-        label: '拍照发群寻求扩散',
-        scores: { extraversion: 0.15 }
+        label: '提供线索或建议后继续自己的事',
+        scores: { sincerity: 0.08 }
       },
       {
         value: 4,
-        label: '鼓励几句后继续赶路',
-        scores: { sincerity: -0.05 }
+        label: '用手机帮忙发布寻宠信息',
+        scores: { extraversion: 0.12 }
       },
       {
         value: 5,
-        label: '快速离开，不参与',
-        scores: { pace: -0.05, sincerity: -0.10 }
+        label: '鼓励几句，表示相信他能找到',
+        scores: { sincerity: 0.10, extraversion: 0.08 }
+      }
+    ],
+    required: true
+  },
+  {
+    id: 'zootopia_q6',
+    type: 'scale',
+    question: '在茶水间，你发现尼克似乎在做违规的小动作，你会？',
+    options: [
+      {
+        value: 1,
+        label: '立即制止并说明规则',
+        scores: { orderliness: 0.18, sincerity: 0.15, pace: 0.12 }
+      },
+      {
+        value: 2,
+        label: '私下用幽默的方式提醒他',
+        scores: { sincerity: 0.08, extraversion: 0.10 }
+      },
+      {
+        value: 3,
+        label: '先观察他的动机，再决定如何处理',
+        scores: { pace: -0.08 }
+      },
+      {
+        value: 4,
+        label: '按流程报告给上级',
+        scores: { orderliness: 0.15 }
+      },
+      {
+        value: 5,
+        label: '根据严重程度决定要不要管',
+        scores: { orderliness: -0.05 }
       }
     ],
     required: true
   },
   {
     id: 'zootopia_q7',
-    type: 'scale',
-    question: '在茶水间，你发现尼克似乎在做违规的小动作，你会？',
-    options: [
-      {
-        value: 1,
-        label: '直接制止',
-        scores: { orderliness: 0.18, sincerity: 0.15 }
-      },
-      {
-        value: 2,
-        label: '私下沟通了解情况',
-        scores: { sincerity: 0.12 }
-      },
-      {
-        value: 3,
-        label: '报告给上级',
-        scores: { orderliness: 0.15 }
-      },
-      {
-        value: 4,
-        label: '假装没看到',
-        scores: { orderliness: -0.12, sincerity: -0.12 }
-      },
-      {
-        value: 5,
-        label: '参与分一杯羹',
-        scores: { sincerity: -0.15 }
-      }
-    ],
-    required: true
-  },
-  {
-    id: 'zootopia_q8',
     type: 'scale',
     question: '你开出租车时，闪电在后座睡着了马上到站，你会？',
     options: [
@@ -522,7 +489,7 @@ const questions: QuizTemplate['questions'] = [
     required: true
   },
   {
-    id: 'zootopia_q9',
+    id: 'zootopia_q8',
     type: 'scale',
     question: '在健身房，朱迪和尼克为训练方法争论，你会？',
     options: [
@@ -555,7 +522,7 @@ const questions: QuizTemplate['questions'] = [
     required: true
   },
   {
-    id: 'zootopia_q10',
+    id: 'zootopia_q9',
     type: 'scale',
     question: '室友深夜弹钢琴影响你休息，你会？',
     options: [
@@ -588,73 +555,40 @@ const questions: QuizTemplate['questions'] = [
     required: true
   },
   {
-    id: 'zootopia_q11',
-    type: 'scale',
-    question: '有人长期违法停车堵消防通道，你会？',
-    options: [
-      {
-        value: 1,
-        label: '直接找车主交涉',
-        scores: { pace: 0.18, extraversion: 0.10 }
-      },
-      {
-        value: 2,
-        label: '投诉物业或交警',
-        scores: { orderliness: 0.18, pace: 0.12 }
-      },
-      {
-        value: 3,
-        label: '在业主群提醒',
-        scores: { extraversion: 0.15 }
-      },
-      {
-        value: 4,
-        label: '贴幽默纸条提醒',
-        scores: { extraversion: 0.12 }
-      },
-      {
-        value: 5,
-        label: '无视',
-        scores: { sincerity: -0.08 }
-      }
-    ],
-    required: true
-  },
-  {
-    id: 'zootopia_q12',
+    id: 'zootopia_q10',
     type: 'scale',
     question: '摄影比赛中你发现有人使用 AI 作弊，你会？',
     options: [
       {
         value: 1,
-        label: '取消资格',
+        label: '立即上报组委会处理',
         scores: { orderliness: 0.18, pace: 0.15 }
       },
       {
         value: 2,
-        label: '私下劝他退赛',
-        scores: { sincerity: 0.10 }
+        label: '先私下劝对方主动退赛',
+        scores: { sincerity: 0.12 }
       },
       {
         value: 3,
-        label: '上报组委会',
-        scores: { orderliness: 0.15 }
+        label: '收集证据后再决定',
+        scores: { orderliness: 0.10, pace: -0.05 }
       },
       {
         value: 4,
-        label: '视而不见',
-        scores: { orderliness: -0.15 }
+        label: '在参赛群里委婉提醒规则',
+        scores: { extraversion: 0.12, sincerity: -0.05 }
       },
       {
         value: 5,
-        label: '发群里公开讨论',
-        scores: { extraversion: 0.18 }
+        label: '看其他人的反应再决定',
+        scores: { pace: -0.10 }
       }
     ],
     required: true
   },
   {
-    id: 'zootopia_q13',
+    id: 'zootopia_q11',
     type: 'scale',
     question: '执行任务时，你发现雪豹警官犯了可能导致危险的错误，你会？',
     options: [
@@ -687,73 +621,40 @@ const questions: QuizTemplate['questions'] = [
     required: true
   },
   {
-    id: 'zootopia_q14',
-    type: 'scale',
-    question: '你在广场看到一只小动物迷路了，你会？',
-    options: [
-      {
-        value: 1,
-        label: '带他去找警察',
-        scores: { sincerity: 0.15, pace: 0.12 }
-      },
-      {
-        value: 2,
-        label: '问清情况后提供建议',
-        scores: { sincerity: 0.12 }
-      },
-      {
-        value: 3,
-        label: '拍照发群扩散',
-        scores: { extraversion: 0.15 }
-      },
-      {
-        value: 4,
-        label: '给他指个大概方向',
-        scores: { pace: -0.05 }
-      },
-      {
-        value: 5,
-        label: '继续路过',
-        scores: { sincerity: -0.10 }
-      }
-    ],
-    required: true
-  },
-  {
-    id: 'zootopia_q15',
+    id: 'zootopia_q12',
     type: 'scale',
     question: '工作中你发现一份关键报告存在错误，你会？',
     options: [
       {
         value: 1,
         label: '立即反馈并要求整改',
-        scores: { orderliness: 0.18 }
+        scores: { orderliness: 0.18, pace: 0.15 }
       },
       {
         value: 2,
-        label: '自己默默修好',
-        scores: { pace: 0.05 }
+        label: '自己先修正，然后通知原作者',
+        scores: { pace: 0.12, sincerity: 0.08 }
       },
       {
         value: 3,
-        label: '通知团队大家讨论',
-        scores: { extraversion: 0.15 }
+        label: '标注问题后发给团队讨论',
+        scores: { extraversion: 0.15, orderliness: 0.10 }
       },
       {
         value: 4,
-        label: '等别人发现',
-        scores: { orderliness: -0.10 }
+        label: '私下委婉提醒原作者',
+        scores: { sincerity: 0.10 }
       },
       {
         value: 5,
-        label: '视而不见',
-        scores: { sincerity: -0.10 }
+        label: '评估影响程度后再决定处理方式',
+        scores: { pace: -0.08 }
       }
     ],
     required: true
   },
   {
-    id: 'zootopia_q16',
+    id: 'zootopia_q13',
     type: 'scale',
     question: '闪电向你借钱但含糊其辞，你会？',
     options: [
@@ -786,40 +687,7 @@ const questions: QuizTemplate['questions'] = [
     required: true
   },
   {
-    id: 'zootopia_q17',
-    type: 'scale',
-    question: '你参加志愿活动，组织者临时缺人，你会？',
-    options: [
-      {
-        value: 1,
-        label: '立即补位',
-        scores: { pace: 0.15, extraversion: 0.10 }
-      },
-      {
-        value: 2,
-        label: '问清楚要做什么再决定',
-        scores: { orderliness: 0.10 }
-      },
-      {
-        value: 3,
-        label: '帮忙联系其他志愿者',
-        scores: { extraversion: 0.12 }
-      },
-      {
-        value: 4,
-        label: '继续做自己的部分',
-        scores: { pace: -0.05 }
-      },
-      {
-        value: 5,
-        label: '什么也不做',
-        scores: { sincerity: -0.10 }
-      }
-    ],
-    required: true
-  },
-  {
-    id: 'zootopia_q18',
+    id: 'zootopia_q14',
     type: 'scale',
     question: '尼克邀请你参加他的聚会，你其实不太想去，你会？',
     options: [
@@ -852,7 +720,7 @@ const questions: QuizTemplate['questions'] = [
     required: true
   },
   {
-    id: 'zootopia_q19',
+    id: 'zootopia_q15',
     type: 'scale',
     question: '你在公交上看到有人插队，你会？',
     options: [
@@ -885,7 +753,7 @@ const questions: QuizTemplate['questions'] = [
     required: true
   },
   {
-    id: 'zootopia_q20',
+    id: 'zootopia_q16',
     type: 'scale',
     question: '你和大先生在同个会议上，他明显情绪不佳，你会？',
     options: [
@@ -917,9 +785,9 @@ const questions: QuizTemplate['questions'] = [
     ],
     required: true
   },
-  // Q21-Q24: 锚点量表题（李克特量表）
+  // Q17-Q20: 锚点量表题（李克特量表）
   {
-    id: 'zootopia_q21',
+    id: 'zootopia_q17',
     type: 'likert',
     question: '我处理事情通常迅速而果断',
     dimension: 'pace',
@@ -933,7 +801,7 @@ const questions: QuizTemplate['questions'] = [
     required: true
   },
   {
-    id: 'zootopia_q22',
+    id: 'zootopia_q18',
     type: 'likert',
     question: '我倾向于严格遵守规则和制度',
     dimension: 'orderliness',
@@ -947,7 +815,7 @@ const questions: QuizTemplate['questions'] = [
     required: true
   },
   {
-    id: 'zootopia_q23',
+    id: 'zootopia_q19',
     type: 'likert',
     question: '我表达想法时直接坦率，很少拐弯抹角',
     dimension: 'sincerity',
@@ -961,7 +829,7 @@ const questions: QuizTemplate['questions'] = [
     required: true
   },
   {
-    id: 'zootopia_q24',
+    id: 'zootopia_q20',
     type: 'likert',
     question: '在社交场合，我更喜欢主动表达自己',
     dimension: 'extraversion',
@@ -998,7 +866,7 @@ function calculateCharacterMatch(answers: Record<string, string | number>): {
   };
 
   // 处理强迫选择题（Q1-Q20）
-  questions.slice(0, 20).forEach((q) => {
+  questions.slice(0, 16).forEach((q) => {
     const answer = answers[q.id];
     if (answer && q.type === 'scale') {
       const selectedOption = q.options?.find((opt) => opt.value === answer);
@@ -1014,7 +882,7 @@ function calculateCharacterMatch(answers: Record<string, string | number>): {
 
   // 阶段2: 锚点量表校准（Anchor Calibration）
   const anchorScores: Record<string, number> = {};
-  questions.slice(20, 24).forEach((q) => {
+  questions.slice(16, 20).forEach((q) => {
     const answer = answers[q.id];
     if (answer && q.type === 'likert' && q.dimension) {
       // 将1-5分转换为0-1范围
@@ -1030,7 +898,7 @@ function calculateCharacterMatch(answers: Record<string, string | number>): {
     extraversion: 0,
   };
 
-  questions.slice(0, 20).forEach((q) => {
+  questions.slice(0, 16).forEach((q) => {
     if (q.type === 'scale' && q.options) {
       q.options.forEach((opt) => {
         if (opt.scores) {
@@ -1110,9 +978,9 @@ export const zootopia: QuizTemplate = {
   titleEn: 'Zootopia Personality Assessment',
   description: '以《疯狂动物城》8位核心角色为原型，测试你最像谁',
   category: '趣味测评',
-  purpose: '通过24道题目（20道情景选择题 + 4道人格锚点题），从行动速度、秩序偏好、真诚指数、外向呈现等4个维度，判断你最接近哪种"动物城人格"',
+  purpose: '通过20道题目（16道情景选择题 + 4道人格锚点题），从行动速度、秩序偏好、真诚指数、外向呈现等4个维度，判断你最接近哪种"动物城人格"',
   duration: '6-8分钟',
-  questionCount: 24,
+  questionCount: 20,
 
   dimensions: [
     {
