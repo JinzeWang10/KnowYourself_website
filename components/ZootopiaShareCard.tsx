@@ -23,13 +23,12 @@ interface ZootopiaShareCardProps {
   coreKeywords?: string[]; // 核心关键词（最多3个）
 }
 
-// 维度标签映射（用于双极条形图）
+// 维度标签映射（用于双极条形图）- 与zootopia.ts中的ZOOTOPIA_DIMENSION_LABELS保持一致
 const dimensionLabels: Record<string, { left: string; right: string }> = {
-  '社会信任度': { left: '警惕怀疑', right: '信任开放' },
-  '律法遵从度': { left: '灵活变通', right: '严守规则' },
-  '行动节奏': { left: '从容慢调', right: '快速果断' },
-  '社交呈现方式': { left: '内敛低调', right: '外向张扬' },
-  '理想主义指数': { left: '实用主义', right: '理想主义' },
+  '行动速度': { left: '慢条斯理', right: '高速执行' },
+  '秩序偏好': { left: '随性灵活', right: '自律严谨' },
+  '真诚指数': { left: '策略圆滑', right: '坦率透明' },
+  '外向呈现': { left: '内向克制', right: '外向张扬' },
 };
 
 function getLabelForDimension(dimension: string, side: 'left' | 'right'): string {
@@ -127,7 +126,7 @@ const ZootopiaShareCard = forwardRef<HTMLDivElement, ZootopiaShareCardProps>(fun
                     crossOrigin="anonymous"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
-                      target.src = '/zootopia/placeholder.svg';
+                      target.src = '/characters/placeholder.svg';
                     }}
                   />
                 </div>

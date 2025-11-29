@@ -29,10 +29,11 @@ export default function DivergingBarChartSimple({ data, compact = false }: Diver
     <div className="w-full" style={{ minHeight: '200px', minWidth: '200px' }}>
       <div className={compact ? 'space-y-3' : 'space-y-4'}>
         {data.map((item, index) => {
-          const isLeft = item.value >= 50;
+          // value=0表示完全左侧，value=100表示完全右侧
+          const isRight = item.value >= 50;
 
-          const leftWidth = Math.round(item.value);
-          const rightWidth = Math.round(100 - item.value);
+          const leftWidth = Math.round(100 - item.value); // 左侧宽度 = 100 - value
+          const rightWidth = Math.round(item.value); // 右侧宽度 = value
 
           // 为每个维度分配专属颜色
           const color = DIMENSION_COLORS[index % DIMENSION_COLORS.length];
@@ -60,8 +61,8 @@ export default function DivergingBarChartSimple({ data, compact = false }: Diver
                   {/* 中心线 */}
                   <div className="absolute top-0 bottom-0 left-1/2 w-[2px] bg-neutral-300"></div>
 
-                  {/* 左进度条 */}
-                  {isLeft && (
+                  {/* 左进度条 - 当偏向左侧时显示（value < 50） */}
+                  {!isRight && (
                     <div
                       className="absolute top-0 bottom-0 left-0"
                       style={{
@@ -71,8 +72,8 @@ export default function DivergingBarChartSimple({ data, compact = false }: Diver
                     />
                   )}
 
-                  {/* 右进度条 */}
-                  {!isLeft && (
+                  {/* 右进度条 - 当偏向右侧时显示（value >= 50） */}
+                  {isRight && (
                     <div
                       className="absolute top-0 bottom-0 right-0"
                       style={{
@@ -91,10 +92,10 @@ export default function DivergingBarChartSimple({ data, compact = false }: Diver
 
               {/* 百分比 */}
               <div className="flex items-center justify-between mt-1 px-0.5">
-                <span className={`${compact ? 'text-[10px]' : 'text-xs'} ${isLeft ? 'text-neutral-900 font-bold' : 'text-neutral-400'}`}>
+                <span className={`${compact ? 'text-[10px]' : 'text-xs'} ${!isRight ? 'text-neutral-900 font-bold' : 'text-neutral-400'}`}>
                   {leftWidth}%
                 </span>
-                <span className={`${compact ? 'text-[10px]' : 'text-xs'} ${!isLeft ? 'text-neutral-900 font-bold' : 'text-neutral-400'}`}>
+                <span className={`${compact ? 'text-[10px]' : 'text-xs'} ${isRight ? 'text-neutral-900 font-bold' : 'text-neutral-400'}`}>
                   {rightWidth}%
                 </span>
               </div>
