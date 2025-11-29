@@ -7,135 +7,122 @@
 
 import type { QuizTemplate } from '@/types/quiz';
 
-// 五大心理维度定义（双极模型）
+// 四大心理维度定义（双极模型）
 export const ZOOTOPIA_DIMENSIONS = {
-  trust: '社会信任度',        // 对他人和社会的信任与合作意愿（低=警惕怀疑 ↔ 高=信任开放）
-  lawfulness: '律法遵从度',   // 遵守规则、制度的倾向（低=灵活变通 ↔ 高=严守规则）
-  pace: '行动节奏',           // 做事快慢、果断与从容（低=从容慢调 ↔ 高=快速果断）
-  extraversion: '社交呈现方式', // 社交行为倾向与表达力（低=内敛低调 ↔ 高=外向张扬）
-  idealism: '理想主义指数',   // 重视原则与理想的程度（低=实用主义 ↔ 高=理想主义）
+  pace: '行动速度',           // 处理任务的速度、反应节奏、行动倾向（低=慢条斯理 ↔ 高=高速执行）
+  orderliness: '秩序偏好',    // 对规则、规范、流程的接受度与依赖程度（低=随性灵活 ↔ 高=自律严谨）
+  sincerity: '真诚指数',      // 动机透明度、表达方式、言行一致程度（低=策略圆滑 ↔ 高=坦率透明）
+  extraversion: '外向呈现',   // 社交场合中的表达方式、存在感与能量来源（低=内向克制 ↔ 高=外向张扬）
 } as const;
 
 // 维度双极标签（用于条形图可视化）
 export const ZOOTOPIA_DIMENSION_LABELS = {
-  trust: {
-    left: '警惕怀疑',
-    right: '信任开放'
-  },
-  lawfulness: {
-    left: '灵活变通',
-    right: '严守规则'
-  },
   pace: {
-    left: '从容慢调',
-    right: '快速果断'
+    left: '慢条斯理',
+    right: '高速执行'
+  },
+  orderliness: {
+    left: '随性灵活',
+    right: '自律严谨'
+  },
+  sincerity: {
+    left: '策略圆滑',
+    right: '坦率透明'
   },
   extraversion: {
-    left: '内敛低调',
+    left: '内向克制',
     right: '外向张扬'
-  },
-  idealism: {
-    left: '实用主义',
-    right: '理想主义'
   }
 } as const;
 
-// 8个角色的五维度坐标（0-1范围）
+// 8个角色的四维度坐标（0-1范围）
 export const CHARACTER_PROFILES = {
   'judy_hopps': {
     name: '朱迪 Judy Hopps',
     emoji: '🐰',
-    subtitle: '理想主义的行动派警官',
+    subtitle: '理想驱动的高速行动派',
     scores: {
-      trust: 0.80,
-      lawfulness: 0.85,
-      pace: 0.90,
-      extraversion: 0.85,
-      idealism: 0.90,
+      pace: 0.95,
+      orderliness: 0.85,
+      sincerity: 0.80,
+      extraversion: 0.80,
     }
   },
   'nick_wilde': {
     name: '尼克 Nick Wilde',
     emoji: '🦊',
-    subtitle: '机智灵活的现实主义者',
+    subtitle: '机智灵活的游刃派谈判者',
     scores: {
-      trust: 0.40,
-      lawfulness: 0.50,
       pace: 0.75,
-      extraversion: 0.60,
-      idealism: 0.50,
+      orderliness: 0.45,
+      sincerity: 0.30,
+      extraversion: 0.55,
     }
   },
   'mayor_lionheart': {
-    name: '马市长 Mayor Lionheart',
+    name: '马市长 Lionheart',
     emoji: '🦁',
-    subtitle: '守序理性的城市管理者',
+    subtitle: '威仪十足的秩序守护者',
     scores: {
-      trust: 0.55,
-      lawfulness: 0.90,
-      pace: 0.50,
-      extraversion: 0.55,
-      idealism: 0.45,
+      pace: 0.55,
+      orderliness: 0.90,
+      sincerity: 0.55,
+      extraversion: 0.65,
     }
   },
   'clawhauser': {
-    name: '豹子警官 Clawhauser',
+    name: '雪豹警官 Clawhauser',
     emoji: '🐆',
-    subtitle: '职业忠诚的稳健执行者',
+    subtitle: '热情外向的温暖社交家',
     scores: {
-      trust: 0.45,
-      lawfulness: 0.80,
       pace: 0.60,
-      extraversion: 0.40,
-      idealism: 0.40,
+      orderliness: 0.80,
+      sincerity: 0.75,
+      extraversion: 0.90,
     }
   },
   'flash': {
     name: '闪电 Flash',
     emoji: '🦥',
-    subtitle: '慢节奏的乐观社交家',
+    subtitle: '敏感温和的慢节奏观察者',
     scores: {
-      trust: 0.90,
-      lawfulness: 0.30,
-      pace: 0.20,
-      extraversion: 0.95,
-      idealism: 0.85,
+      pace: 0.00,
+      orderliness: 0.30,
+      sincerity: 0.85,
+      extraversion: 0.20,
     }
   },
   'mr_big': {
     name: '大先生 Mr. Big',
     emoji: '🐭',
-    subtitle: '低调谨慎的策略家',
+    subtitle: '沉静稳重的战略掌控者',
     scores: {
-      trust: 0.15,
-      lawfulness: 0.25,
-      pace: 0.50,
-      extraversion: 0.25,
-      idealism: 0.10,
+      pace: 0.40,
+      orderliness: 0.20,
+      sincerity: 0.40,
+      extraversion: 0.10,
     }
   },
   'gary': {
-    name: '蛇盖瑞 Gary',
+    name: '盖瑞 Gary',
     emoji: '🐍',
-    subtitle: '灵活聪慧的社交高手',
+    subtitle: '灵活稳健的情境型执行者',
     scores: {
-      trust: 0.70,
-      lawfulness: 0.55,
       pace: 0.65,
+      orderliness: 0.55,
+      sincerity: 0.60,
       extraversion: 0.75,
-      idealism: 0.70,
     }
   },
   'sheep': {
-    name: '夏奇羊 Sheep',
+    name: '夏奇羊 Gazelle',
     emoji: '🐏',
-    subtitle: '中庸务实的独立思考者',
+    subtitle: '魅力四射的公众偶像',
     scores: {
-      trust: 0.35,
-      lawfulness: 0.40,
-      pace: 0.65,
-      extraversion: 0.35,
-      idealism: 0.55,
+      pace: 0.70,
+      orderliness: 0.60,
+      sincerity: 0.85,
+      extraversion: 0.95,
     }
   },
 } as const;
@@ -154,14 +141,14 @@ export const CHARACTER_IMAGE_MAP: Record<string, string> = {
 
 // 角色核心特质（用于分享卡片）
 export const CHARACTER_CORE_TRAITS: Record<string, string> = {
-  'judy_hopps': '你像朱迪一样充满理想和正义感，相信每个人都能通过努力改变世界。你信任他人，严格遵守规则，行动力超强，社交能力出色。你勇于挑战不可能，为了目标全力以赴。你相信公平与正义，愿意为理想付出一切努力。',
-  'nick_wilde': '你像尼克一样聪明狡黠、机智灵活，善于在复杂环境中找到生存之道。你对人保持适度的警惕，不会轻易信任他人，但内心依然保留一份善良。你务实而灵活，行动力强，能快速适应变化。你懂得权衡利弊，用理性而非情感做决策。',
-  'mayor_lionheart': '你像马市长一样守规矩、理性冷静，做事有条不紊。你高度遵守规则和制度，以秩序和稳定为优先，处理事务沉稳而系统。你对他人保持适度信任，能理性判断形势。你不追求个人风头，更注重实际效果和长远利益。',
-  'clawhauser': '你像豹子警官一样职业忠诚、稳重果敢，有强烈的职业原则和执行力。你严格遵守规则，情绪稳定，适合处理需要精准执行的任务。你内敛低调，不喜欢过多的社交，更倾向于用行动而非言语表达。你务实而谨慎，对人保持一定距离。',
-  'flash': '你像闪电一样慢节奏、幽默随性，乐于享受生活。你对人充满信任，社交能力超强，容易吸引他人关注。你保持积极乐观的心态，重视理想和原则。你不喜欢被规则束缚，更喜欢按照自己的节奏生活。你用幽默和温暖感染身边的人。',
-  'mr_big': '你像大先生一样小巧精悍、老谋深算，社会经验丰富。你对人高度警惕，几乎不轻易信任他人，只对极少数人敞开心扉。你不遵守常规规则，更相信自己的生存法则。你低调而高效，社交节制，选择性地与人交往。你务实而精明，理想主义几乎为零。',
-  'gary': '你像蛇盖瑞一样灵活聪慧、社交能力强，善于权衡规则与现实。你对人保持适度的信任，既不过度怀疑也不盲目相信。你在遵守规则和灵活变通之间找到平衡，行动灵活高效。你社交能力出色，能够轻松处理各种人际关系。你追求中庸的理想，现实与理想兼顾。',
-  'sheep': '你像夏奇羊一样中庸理性、勤恳务实，行事稳健。你对人保持警惕，不轻易信任他人，更相信自己的判断。你不是严格的规则遵守者，更倾向于灵活应对。你行动节奏适中，执行力稳定。你社交表现中庸，不张扬也不过分内敛。你追求适度的理想，更注重现实可行。',
+  'judy_hopps': '你像朱迪一样，内心怀着强烈的理想主义，相信只要努力便能突破环境限制、实现自我价值。你行动迅速，执行力强，对规则和原则保持高度尊重，同时又拥有积极的社交能量，让你在团队中总是格外亮眼。你乐观、真诚、朝气十足，是那种能点亮现场氛围、也能推动团队前进的人。你对公平和正义有天然敏感度，更愿意主动改变不合理的现状，而不是被动接受。',
+  'nick_wilde': '你像尼克一样拥有敏锐的洞察力、超强的情境判断与灵活变通能力。你不按常规出牌，懂得根据局势调整策略，是天生的"社会导航高手"。你擅长观察人性，也擅长用幽默化解尴尬，让你在人际场合总能保持游刃有余。你不喜欢僵硬的规则，更倾向以智慧和机敏突破障碍。虽然你看似随性，但骨子里却有自己坚持的价值线，只是选择更隐蔽、更柔软的表达方式。',
+  'mayor_lionheart': '你像马市长一样稳重、有权威感，关注整体秩序与结构性的长远发展。你擅长规划，也愿意承担责任，是那种在压力时刻依旧能稳住情绪、带领团队的人。你对规则与制度保持尊重，同时具备一定的理想主义，希望通过组织、制度与领导力推动世界更好地运作。你的外向气场适中，不张扬却能让人感到可靠，是团队中的定心丸。',
+  'clawhauser': '你像雪豹警官一样亲切、热情、真诚，是社交场合中能迅速让氛围变轻松的人。你的外向特质明显，发自内心喜欢帮助他人，为团队带来积极能量。虽然你对规则保持尊重，但你并非僵硬执行者，而是带着温度的秩序维持者。你情绪透明、表达自然，不会刻意隐藏自己的喜好，是那种让人放下戒心、快速建立信任的伙伴。',
+  'flash': '你像闪电一样步调沉稳、动作缓慢、不被外界急躁节奏影响。你做事谨慎、细致、重视体验胜过速度。你真诚、坦率，很少玩心机；你的表达常常温和，不争不抢，却拥有独特的洞察力——因为你看得比别人更细、更深。你偏内向，享受独处与稳定的环境，在熟悉的人面前却能展现幽默的一面，是人群中"安静但可信赖"的存在。',
+  'mr_big': '你像大先生一样低调、冷静、重视掌控节奏，不会被情绪左右。你做事谨慎精准，即便行动不快，却能确保每一步都踏稳。你不喜欢引人注目，但你具备过人的判断力与战略思维，会在最关键的时刻作出决定。你社交上偏内敛，不喜欢流于表面的互动，更注重忠诚、信任与长久关系。你少言，但每句话都带分量。',
+  'gary': '你像盖瑞一样执行力强、适应性佳，能在不同角色之间切换自如。你既不像高速行动派那样冲动，也不像慢节奏者那样迟缓，而是用"恰到好处"的速度完成任务。你对规则保持适度尊重，但不会被其限制；你真诚但不失分寸，社交能量稳定又让人感到舒服。你是团队中"可靠又不打扰"的存在，擅长用稳健方式推进目标。',
+  'sheep': '你像 Gazelle 一样拥有强烈的舞台魅力和公众影响力，优雅自信，擅长用艺术与情感连接他人。你兼具亲和力与专业性，既能在聚光灯下展现光彩，也能以柔和的方式影响周围人。你重视信念与表达，不喜欢被条条框框束缚，善于运用个人魅力推动社会话题或情感共鸣。你是那种能用温度和力量同时打动别人的人。',
 } as const;
 
 // 角色详细特质（用于结果页面详细解读）
@@ -171,98 +158,98 @@ export const CHARACTER_DETAILED_TRAITS: Record<string, {
 }> = {
   'judy_hopps': {
     advantages: [
-      '超强行动力：你像朱迪一样，一旦确定目标就会立即行动，不畏艰难，勇于尝试新事物，这让你在工作和生活中充满冲劲和活力',
-      '高度信任与合作：你对他人抱有信任，乐于与人合作，这让你容易建立良好的人际关系，获得他人的支持和帮助',
-      '理想主义驱动：你追求公平与正义，有强烈的道德感和使命感，这份理想主义让你在困境中依然坚持初心，成为他人的榜样'
+      '行动迅捷果断：你不拖延、不犹豫，总能第一时间把计划落实，让进度保持高速推进',
+      '价值观稳定真诚：你坚持原则，坦率表达，是别人眼中可靠、可信任的伙伴',
+      '高度社交亲和力：你善于沟通、热情积极，能快速建立关系并激励周围的人'
     ],
     risks: [
-      '过度理想化：你容易对人对事抱有过高期待，当现实与理想差距过大时，会感到深深的失望和挫败，需要学会接受不完美',
-      '冲动决策风险：你的高行动力有时会让你在未充分思考时就做出决定，可能忽略细节或潜在风险，导致不必要的麻烦',
-      '易被利用：你的高信任度让你容易相信他人，在复杂的人际关系中可能被狡猾的人利用，需要提升警觉性和边界感'
+      '容易过度投入：你的理想主义可能让你在复杂现实前感到挫败，需要适度留有弹性',
+      '速度过快忽略细节：快节奏常让你遗漏风险点，应偶尔放慢步伐审视全局',
+      '对人信任度较高：当遇到心机较深的人，你可能需要更谨慎地辨别动机'
     ]
   },
   'nick_wilde': {
     advantages: [
-      '机智应变能力：你善于观察局势，快速找到问题的解决方案，在复杂的人际关系和工作环境中游刃有余',
-      '社交灵活性：你懂得根据不同情况调整自己的表达方式，能与各种类型的人相处，这让你在职场和生活中如鱼得水',
-      '现实主义智慧：你不会被理想蒙蔽双眼，能够看清现实，做出务实的选择，这让你避免了很多不必要的风险'
+      '策略能力出众：你善于看清局势、灵活应对，总能找到聪明的解决方案',
+      '表达风趣自然：你让人如沐春风，是人际沟通中的调节者和"润滑剂"',
+      '适应力极强：面对变化你毫不畏惧，能轻松切换节奏与角色'
     ],
     risks: [
-      '信任障碍：你对他人的信任度较低，可能因过度警惕而错失真诚的友谊和合作机会，长期来看可能让你感到孤独',
-      '理想主义欠缺：你过于务实可能让你失去追求更高目标的动力，有时会在"够用就好"的心态中停滞不前',
-      '行动风险：你的快速决策和行动力虽然有效，但有时可能因为过于追求效率而忽略长期影响'
+      '动机易被误解：你的策略性有时让人难以看透，可能被误判为"不够真诚"',
+      '对规则兴趣不高：可能在需要结构化、高纪律的环境中感到束缚',
+      '容易隐藏真实感受：过度依赖幽默与机智，可能掩盖需要被正视的情绪'
     ]
   },
   'mayor_lionheart': {
     advantages: [
-      '高度守规有序：你严格遵守规则和制度，做事有条不紊，这让你在组织管理和执行任务时表现出色，值得信赖',
-      '冷静理性决策：你善于统筹全局，能够在复杂情况下保持冷静，做出理性的判断和决策，避免情绪化的失误',
-      '适度信任平衡：你对他人的信任度适中，既不过度怀疑也不盲目相信，能够合理评估风险和机会'
+      '组织与规划能力强：你能统筹资源、洞察全局，擅长做长期布局',
+      '稳定的领导气场：你冷静、有担当，关键时刻能给人安全感',
+      '原则感明确：你坚持秩序与责任，是团队中值得信赖的中坚力量'
     ],
     risks: [
-      '行动节奏慢：你过于注重计划和稳妥，可能在需要快速决策时错失良机，在快节奏的环境中可能显得反应迟缓',
-      '灵活性不足：你过于依赖规则和既定流程，面对突发情况或创新需求时可能缺乏应变能力',
-      '社交亲近感弱：你的中庸社交风格虽然不会得罪人，但也难以建立深层的情感连接，可能让你在团队中显得疏离'
+      '容易承担过多责任：你可能无意识承担超出自己负荷的事务',
+      '过度强调秩序：在高度灵活的情境中可能显得不够适应',
+      '情绪表达较克制：可能让他人误以为你距离感较强'
     ]
   },
   'clawhauser': {
     advantages: [
-      '高度职业忠诚：你像豹子警官一样秉公执法、严格遵守职业规范，这让你在需要原则和纪律的环境中表现出色，赢得他人尊重',
-      '情绪稳定可靠：你情绪稳定，不易受外界干扰，适合处理紧急事件和高压任务，是团队中的稳定力量',
-      '稳步推进能力：你行动节奏适中，能够稳步推进任务，不急不躁，确保每一步都扎实可靠'
+      '极高的亲和力：你给人安全、温暖、愉快的感受，人际关系轻松顺畅',
+      '真诚而坦率：你几乎不掩饰情绪，让人感到可信、可依赖',
+      '乐于支持他人：你愿意贡献情绪能量，是团队气氛的核心来源之一'
     ],
     risks: [
-      '社交能力受限：你的内敛低调可能让你在需要沟通协调的场合表现不佳，难以建立广泛的人际网络',
-      '创新能力欠缺：你的理想主义不足，可能缺乏对新想法和创新的追求，容易陷入"按部就班"的工作模式',
-      '信任度低：你对他人的信任度较低，可能造成团队协作中的隔阂，影响团队凝聚力'
+      '容易过度付出：你为了照顾关系可能牺牲自己的需求',
+      '情绪外显度高：在严肃或高压场合可能被认为"过于投入"',
+      '对冲突较敏感：你可能会回避直接对抗，以避免破坏和谐'
     ]
   },
   'flash': {
     advantages: [
-      '超强社交魅力：你外向张扬，幽默风趣，容易成为人群中的焦点，能够轻松建立广泛的人际关系',
-      '高度信任开放：你对人充满信任，乐于帮助他人，这让你成为朋友们眼中温暖可靠的存在',
-      '理想主义乐观：你保持积极心态，重视理想和原则，即使在困境中也能保持希望，感染身边的人'
+      '极高耐心：你能稳定处理长期任务，不被外界干扰节奏',
+      '真诚无负担：你动机透明、表达简单直接，是让人安心的类型',
+      '深度观察者：你能捕捉细节，常在关键时刻提出关键见解'
     ],
     risks: [
-      '效率极低：你的慢节奏可能让你在需要快速响应的工作和生活场景中表现不佳，容易错过时机或拖累团队',
-      '规则意识弱：你不喜欢被规则束缚，可能在需要遵守制度的环境中引发误解或冲突',
-      '过度乐观风险：你对人对事过于信任和乐观，可能忽略潜在风险，在复杂情况下容易受伤或被利用'
+      '节奏与外界不匹配：在要求快速回应的环境中可能感到压力',
+      '表达过于克制：可能让他人无法准确理解你的真实想法',
+      '容易被忽视：你不主动争取机会，可能错过应得的资源'
     ]
   },
   'mr_big': {
     advantages: [
-      '策略布局能力：你善于谋划，能够在复杂环境中制定长远策略，保护自己和家人的利益',
-      '低调谨慎：你不张扬不炫耀，懂得隐藏实力，在需要的时候才出手，这让你在竞争中占据优势',
-      '选择性信任：你对人的信任极度谨慎，虽然社交圈小，但都是经过时间考验的可靠关系'
+      '稳定且果断：你做决定不多，但一旦做出，便坚定执行',
+      '高度策略性：你擅长布局，能在复杂局势中保持冷静',
+      '社交忠诚度高：你珍惜信任关系，是值得托付的存在'
     ],
     risks: [
-      '严重信任障碍：你对他人几乎不信任，可能让你长期处于孤立状态，难以体验真诚的人际温暖',
-      '规则游离风险：你不遵守常规规则，可能在法律和道德的边缘游走，存在越界的风险',
-      '理想主义缺失：你过于务实和精明，缺乏对美好事物的追求，可能让生活失去更高层次的意义和幸福感'
+      '情绪表达不足：你的冷静可能让他人误以为你疏远或冷漠',
+      '社交圈狭窄：你不主动扩展关系，容易形成信息闭环',
+      '过度谨慎：可能在关键机会前犹豫太久'
     ]
   },
   'gary': {
     advantages: [
-      '出色社交能力：你像蛇盖瑞一样善于处理人际关系，能够轻松应对各种社交场合，建立广泛而深入的人脉网络',
-      '灵活应变：你能够快速适应环境变化，在规则和现实之间找到最佳平衡点，这让你在职场和生活中游刃有余',
-      '中庸平衡智慧：你的理想主义适中，既追求美好又脚踏实地，能够在现实与理想之间找到可行的路径'
+      '节奏平衡良好：你能根据环境调整行动速度，保持效率与稳妥兼具',
+      '情绪稳定：你不易被外界影响，面对压力能维持冷静',
+      '社交自然温和：你不会刻意讨好，却容易让人产生好感'
     ],
     risks: [
-      '过度戒备：你虽然信任度适中，但可能因为过多权衡而保持过多戒心，错失一些真诚的机会',
-      '决策犹豫：你追求平衡和权衡，有时可能在需要果断决策时显得犹豫不决，错失最佳时机',
-      '影响力受限：你虽然社交能力强，但不够极致张扬，可能在需要强大个人影响力的场合表现不够突出'
+      '容易被低估：你不张扬，可能让别人忽略你的能力与贡献',
+      '角色切换过多：在多任务环境中可能一度感到能量被分散',
+      '对原则界线不够鲜明：你倾向顾及他人，可能在关键冲突中犹豫'
     ]
   },
   'sheep': {
     advantages: [
-      '稳定执行力：你行动节奏适中，能够稳定地推进任务，不急不躁，确保工作质量',
-      '避免冲突：你社交表现中庸，不张扬也不过分内敛，能够在团队中保持和谐，避免不必要的冲突',
-      '现实可行性：你的理想主义适中，能够在追求目标时保持现实性，制定可行的计划'
+      '强大号召力：你能迅速吸引关注并影响群体情绪或观点',
+      '情感表达丰富：你擅长以艺术化的方式沟通，容易触动他人的内心',
+      '适应公众场域：你在社交与公开场合中游刃有余，能有效把握场面氛围'
     ],
     risks: [
-      '信任度低：你对人保持警惕，可能因过度保守而错失合作机会，难以建立深层的信任关系',
-      '缺乏激情：你的行动力虽然稳定，但缺乏激情和冲劲，可能在需要突破和创新的场合显得被动',
-      '存在感弱：你的中庸社交和不够张扬的个性，可能让你在团队中难以引起关注，影响个人发展'
+      '过度在意他人期待：公众形象压力可能让你忽视自我需求与界限',
+      '对规则反感：你追求表达自由，遇到严格流程或官僚时可能感到受限或抵触',
+      '情绪曝光带来脆弱：高度情感化的表达有时会被放大，带来外界评论或误读'
     ]
   },
 } as const;
@@ -273,32 +260,32 @@ const questions: QuizTemplate['questions'] = [
   {
     id: 'zootopia_q1',
     type: 'scale',
-    question: '你在街上散步时看到朱迪正劝说一只乱扔垃圾的小动物，此时你的反应是？',
+    question: '你在街上散步时看到朱迪正在劝说一只乱扔垃圾的小动物，你会？',
     options: [
       {
         value: 1,
         label: '主动上前支持朱迪，一起劝说',
-        scores: { lawfulness: 0.15, trust: 0.10 }
+        scores: { pace: 0.18, orderliness: 0.20, sincerity: 0.15, extraversion: 0.20 }
       },
       {
         value: 2,
         label: '观察情况，不插手',
-        scores: { pace: -0.05 }
+        scores: { pace: -0.10, sincerity: -0.05 }
       },
       {
         value: 3,
         label: '拍照发社交平台提醒大家',
-        scores: { extraversion: 0.12, idealism: 0.05 }
+        scores: { extraversion: 0.15, orderliness: 0.05 }
       },
       {
         value: 4,
-        label: '偷偷把垃圾捡起来，但不说话',
-        scores: { lawfulness: 0.10 }
+        label: '默默将垃圾捡起来再离开',
+        scores: { sincerity: 0.12, orderliness: 0.10 }
       },
       {
         value: 5,
-        label: '笑着离开，不理会',
-        scores: { trust: -0.05 }
+        label: '转头离开，不想管',
+        scores: { pace: -0.12, sincerity: -0.10 }
       }
     ],
     required: true
@@ -306,32 +293,32 @@ const questions: QuizTemplate['questions'] = [
   {
     id: 'zootopia_q2',
     type: 'scale',
-    question: '和尼克搭档执勤时，你们抓住一个试图占小便宜的狐狸。你倾向于如何处理？',
+    question: '和尼克搭档执勤，一个小动物试图占小便宜被你们抓住，你会？',
     options: [
       {
         value: 1,
-        label: '立即按规定处罚',
-        scores: { lawfulness: 0.15, pace: 0.10 }
+        label: '按规定立即处罚',
+        scores: { orderliness: 0.20, pace: 0.15 }
       },
       {
         value: 2,
-        label: '先口头警告，看他态度',
-        scores: { trust: 0.12, lawfulness: 0.08 }
+        label: '先口头提醒，看对方态度',
+        scores: { sincerity: 0.10, extraversion: 0.08 }
       },
       {
         value: 3,
-        label: '问尼克的意见，让他决定',
-        scores: { extraversion: -0.05, trust: 0.10 }
+        label: '征求尼克意见，让他决定',
+        scores: { extraversion: 0.05, pace: -0.08 }
       },
       {
         value: 4,
-        label: '讲个笑话让气氛轻松点，再教育他',
-        scores: { extraversion: 0.15 }
+        label: '用玩笑缓解气氛，再教育',
+        scores: { extraversion: 0.15, sincerity: -0.05 }
       },
       {
         value: 5,
-        label: '睁一只眼闭一只眼，小事化了',
-        scores: { lawfulness: -0.10, idealism: -0.08 }
+        label: '小事化了，不追究',
+        scores: { orderliness: -0.12, sincerity: -0.10 }
       }
     ],
     required: true
@@ -339,32 +326,32 @@ const questions: QuizTemplate['questions'] = [
   {
     id: 'zootopia_q3',
     type: 'scale',
-    question: '马市长委派你策划一场市政活动，你的工作方式更可能是？',
+    question: '马市长交给你一场市政活动，你会如何组织？',
     options: [
       {
         value: 1,
-        label: '严格按照规定安排活动',
-        scores: { lawfulness: 0.18, extraversion: 0.12 }
+        label: '按制度严格推进',
+        scores: { orderliness: 0.18, pace: 0.12 }
       },
       {
         value: 2,
-        label: '私下策划确保顺利完成',
-        scores: { pace: 0.15, idealism: 0.08 }
+        label: '做详细计划确保顺利完成',
+        scores: { orderliness: 0.15, sincerity: 0.05 }
       },
       {
         value: 3,
-        label: '观察民众反应，灵活调整',
-        scores: { trust: 0.10, pace: 0.10 }
+        label: '按现场反馈灵活微调',
+        scores: { pace: 0.05, extraversion: 0.10 }
       },
       {
         value: 4,
-        label: '安排趣味节目让大家开心',
+        label: '加入欢乐互动环节',
         scores: { extraversion: 0.15 }
       },
       {
         value: 5,
-        label: '利用活动为自己宣传',
-        scores: { idealism: -0.12, extraversion: 0.08 }
+        label: '借机突出自己',
+        scores: { sincerity: -0.12, extraversion: 0.08 }
       }
     ],
     required: true
@@ -372,32 +359,32 @@ const questions: QuizTemplate['questions'] = [
   {
     id: 'zootopia_q4',
     type: 'scale',
-    question: '闪电因为办事太慢被旁边的动物嘲笑，你恰好在场，你会？',
+    question: '闪电因做事太慢被嘲笑，你在旁边会？',
     options: [
       {
         value: 1,
-        label: '上前制止嘲笑者，这样不尊重',
-        scores: { lawfulness: 0.15, idealism: 0.10 }
+        label: '阻止嘲笑者，维护闪电',
+        scores: { sincerity: 0.12, extraversion: 0.12 }
       },
       {
         value: 2,
-        label: '安慰闪电说每个人节奏不同',
-        scores: { trust: 0.15, extraversion: 0.08 }
+        label: '安抚闪电，告诉他别介意',
+        scores: { sincerity: 0.15 }
       },
       {
         value: 3,
         label: '帮闪电把事情做完',
-        scores: { pace: 0.15, trust: 0.10 }
+        scores: { pace: 0.15 }
       },
       {
         value: 4,
-        label: '开个玩笑把话题岔开',
-        scores: { extraversion: 0.15 }
+        label: '用幽默把话题带开',
+        scores: { extraversion: 0.15, sincerity: -0.05 }
       },
       {
         value: 5,
-        label: '装作没看见，避免尴尬',
-        scores: { extraversion: -0.08, trust: -0.05 }
+        label: '装作没看到',
+        scores: { pace: -0.10, sincerity: -0.10 }
       }
     ],
     required: true
@@ -405,32 +392,32 @@ const questions: QuizTemplate['questions'] = [
   {
     id: 'zootopia_q5',
     type: 'scale',
-    question: '在疯狂动物城图书馆，你发现借阅的书被前一位读者严重损坏，而管理员没注意到。你会？',
+    question: '你在图书馆发现借到的书被前一位读者严重损坏，你会？',
     options: [
       {
         value: 1,
-        label: '主动告知管理员，要求追责',
-        scores: { lawfulness: 0.15, idealism: 0.10 }
+        label: '告知管理员查清情况',
+        scores: { orderliness: 0.18, sincerity: 0.12 }
       },
       {
         value: 2,
-        label: '悄悄换一本完好的',
-        scores: { pace: 0.12 }
+        label: '换一本不破的',
+        scores: { sincerity: -0.10 }
       },
       {
         value: 3,
-        label: '拍照发朋友圈吐槽',
-        scores: { extraversion: 0.12 }
+        label: '发朋友圈吐槽',
+        scores: { extraversion: 0.15 }
       },
       {
         value: 4,
         label: '自己修补好再还',
-        scores: { trust: 0.10, lawfulness: 0.08 }
+        scores: { sincerity: 0.12, pace: -0.05 }
       },
       {
         value: 5,
-        label: '不管，反正不是我弄的',
-        scores: { trust: -0.08, lawfulness: -0.05 }
+        label: '不管它',
+        scores: { orderliness: -0.12, sincerity: -0.08 }
       }
     ],
     required: true
@@ -438,32 +425,32 @@ const questions: QuizTemplate['questions'] = [
   {
     id: 'zootopia_q6',
     type: 'scale',
-    question: '雪豹警官正在帮一只小动物找回走失的宠物，你路过时看到这一幕。你会？',
+    question: '你看到雪豹警官在帮一只小动物找走失的宠物，你会？',
     options: [
       {
         value: 1,
-        label: '立刻加入搜索队伍',
-        scores: { trust: 0.15, pace: 0.12 }
+        label: '立即加入搜寻',
+        scores: { pace: 0.18, extraversion: 0.10 }
       },
       {
         value: 2,
-        label: '询问情况，提供线索或建议',
-        scores: { trust: 0.12, extraversion: 0.10 }
+        label: '提供线索或建议',
+        scores: { sincerity: 0.10, extraversion: 0.10 }
       },
       {
         value: 3,
-        label: '拍照发到社区群帮忙扩散',
-        scores: { extraversion: 0.12, idealism: 0.08 }
+        label: '拍照发群寻求扩散',
+        scores: { extraversion: 0.15 }
       },
       {
         value: 4,
-        label: '说句"加油"然后继续赶路',
-        scores: { pace: 0.08 }
+        label: '鼓励几句后继续赶路',
+        scores: { sincerity: -0.05 }
       },
       {
         value: 5,
-        label: '走开，警察会处理的',
-        scores: { trust: -0.08, pace: 0.05 }
+        label: '快速离开，不参与',
+        scores: { pace: -0.05, sincerity: -0.10 }
       }
     ],
     required: true
@@ -471,32 +458,32 @@ const questions: QuizTemplate['questions'] = [
   {
     id: 'zootopia_q7',
     type: 'scale',
-    question: '在警局茶水间，你无意中发现尼克在偷偷做一些违规的小交易。你的第一反应是？',
+    question: '在茶水间，你发现尼克似乎在做违规的小动作，你会？',
     options: [
       {
         value: 1,
-        label: '当场严肃指出，要求他停止',
-        scores: { lawfulness: 0.18, pace: 0.12 }
+        label: '直接制止',
+        scores: { orderliness: 0.18, sincerity: 0.15 }
       },
       {
         value: 2,
-        label: '私下找他谈，了解情况',
-        scores: { trust: 0.15, extraversion: 0.08 }
+        label: '私下沟通了解情况',
+        scores: { sincerity: 0.12 }
       },
       {
         value: 3,
-        label: '向上级报告这件事',
-        scores: { lawfulness: 0.15, idealism: 0.10 }
+        label: '报告给上级',
+        scores: { orderliness: 0.15 }
       },
       {
         value: 4,
-        label: '装作没看见，不想惹麻烦',
-        scores: { lawfulness: -0.10, trust: -0.05 }
+        label: '假装没看到',
+        scores: { orderliness: -0.12, sincerity: -0.12 }
       },
       {
         value: 5,
-        label: '我也要参与其中分一杯羹',
-        scores: { lawfulness: -0.12, trust: -0.05, extraversion: 0.04 }
+        label: '参与分一杯羹',
+        scores: { sincerity: -0.15 }
       }
     ],
     required: true
@@ -504,32 +491,32 @@ const questions: QuizTemplate['questions'] = [
   {
     id: 'zootopia_q8',
     type: 'scale',
-    question: '开出租车时，你发现闪电在后座睡着了，马上就要到站。此时你会？',
+    question: '你开出租车时，闪电在后座睡着了马上到站，你会？',
     options: [
       {
         value: 1,
-        label: '温柔地叫醒他"先生，到地方了"',
-        scores: { trust: 0.15, extraversion: 0.08 }
+        label: '轻声叫醒',
+        scores: { sincerity: 0.15 }
       },
       {
         value: 2,
-        label: '直接按喇叭或拍座椅叫醒',
-        scores: { pace: 0.15 }
+        label: '拍座椅或按喇叭',
+        scores: { pace: 0.15, sincerity: -0.05 }
       },
       {
         value: 3,
-        label: '拍照发朋友圈"树懒睡得真香"',
-        scores: { extraversion: 0.15, lawfulness: -0.05 }
+        label: '用玩笑唤醒他',
+        scores: { extraversion: 0.15, sincerity: -0.08 }
       },
       {
         value: 4,
-        label: '继续往前开，等他醒了再折返',
-        scores: { trust: 0.10, pace: -0.10 }
+        label: '继续开远点等他醒',
+        scores: { pace: -0.12 }
       },
       {
         value: 5,
-        label: '停表熄火，自己也休息等他醒',
-        scores: { pace: -0.12, lawfulness: 0.08 }
+        label: '停车自己也休息',
+        scores: { pace: -0.18 }
       }
     ],
     required: true
@@ -537,32 +524,32 @@ const questions: QuizTemplate['questions'] = [
   {
     id: 'zootopia_q9',
     type: 'scale',
-    question: '朱迪和尼克在健身房为训练方法争论不休，作为教练的你会怎么介入？',
+    question: '在健身房，朱迪和尼克为训练方法争论，你会？',
     options: [
       {
         value: 1,
-        label: '立即制止，告诉他们标准做法',
-        scores: { lawfulness: 0.15, pace: 0.10 }
+        label: '直接告诉他们标准做法',
+        scores: { orderliness: 0.15, pace: 0.15 }
       },
       {
         value: 2,
-        label: '让他们各自尝试，用效果说话',
-        scores: { idealism: 0.12, trust: 0.08 }
+        label: '让他们各自尝试',
+        scores: { orderliness: -0.05 }
       },
       {
         value: 3,
-        label: '加入讨论，分享自己的经验',
+        label: '加入讨论分享经验',
         scores: { extraversion: 0.15 }
       },
       {
         value: 4,
-        label: '开个玩笑"你俩这是要打起来吗"',
-        scores: { extraversion: 0.12 }
+        label: '嘲笑他们',
+        scores: { sincerity: -0.15 }
       },
       {
         value: 5,
-        label: '不管他们，爱怎么练怎么练',
-        scores: { lawfulness: -0.08, trust: -0.05 }
+        label: '不干涉',
+        scores: { orderliness: -0.12 }
       }
     ],
     required: true
@@ -570,32 +557,32 @@ const questions: QuizTemplate['questions'] = [
   {
     id: 'zootopia_q10',
     type: 'scale',
-    question: '你的室友（大先生的侄子）总在深夜弹钢琴，已经严重影响你休息。你会？',
+    question: '室友深夜弹钢琴影响你休息，你会？',
     options: [
       {
         value: 1,
-        label: '第二天严肃地提出抗议',
-        scores: { pace: 0.15, lawfulness: 0.10 }
+        label: '正面提出问题',
+        scores: { sincerity: 0.12, pace: 0.12 }
       },
       {
         value: 2,
-        label: '写纸条贴在门上委婉提醒',
-        scores: { extraversion: -0.05, lawfulness: 0.08 }
+        label: '写纸条提醒',
+        scores: { orderliness: 0.08 }
       },
       {
         value: 3,
-        label: '买副耳塞忍着',
-        scores: { trust: 0.08, pace: -0.08 }
+        label: '买耳塞忍着',
+        scores: { pace: -0.10 }
       },
       {
         value: 4,
-        label: '在群聊里发段子暗示',
-        scores: { extraversion: 0.12 }
+        label: '在群里暗示',
+        scores: { extraversion: 0.12, sincerity: -0.12 }
       },
       {
         value: 5,
-        label: '也在深夜放音乐回敬',
-        scores: { idealism: -0.10, lawfulness: -0.08 }
+        label: '也深夜制造噪音',
+        scores: { sincerity: -0.10 }
       }
     ],
     required: true
@@ -603,32 +590,32 @@ const questions: QuizTemplate['questions'] = [
   {
     id: 'zootopia_q11',
     type: 'scale',
-    question: '你住的楼下有人长期违规停车，挡住了消防通道。面对这种情况，你会？',
+    question: '有人长期违法停车堵消防通道，你会？',
     options: [
       {
         value: 1,
-        label: '直接找车主严肃交涉',
-        scores: { lawfulness: 0.15, pace: 0.12 }
+        label: '直接找车主交涉',
+        scores: { pace: 0.18, extraversion: 0.10 }
       },
       {
         value: 2,
-        label: '拍照向物业或交警投诉',
-        scores: { lawfulness: 0.12, idealism: 0.08 }
+        label: '投诉物业或交警',
+        scores: { orderliness: 0.18, pace: 0.12 }
       },
       {
         value: 3,
-        label: '在业主群里发消息提醒',
-        scores: { extraversion: 0.12, lawfulness: 0.08 }
-      },
-      {
-        value: 4,
-        label: '贴个幽默纸条"消防车过不去啦"',
+        label: '在业主群提醒',
         scores: { extraversion: 0.15 }
       },
       {
+        value: 4,
+        label: '贴幽默纸条提醒',
+        scores: { extraversion: 0.12 }
+      },
+      {
         value: 5,
-        label: '算了，反正也不常出事',
-        scores: { lawfulness: -0.10, trust: -0.08 }
+        label: '无视',
+        scores: { sincerity: -0.08 }
       }
     ],
     required: true
@@ -636,32 +623,32 @@ const questions: QuizTemplate['questions'] = [
   {
     id: 'zootopia_q12',
     type: 'scale',
-    question: '协助马市长组织的摄影比赛中，你意外发现有参赛者使用AI作弊。此时你会？',
+    question: '摄影比赛中你发现有人使用 AI 作弊，你会？',
     options: [
       {
         value: 1,
-        label: '立即取消该选手资格',
-        scores: { lawfulness: 0.18, pace: 0.12 }
+        label: '取消资格',
+        scores: { orderliness: 0.18, pace: 0.15 }
       },
       {
         value: 2,
-        label: '私下提醒他主动退赛',
-        scores: { lawfulness: 0.12, trust: 0.10 }
+        label: '私下劝他退赛',
+        scores: { sincerity: 0.10 }
       },
       {
         value: 3,
-        label: '向组委会汇报，让他们决定',
-        scores: { lawfulness: 0.15, pace: 0.08 }
+        label: '上报组委会',
+        scores: { orderliness: 0.15 }
       },
       {
         value: 4,
-        label: '睁一只眼闭一只眼，比赛重在参与',
-        scores: { lawfulness: -0.10, idealism: -0.08 }
+        label: '视而不见',
+        scores: { orderliness: -0.15 }
       },
       {
         value: 5,
-        label: '发到群里让大家评评理',
-        scores: { extraversion: 0.15, idealism: 0.08 }
+        label: '发群里公开讨论',
+        scores: { extraversion: 0.18 }
       }
     ],
     required: true
@@ -669,32 +656,32 @@ const questions: QuizTemplate['questions'] = [
   {
     id: 'zootopia_q13',
     type: 'scale',
-    question: '和雪豹警官搭档时，你注意到他在执行任务中犯了一个可能导致危险的错误。你会？',
+    question: '执行任务时，你发现雪豹警官犯了可能导致危险的错误，你会？',
     options: [
       {
         value: 1,
-        label: '立即大声提醒制止',
-        scores: { pace: 0.18, lawfulness: 0.12 }
+        label: '立即提醒制止',
+        scores: { pace: 0.20, sincerity: 0.12 }
       },
       {
         value: 2,
-        label: '私下委婉指出错误',
-        scores: { trust: 0.15, extraversion: 0.05 }
+        label: '私下指出',
+        scores: { sincerity: 0.10 }
       },
       {
         value: 3,
-        label: '自己默默补救，不让他难堪',
-        scores: { trust: 0.12, pace: 0.10 }
+        label: '等任务结束后复盘',
+        scores: { orderliness: 0.08 }
       },
       {
         value: 4,
-        label: '事后向上级汇报这个隐患',
-        scores: { lawfulness: 0.15, idealism: 0.08 }
+        label: '自己默默补救',
+        scores: { pace: 0.05, sincerity: 0.05 }
       },
       {
         value: 5,
-        label: '相信他的经验，不多管',
-        scores: { trust: 0.10, lawfulness: -0.05 }
+        label: '不提醒',
+        scores: { sincerity: -0.12 }
       }
     ],
     required: true
@@ -702,32 +689,32 @@ const questions: QuizTemplate['questions'] = [
   {
     id: 'zootopia_q14',
     type: 'scale',
-    question: '项目截止日临近，但闪电完成任务的速度依然慢得出奇。你的选择是？',
+    question: '你在广场看到一只小动物迷路了，你会？',
     options: [
       {
         value: 1,
-        label: '自己接手快速完成',
-        scores: { pace: 0.18, trust: -0.05 }
+        label: '带他去找警察',
+        scores: { sincerity: 0.15, pace: 0.12 }
       },
       {
         value: 2,
-        label: '继续耐心等他做完',
-        scores: { trust: 0.15, pace: -0.10 }
+        label: '问清情况后提供建议',
+        scores: { sincerity: 0.12 }
       },
       {
         value: 3,
-        label: '提供帮助加快进度',
-        scores: { trust: 0.12, pace: 0.10 }
+        label: '拍照发群扩散',
+        scores: { extraversion: 0.15 }
       },
       {
         value: 4,
-        label: '催促并设定明确时间节点',
-        scores: { pace: 0.15, lawfulness: 0.08 }
+        label: '给他指个大概方向',
+        scores: { pace: -0.05 }
       },
       {
         value: 5,
-        label: '向上级申请延期',
-        scores: { lawfulness: 0.10, idealism: 0.08 }
+        label: '继续路过',
+        scores: { sincerity: -0.10 }
       }
     ],
     required: true
@@ -735,32 +722,32 @@ const questions: QuizTemplate['questions'] = [
   {
     id: 'zootopia_q15',
     type: 'scale',
-    question: '朱迪邀请你周末参加"动物城马拉松"，但你本来计划宅家休息。你会？',
+    question: '工作中你发现一份关键报告存在错误，你会？',
     options: [
       {
         value: 1,
-        label: '立刻答应，调整自己计划',
-        scores: { pace: 0.15, trust: 0.10 }
+        label: '立即反馈并要求整改',
+        scores: { orderliness: 0.18 }
       },
       {
         value: 2,
-        label: '婉拒，保持自己节奏',
-        scores: { pace: -0.05 }
+        label: '自己默默修好',
+        scores: { pace: 0.05 }
       },
       {
         value: 3,
-        label: '说考虑考虑，其实不想去',
-        scores: { trust: -0.08 }
+        label: '通知团队大家讨论',
+        scores: { extraversion: 0.15 }
       },
       {
         value: 4,
-        label: '反邀她来家里玩游戏',
-        scores: { extraversion: 0.10 }
+        label: '等别人发现',
+        scores: { orderliness: -0.10 }
       },
       {
         value: 5,
-        label: '答应陪她但只走一半',
-        scores: { idealism: -0.05, pace: 0.08 }
+        label: '视而不见',
+        scores: { sincerity: -0.10 }
       }
     ],
     required: true
@@ -768,32 +755,32 @@ const questions: QuizTemplate['questions'] = [
   {
     id: 'zootopia_q16',
     type: 'scale',
-    question: '公园里有只小兔子不小心掉进了水池，夏奇羊二话不说跳下去救起了他。你在旁边看到后？',
+    question: '闪电向你借钱但含糊其辞，你会？',
     options: [
       {
         value: 1,
-        label: '上前帮忙照顾受惊的小兔子',
-        scores: { trust: 0.15, pace: 0.10 }
+        label: '坦率拒绝',
+        scores: { sincerity: 0.12 }
       },
       {
         value: 2,
-        label: '大声夸赞夏奇羊的勇敢',
-        scores: { extraversion: 0.15, idealism: 0.08 }
+        label: '问清楚用途再决定',
+        scores: { orderliness: 0.10 }
       },
       {
         value: 3,
-        label: '递毛巾或外套给夏奇羊',
-        scores: { trust: 0.12, pace: 0.10 }
+        label: '还是借给他',
+        scores: { sincerity: 0.08 }
       },
       {
         value: 4,
-        label: '拍照记录这个英雄瞬间',
-        scores: { extraversion: 0.12 }
+        label: '转移话题装作没听懂',
+        scores: { pace: -0.05 }
       },
       {
         value: 5,
-        label: '心里感慨一下就离开了',
-        scores: { extraversion: -0.05 }
+        label: '直接忽略',
+        scores: { sincerity: -0.12 }
       }
     ],
     required: true
@@ -801,32 +788,32 @@ const questions: QuizTemplate['questions'] = [
   {
     id: 'zootopia_q17',
     type: 'scale',
-    question: '朱迪最近为了破案连续加班好几天，精神状态很差。作为朋友，你会？',
+    question: '你参加志愿活动，组织者临时缺人，你会？',
     options: [
       {
         value: 1,
-        label: '主动提出帮她分担案件工作',
-        scores: { trust: 0.15, pace: 0.12 }
+        label: '立即补位',
+        scores: { pace: 0.15, extraversion: 0.10 }
       },
       {
         value: 2,
-        label: '送吃的喝的，陪她聊天放松',
-        scores: { trust: 0.12, extraversion: 0.10 }
+        label: '问清楚要做什么再决定',
+        scores: { orderliness: 0.10 }
       },
       {
         value: 3,
-        label: '建议她先休息，别累坏身体',
-        scores: { trust: 0.10, idealism: 0.08 }
+        label: '帮忙联系其他志愿者',
+        scores: { extraversion: 0.12 }
       },
       {
         value: 4,
-        label: '给她打气"你一定能破案"',
-        scores: { idealism: 0.12, extraversion: 0.08 }
+        label: '继续做自己的部分',
+        scores: { pace: -0.05 }
       },
       {
         value: 5,
-        label: '等她忙完再联系',
-        scores: { trust: -0.05, pace: -0.05 }
+        label: '什么也不做',
+        scores: { sincerity: -0.10 }
       }
     ],
     required: true
@@ -834,32 +821,32 @@ const questions: QuizTemplate['questions'] = [
   {
     id: 'zootopia_q18',
     type: 'scale',
-    question: '你偶然得知好友尼克最近又开始做一些"灰色地带"的小生意。你打算？',
+    question: '尼克邀请你参加他的聚会，你其实不太想去，你会？',
     options: [
       {
         value: 1,
-        label: '严肃警告他这样不行',
-        scores: { lawfulness: 0.18, pace: 0.10 }
+        label: '直接拒绝',
+        scores: { sincerity: 0.15 }
       },
       {
         value: 2,
-        label: '了解情况，分析风险劝他停手',
-        scores: { trust: 0.15, idealism: 0.08 }
+        label: '找个借口推掉',
+        scores: { sincerity: -0.08 }
       },
       {
         value: 3,
-        label: '理解他的难处，但保持距离',
-        scores: { trust: 0.08, lawfulness: 0.05 }
+        label: '勉强去一下',
+        scores: { extraversion: 0.10 }
       },
       {
         value: 4,
-        label: '只要不伤害别人，随他去吧',
-        scores: { lawfulness: -0.08, idealism: -0.05 }
+        label: '建议改成别的活动',
+        scores: { extraversion: 0.05 }
       },
       {
         value: 5,
-        label: '帮他想合法的赚钱办法',
-        scores: { trust: 0.15, idealism: 0.12 }
+        label: '不回复',
+        scores: { sincerity: -0.12 }
       }
     ],
     required: true
@@ -867,32 +854,32 @@ const questions: QuizTemplate['questions'] = [
   {
     id: 'zootopia_q19',
     type: 'scale',
-    question: '街头发生了一起口角，朱迪和尼克正在调解。路过的你会？',
+    question: '你在公交上看到有人插队，你会？',
     options: [
       {
         value: 1,
-        label: '上前帮忙一起调解',
-        scores: { trust: 0.15, pace: 0.12 }
+        label: '直接制止',
+        scores: { pace: 0.15 }
       },
       {
         value: 2,
-        label: '站在旁边以防万一',
-        scores: { trust: 0.10, pace: 0.08 }
+        label: '委婉提醒',
+        scores: { sincerity: 0.10 }
       },
       {
         value: 3,
-        label: '录视频留存证据',
-        scores: { lawfulness: 0.10, pace: 0.08 }
+        label: '用玩笑化解',
+        scores: { extraversion: 0.12 }
       },
       {
         value: 4,
-        label: '问一句"需要帮忙吗"再决定',
-        scores: { extraversion: 0.12, trust: 0.08 }
+        label: '拍照吐槽',
+        scores: { extraversion: 0.15 }
       },
       {
         value: 5,
-        label: '绕道走，别卷入麻烦',
-        scores: { trust: -0.08, pace: 0.05 }
+        label: '默默忍受',
+        scores: { pace: -0.10 }
       }
     ],
     required: true
@@ -900,81 +887,39 @@ const questions: QuizTemplate['questions'] = [
   {
     id: 'zootopia_q20',
     type: 'scale',
-    question: '夏奇羊自发在社区组织了一场公益清洁活动，你恰好看到招募信息。你的反应是？',
+    question: '你和大先生在同个会议上，他明显情绪不佳，你会？',
     options: [
       {
         value: 1,
-        label: '主动加入',
-        scores: { trust: 0.15, pace: 0.10 }
+        label: '主动询问是否需要协助',
+        scores: { sincerity: 0.15, extraversion: 0.08 }
       },
       {
         value: 2,
-        label: '赞赏但不参与',
-        scores: { extraversion: 0.08 }
+        label: '等他来找你',
+        scores: { pace: -0.05 }
       },
       {
         value: 3,
-        label: '提出改进建议',
-        scores: { idealism: 0.10 }
+        label: '给他倒一杯水缓和氛围',
+        scores: { sincerity: 0.12 }
       },
       {
         value: 4,
-        label: '拍照记录',
-        scores: { extraversion: 0.12 }
+        label: '用笑话试图让他放松',
+        scores: { extraversion: 0.15 }
       },
       {
         value: 5,
-        label: '无动于衷',
-        scores: { trust: -0.08 }
+        label: '不干涉',
+        scores: { pace: -0.10 }
       }
     ],
     required: true
   },
-  // Q21-Q25: 锚点量表题（李克特量表）
+  // Q21-Q24: 锚点量表题（李克特量表）
   {
     id: 'zootopia_q21',
-    type: 'likert',
-    question: '我倾向于严格遵守规则和制度',
-    dimension: 'lawfulness',
-    options: [
-      { value: 1, label: '完全不同意' },
-      { value: 2, label: '比较不同意' },
-      { value: 3, label: '中立' },
-      { value: 4, label: '比较同意' },
-      { value: 5, label: '完全同意' }
-    ],
-    required: true
-  },
-  {
-    id: 'zootopia_q22',
-    type: 'likert',
-    question: '我相信大多数人都是值得信任的',
-    dimension: 'trust',
-    options: [
-      { value: 1, label: '完全不同意' },
-      { value: 2, label: '比较不同意' },
-      { value: 3, label: '中立' },
-      { value: 4, label: '比较同意' },
-      { value: 5, label: '完全同意' }
-    ],
-    required: true
-  },
-  {
-    id: 'zootopia_q23',
-    type: 'likert',
-    question: '在社交场合，我更喜欢主动表达自己',
-    dimension: 'extraversion',
-    options: [
-      { value: 1, label: '完全不同意' },
-      { value: 2, label: '比较不同意' },
-      { value: 3, label: '中立' },
-      { value: 4, label: '比较同意' },
-      { value: 5, label: '完全同意' }
-    ],
-    required: true
-  },
-  {
-    id: 'zootopia_q24',
     type: 'likert',
     question: '我处理事情通常迅速而果断',
     dimension: 'pace',
@@ -988,10 +933,38 @@ const questions: QuizTemplate['questions'] = [
     required: true
   },
   {
-    id: 'zootopia_q25',
+    id: 'zootopia_q22',
     type: 'likert',
-    question: '我重视原则和理想，即使有时不利于自己',
-    dimension: 'idealism',
+    question: '我倾向于严格遵守规则和制度',
+    dimension: 'orderliness',
+    options: [
+      { value: 1, label: '完全不同意' },
+      { value: 2, label: '比较不同意' },
+      { value: 3, label: '中立' },
+      { value: 4, label: '比较同意' },
+      { value: 5, label: '完全同意' }
+    ],
+    required: true
+  },
+  {
+    id: 'zootopia_q23',
+    type: 'likert',
+    question: '我表达想法时直接坦率，很少拐弯抹角',
+    dimension: 'sincerity',
+    options: [
+      { value: 1, label: '完全不同意' },
+      { value: 2, label: '比较不同意' },
+      { value: 3, label: '中立' },
+      { value: 4, label: '比较同意' },
+      { value: 5, label: '完全同意' }
+    ],
+    required: true
+  },
+  {
+    id: 'zootopia_q24',
+    type: 'likert',
+    question: '在社交场合，我更喜欢主动表达自己',
+    dimension: 'extraversion',
     options: [
       { value: 1, label: '完全不同意' },
       { value: 2, label: '比较不同意' },
@@ -1014,15 +987,14 @@ function calculateCharacterMatch(answers: Record<string, string | number>): {
   }>;
   userDimensionScores: Record<string, number>;
 } {
-  const dimensions = ['trust', 'lawfulness', 'pace', 'extraversion', 'idealism'] as const;
+  const dimensions = ['pace', 'orderliness', 'sincerity', 'extraversion'] as const;
 
   // 阶段1: 维度得分累加（Raw Score Accumulation）
   const rawScores: Record<string, number> = {
-    trust: 0,
-    lawfulness: 0,
     pace: 0,
+    orderliness: 0,
+    sincerity: 0,
     extraversion: 0,
-    idealism: 0,
   };
 
   // 处理强迫选择题（Q1-Q20）
@@ -1042,7 +1014,7 @@ function calculateCharacterMatch(answers: Record<string, string | number>): {
 
   // 阶段2: 锚点量表校准（Anchor Calibration）
   const anchorScores: Record<string, number> = {};
-  questions.slice(20, 25).forEach((q) => {
+  questions.slice(20, 24).forEach((q) => {
     const answer = answers[q.id];
     if (answer && q.type === 'likert' && q.dimension) {
       // 将1-5分转换为0-1范围
@@ -1052,11 +1024,10 @@ function calculateCharacterMatch(answers: Record<string, string | number>): {
 
   // 计算最大可能得分（用于归一化）
   const maxPossibleScores: Record<string, number> = {
-    trust: 0,
-    lawfulness: 0,
     pace: 0,
+    orderliness: 0,
+    sincerity: 0,
     extraversion: 0,
-    idealism: 0,
   };
 
   questions.slice(0, 20).forEach((q) => {
@@ -1139,39 +1110,33 @@ export const zootopia: QuizTemplate = {
   titleEn: 'Zootopia Personality Assessment',
   description: '以《疯狂动物城》8位核心角色为原型，测试你最像谁',
   category: '趣味测评',
-  purpose: '通过25道题目（20道情景选择题 + 5道人格锚点题），从社会信任度、律法遵从度、行动节奏、社交呈现方式、理想主义指数等5个维度，判断你最接近哪种"动物城人格"',
+  purpose: '通过24道题目（20道情景选择题 + 4道人格锚点题），从行动速度、秩序偏好、真诚指数、外向呈现等4个维度，判断你最接近哪种"动物城人格"',
   duration: '6-8分钟',
-  questionCount: 25,
+  questionCount: 24,
 
   dimensions: [
     {
-      id: 'trust',
-      name: ZOOTOPIA_DIMENSIONS.trust,
-      description: '对他人和社会的信任与合作意愿（低=警惕怀疑 ↔ 高=信任开放）',
-      questionIds: []
-    },
-    {
-      id: 'lawfulness',
-      name: ZOOTOPIA_DIMENSIONS.lawfulness,
-      description: '遵守规则、制度的倾向（低=灵活变通 ↔ 高=严守规则）',
-      questionIds: []
-    },
-    {
       id: 'pace',
       name: ZOOTOPIA_DIMENSIONS.pace,
-      description: '做事快慢、果断与从容（低=从容慢调 ↔ 高=快速果断）',
+      description: '处理任务的速度、反应节奏、行动倾向（低=慢条斯理 ↔ 高=高速执行）',
+      questionIds: []
+    },
+    {
+      id: 'orderliness',
+      name: ZOOTOPIA_DIMENSIONS.orderliness,
+      description: '对规则、规范、流程的接受度与依赖程度（低=随性灵活 ↔ 高=自律严谨）',
+      questionIds: []
+    },
+    {
+      id: 'sincerity',
+      name: ZOOTOPIA_DIMENSIONS.sincerity,
+      description: '动机透明度、表达方式、言行一致程度（低=策略圆滑 ↔ 高=坦率透明）',
       questionIds: []
     },
     {
       id: 'extraversion',
       name: ZOOTOPIA_DIMENSIONS.extraversion,
-      description: '社交行为倾向与表达力（低=内敛低调 ↔ 高=外向张扬）',
-      questionIds: []
-    },
-    {
-      id: 'idealism',
-      name: ZOOTOPIA_DIMENSIONS.idealism,
-      description: '重视原则与理想的程度（低=实用主义 ↔ 高=理想主义）',
+      description: '社交场合中的表达方式、存在感与能量来源（低=内向克制 ↔ 高=外向张扬）',
       questionIds: []
     }
   ],
