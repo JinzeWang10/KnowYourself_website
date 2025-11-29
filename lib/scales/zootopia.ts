@@ -256,536 +256,215 @@ export const CHARACTER_DETAILED_TRAITS: Record<string, {
 
 // 题目列表
 const questions: QuizTemplate['questions'] = [
-  // Q1-Q16: 强迫选择题（情景题）
+  // Q1: sincerity
   {
     id: 'zootopia_q1',
     type: 'scale',
-    question: '你在街上散步时看到朱迪正在劝说一只乱扔垃圾的小动物，你会？',
+    question: '你对不满意的事情会：',
     options: [
-      {
-        value: 1,
-        label: '主动上前支持朱迪，一起劝说',
-        scores: { pace: 0.18, orderliness: 0.20, sincerity: 0.15, extraversion: 0.20 }
-      },
-      {
-        value: 2,
-        label: '观察情况，不插手',
-        scores: { pace: -0.10, sincerity: -0.05 }
-      },
-      {
-        value: 3,
-        label: '拍照发社交平台提醒大家',
-        scores: { extraversion: 0.15, orderliness: 0.05 }
-      },
-      {
-        value: 4,
-        label: '默默将垃圾捡起来再离开',
-        scores: { sincerity: 0.12, orderliness: 0.10 }
-      },
-      {
-        value: 5,
-        label: '转头离开，不想管',
-        scores: { pace: -0.12, sincerity: -0.10 }
-      }
+      { value: 1, label: '坦率表达，让对方知道', scores: { sincerity: 1 } },
+      { value: 2, label: '稍微表达一点点', scores: { sincerity: 0.7 } },
+      { value: 3, label: '多半藏心里不说', scores: { sincerity: 0.3 } },
+      { value: 4, label: '表面配合，但心里另想', scores: { sincerity: 0 } }
     ],
     required: true
   },
+  // Q2: pace
   {
     id: 'zootopia_q2',
     type: 'scale',
-    question: '和尼克搭档执勤，一个小动物试图占小便宜被你们抓住，你会？',
+    question: '你收到一条工作消息，你的反应：',
     options: [
-      {
-        value: 1,
-        label: '按规定立即处罚',
-        scores: { orderliness: 0.20, pace: 0.15 }
-      },
-      {
-        value: 2,
-        label: '先口头提醒，看对方态度',
-        scores: { sincerity: 0.10, extraversion: 0.08 }
-      },
-      {
-        value: 3,
-        label: '征求尼克意见，让他决定',
-        scores: { extraversion: 0.05, pace: -0.08 }
-      },
-      {
-        value: 4,
-        label: '用玩笑缓解气氛，再教育',
-        scores: { extraversion: 0.15, sincerity: -0.05 }
-      },
-      {
-        value: 5,
-        label: '小事化了，不追究',
-        scores: { orderliness: -0.12, sincerity: -0.10 }
-      }
+      { value: 1, label: '秒回并立刻处理', scores: { pace: 1 } },
+      { value: 2, label: '快速回复再安排', scores: { pace: 0.7 } },
+      { value: 3, label: '看心情与情况', scores: { pace: 0.3 } },
+      { value: 4, label: '隔一阵再管', scores: { pace: 0 } }
     ],
     required: true
   },
+  // Q3: sincerity
   {
     id: 'zootopia_q3',
     type: 'scale',
-    question: '马市长交给你一场市政活动，你会如何组织？',
+    question: '有人向你询问个人隐私类的问题，你会：',
     options: [
-      {
-        value: 1,
-        label: '按制度严格推进',
-        scores: { orderliness: 0.18, pace: 0.12 }
-      },
-      {
-        value: 2,
-        label: '做详细计划确保顺利完成',
-        scores: { orderliness: 0.15, sincerity: 0.05 }
-      },
-      {
-        value: 3,
-        label: '按现场反馈灵活微调',
-        scores: { pace: 0.05, extraversion: 0.10 }
-      },
-      {
-        value: 4,
-        label: '加入欢乐互动环节',
-        scores: { extraversion: 0.15 }
-      },
-      {
-        value: 5,
-        label: '借机突出自己',
-        scores: { sincerity: -0.12, extraversion: 0.08 }
-      }
+      { value: 1, label: '如实表达并讲清楚界限', scores: { sincerity: 1 } },
+      { value: 2, label: '简单带过但不说细节', scores: { sincerity: 0.7 } },
+      { value: 3, label: '礼貌转移话题', scores: { sincerity: 0.3 } },
+      { value: 4, label: '给一个替代答案来避开', scores: { sincerity: 0 } }
     ],
     required: true
   },
+  // Q4: orderliness
   {
     id: 'zootopia_q4',
     type: 'scale',
-    question: '闪电因做事太慢被嘲笑，你在旁边会？',
+    question: '当团队准备修改既定流程，你的第一反应：',
     options: [
-      {
-        value: 1,
-        label: '阻止嘲笑者，维护闪电',
-        scores: { sincerity: 0.12, extraversion: 0.12 }
-      },
-      {
-        value: 2,
-        label: '安抚闪电，告诉他别介意',
-        scores: { sincerity: 0.15 }
-      },
-      {
-        value: 3,
-        label: '帮闪电把事情做完',
-        scores: { pace: 0.15 }
-      },
-      {
-        value: 4,
-        label: '用幽默把话题带开',
-        scores: { extraversion: 0.15, sincerity: -0.05 }
-      },
-      {
-        value: 5,
-        label: '装作没看到',
-        scores: { pace: -0.10, sincerity: -0.10 }
-      }
+      { value: 1, label: '"最好别改，按原来最稳。"', scores: { orderliness: 1 } },
+      { value: 2, label: '"可以改，但要经过正式讨论。"', scores: { orderliness: 0.7 } },
+      { value: 3, label: '"按情况来，改也没关系。"', scores: { orderliness: 0.3 } },
+      { value: 4, label: '"流程太多了，能简化就好。"', scores: { orderliness: 0 } }
     ],
     required: true
   },
+  // Q5: pace
   {
     id: 'zootopia_q5',
     type: 'scale',
-    question: '你看到豹子警官在帮一只小动物找走失的宠物，你会？',
+    question: '任务堆积在一起时，你通常的状态是：',
     options: [
-      {
-        value: 1,
-        label: '立即加入搜寻',
-        scores: { pace: 0.18, extraversion: 0.10 }
-      },
-      {
-        value: 2,
-        label: '先观察情况，判断如何帮忙最有效',
-        scores: { pace: -0.05, orderliness: 0.08 }
-      },
-      {
-        value: 3,
-        label: '提供线索或建议后继续自己的事',
-        scores: { sincerity: 0.08 }
-      },
-      {
-        value: 4,
-        label: '用手机帮忙发布寻宠信息',
-        scores: { extraversion: 0.12 }
-      },
-      {
-        value: 5,
-        label: '鼓励几句，表示相信他能找到',
-        scores: { sincerity: 0.10, extraversion: 0.08 }
-      }
+      { value: 1, label: '越急越兴奋，能高速推进', scores: { pace: 1 } },
+      { value: 2, label: '有压力但能快速处理', scores: { pace: 0.7 } },
+      { value: 3, label: '会有点慌乱，需要慢下来', scores: { pace: 0.3 } },
+      { value: 4, label: '我喜欢慢节奏处理，不急', scores: { pace: 0 } }
     ],
     required: true
   },
+  // Q6: sincerity
   {
     id: 'zootopia_q6',
     type: 'scale',
-    question: '在茶水间，你发现尼克似乎在做违规的小动作，你会？',
+    question: '答应别人时，你的习惯：',
     options: [
-      {
-        value: 1,
-        label: '立即制止并说明规则',
-        scores: { orderliness: 0.18, sincerity: 0.15, pace: 0.12 }
-      },
-      {
-        value: 2,
-        label: '私下用幽默的方式提醒他',
-        scores: { sincerity: 0.08, extraversion: 0.10 }
-      },
-      {
-        value: 3,
-        label: '先观察他的动机，再决定如何处理',
-        scores: { pace: -0.08 }
-      },
-      {
-        value: 4,
-        label: '按流程报告给上级',
-        scores: { orderliness: 0.15 }
-      },
-      {
-        value: 5,
-        label: '根据严重程度决定要不要管',
-        scores: { orderliness: -0.05 }
-      }
+      { value: 1, label: '只要我答应了就一定做到', scores: { sincerity: 1 } },
+      { value: 2, label: '会尽力做到', scores: { sincerity: 0.7 } },
+      { value: 3, label: '看情况，有时也做不到', scores: { sincerity: 0.3 } },
+      { value: 4, label: '答应只是为了先把事圆过去', scores: { sincerity: 0 } }
     ],
     required: true
   },
+  // Q7: pace
   {
     id: 'zootopia_q7',
     type: 'scale',
-    question: '你开出租车时，闪电在后座睡着了马上到站，你会？',
+    question: '你临时接到一个必须马上决定的选择，你会：',
     options: [
-      {
-        value: 1,
-        label: '轻声叫醒',
-        scores: { sincerity: 0.15 }
-      },
-      {
-        value: 2,
-        label: '拍座椅或按喇叭',
-        scores: { pace: 0.15, sincerity: -0.05 }
-      },
-      {
-        value: 3,
-        label: '用玩笑唤醒他',
-        scores: { extraversion: 0.15, sincerity: -0.08 }
-      },
-      {
-        value: 4,
-        label: '继续开远点等他醒',
-        scores: { pace: -0.12 }
-      },
-      {
-        value: 5,
-        label: '停车自己也休息',
-        scores: { pace: -0.18 }
-      }
+      { value: 1, label: '立刻拍板', scores: { pace: 1 } },
+      { value: 2, label: '思考片刻后执行', scores: { pace: 0.7 } },
+      { value: 3, label: '再确认一下别人意见', scores: { pace: 0.3 } },
+      { value: 4, label: '拖延一下再做', scores: { pace: 0 } }
     ],
     required: true
   },
+  // Q8: orderliness
   {
     id: 'zootopia_q8',
     type: 'scale',
-    question: '在健身房，朱迪和尼克为训练方法争论，你会？',
+    question: '看到有人违反公共秩序（插队、占道等），你会：',
     options: [
-      {
-        value: 1,
-        label: '直接告诉他们标准做法',
-        scores: { orderliness: 0.15, pace: 0.15 }
-      },
-      {
-        value: 2,
-        label: '让他们各自尝试',
-        scores: { orderliness: -0.05 }
-      },
-      {
-        value: 3,
-        label: '加入讨论分享经验',
-        scores: { extraversion: 0.15 }
-      },
-      {
-        value: 4,
-        label: '嘲笑他们',
-        scores: { sincerity: -0.15 }
-      },
-      {
-        value: 5,
-        label: '不干涉',
-        scores: { orderliness: -0.12 }
-      }
+      { value: 1, label: '主动提醒对方遵守规则', scores: { orderliness: 1 } },
+      { value: 2, label: '委婉向管理人员反馈', scores: { orderliness: 0.7 } },
+      { value: 3, label: '默默接受但心里不舒服', scores: { orderliness: 0.3 } },
+      { value: 4, label: '完全不在乎，规则随意', scores: { orderliness: 0 } }
     ],
     required: true
   },
+  // Q9: extraversion
   {
     id: 'zootopia_q9',
     type: 'scale',
-    question: '室友深夜弹钢琴影响你休息，你会？',
+    question: '一个聚会中，你通常会：',
     options: [
-      {
-        value: 1,
-        label: '正面提出问题',
-        scores: { sincerity: 0.12, pace: 0.12 }
-      },
-      {
-        value: 2,
-        label: '写纸条提醒',
-        scores: { orderliness: 0.08 }
-      },
-      {
-        value: 3,
-        label: '买耳塞忍着',
-        scores: { pace: -0.10 }
-      },
-      {
-        value: 4,
-        label: '在群里暗示',
-        scores: { extraversion: 0.12, sincerity: -0.12 }
-      },
-      {
-        value: 5,
-        label: '也深夜制造噪音',
-        scores: { sincerity: -0.10 }
-      }
+      { value: 1, label: '自然成为氛围中心', scores: { extraversion: 1 } },
+      { value: 2, label: '主动参与但不一定最显眼', scores: { extraversion: 0.7 } },
+      { value: 3, label: '稍微参与，更多观察别人', scores: { extraversion: 0.3 } },
+      { value: 4, label: '尽量待在安静角落', scores: { extraversion: 0 } }
     ],
     required: true
   },
+  // Q10: pace
   {
     id: 'zootopia_q10',
     type: 'scale',
-    question: '摄影比赛中你发现有人使用 AI 作弊，你会？',
+    question: '你在新情况发生时的第一反应：',
     options: [
-      {
-        value: 1,
-        label: '立即上报组委会处理',
-        scores: { orderliness: 0.18, pace: 0.15 }
-      },
-      {
-        value: 2,
-        label: '先私下劝对方主动退赛',
-        scores: { sincerity: 0.12 }
-      },
-      {
-        value: 3,
-        label: '收集证据后再决定',
-        scores: { orderliness: 0.10, pace: -0.05 }
-      },
-      {
-        value: 4,
-        label: '在参赛群里委婉提醒规则',
-        scores: { extraversion: 0.12, sincerity: -0.05 }
-      },
-      {
-        value: 5,
-        label: '看其他人的反应再决定',
-        scores: { pace: -0.10 }
-      }
+      { value: 1, label: '立刻行动', scores: { pace: 1 } },
+      { value: 2, label: '观察一下再动', scores: { pace: 0.7 } },
+      { value: 3, label: '想好步骤才行动', scores: { pace: 0.3 } },
+      { value: 4, label: '让我先适应环境', scores: { pace: 0 } }
     ],
     required: true
   },
+  // Q11: orderliness
   {
     id: 'zootopia_q11',
     type: 'scale',
-    question: '执行任务时，你发现雪豹警官犯了可能导致危险的错误，你会？',
+    question: '面对制度要求填写一份复杂表格，你会：',
     options: [
-      {
-        value: 1,
-        label: '立即提醒制止',
-        scores: { pace: 0.20, sincerity: 0.12 }
-      },
-      {
-        value: 2,
-        label: '私下指出',
-        scores: { sincerity: 0.10 }
-      },
-      {
-        value: 3,
-        label: '等任务结束后复盘',
-        scores: { orderliness: 0.08 }
-      },
-      {
-        value: 4,
-        label: '自己默默补救',
-        scores: { pace: 0.05, sincerity: 0.05 }
-      },
-      {
-        value: 5,
-        label: '不提醒',
-        scores: { sincerity: -0.12 }
-      }
+      { value: 1, label: '从头到尾严格按要求填写', scores: { orderliness: 1 } },
+      { value: 2, label: '填关键项，其余按需要', scores: { orderliness: 0.7 } },
+      { value: 3, label: '大致填写，有问题再补', scores: { orderliness: 0.3 } },
+      { value: 4, label: '能简化就简化，不拘泥形式', scores: { orderliness: 0 } }
     ],
     required: true
   },
+  // Q12: sincerity
   {
     id: 'zootopia_q12',
     type: 'scale',
-    question: '工作中你发现一份关键报告存在错误，你会？',
+    question: '你处理冲突的方式：',
     options: [
-      {
-        value: 1,
-        label: '立即反馈并要求整改',
-        scores: { orderliness: 0.18, pace: 0.15 }
-      },
-      {
-        value: 2,
-        label: '自己先修正，然后通知原作者',
-        scores: { pace: 0.12, sincerity: 0.08 }
-      },
-      {
-        value: 3,
-        label: '标注问题后发给团队讨论',
-        scores: { extraversion: 0.15, orderliness: 0.10 }
-      },
-      {
-        value: 4,
-        label: '私下委婉提醒原作者',
-        scores: { sincerity: 0.10 }
-      },
-      {
-        value: 5,
-        label: '评估影响程度后再决定处理方式',
-        scores: { pace: -0.08 }
-      }
+      { value: 1, label: '开诚布公，把事实摊开讲', scores: { sincerity: 1 } },
+      { value: 2, label: '讲重点、不翻旧账', scores: { sincerity: 0.7 } },
+      { value: 3, label: '尽量避免正面冲突', scores: { sincerity: 0.3 } },
+      { value: 4, label: '隐藏真实想法，保持表面和平', scores: { sincerity: 0 } }
     ],
     required: true
   },
+  // Q13: extraversion
   {
     id: 'zootopia_q13',
     type: 'scale',
-    question: '闪电向你借钱但含糊其辞，你会？',
+    question: '与你不熟的人主动交谈，你会：',
     options: [
-      {
-        value: 1,
-        label: '坦率拒绝',
-        scores: { sincerity: 0.12 }
-      },
-      {
-        value: 2,
-        label: '问清楚用途再决定',
-        scores: { orderliness: 0.10 }
-      },
-      {
-        value: 3,
-        label: '还是借给他',
-        scores: { sincerity: 0.08 }
-      },
-      {
-        value: 4,
-        label: '转移话题装作没听懂',
-        scores: { pace: -0.05 }
-      },
-      {
-        value: 5,
-        label: '直接忽略',
-        scores: { sincerity: -0.12 }
-      }
+      { value: 1, label: '热情回应并继续拓展对话', scores: { extraversion: 1 } },
+      { value: 2, label: '正常回应，对话自然发展', scores: { extraversion: 0.7 } },
+      { value: 3, label: '简单回答，不主动延伸', scores: { extraversion: 0.3 } },
+      { value: 4, label: '尽量保持简短，早结束', scores: { extraversion: 0 } }
     ],
     required: true
   },
+  // Q14: orderliness
   {
     id: 'zootopia_q14',
     type: 'scale',
-    question: '尼克邀请你参加他的聚会，你其实不太想去，你会？',
+    question: '对你来说，流程的意义是什么？',
     options: [
-      {
-        value: 1,
-        label: '直接拒绝',
-        scores: { sincerity: 0.15 }
-      },
-      {
-        value: 2,
-        label: '找个借口推掉',
-        scores: { sincerity: -0.08 }
-      },
-      {
-        value: 3,
-        label: '勉强去一下',
-        scores: { extraversion: 0.10 }
-      },
-      {
-        value: 4,
-        label: '建议改成别的活动',
-        scores: { extraversion: 0.05 }
-      },
-      {
-        value: 5,
-        label: '不回复',
-        scores: { sincerity: -0.12 }
-      }
+      { value: 1, label: '必须遵守，它能避免混乱', scores: { orderliness: 1 } },
+      { value: 2, label: '大部分时候要遵守', scores: { orderliness: 0.7 } },
+      { value: 3, label: '重要的是效率，流程可变通', scores: { orderliness: 0.3 } },
+      { value: 4, label: '流程只是参考，能完成就行', scores: { orderliness: 0 } }
     ],
     required: true
   },
+  // Q15: extraversion
   {
     id: 'zootopia_q15',
     type: 'scale',
-    question: '你在公交上看到有人插队，你会？',
+    question: '遇到陌生环境时，你倾向：',
     options: [
-      {
-        value: 1,
-        label: '直接制止',
-        scores: { pace: 0.15 }
-      },
-      {
-        value: 2,
-        label: '委婉提醒',
-        scores: { sincerity: 0.10 }
-      },
-      {
-        value: 3,
-        label: '用玩笑化解',
-        scores: { extraversion: 0.12 }
-      },
-      {
-        value: 4,
-        label: '拍照吐槽',
-        scores: { extraversion: 0.15 }
-      },
-      {
-        value: 5,
-        label: '默默忍受',
-        scores: { pace: -0.10 }
-      }
+      { value: 1, label: '主动融入，快速结识朋友', scores: { extraversion: 1 } },
+      { value: 2, label: '自然加入群体', scores: { extraversion: 0.7 } },
+      { value: 3, label: '适应一会儿再交流', scores: { extraversion: 0.3 } },
+      { value: 4, label: '只和少数人接触', scores: { extraversion: 0 } }
     ],
     required: true
   },
+  // Q16: extraversion
   {
     id: 'zootopia_q16',
     type: 'scale',
-    question: '你和大先生在同个会议上，他明显情绪不佳，你会？',
+    question: '在一个需要分工合作的任务里，你通常：',
     options: [
-      {
-        value: 1,
-        label: '主动询问是否需要协助',
-        scores: { sincerity: 0.15, extraversion: 0.08 }
-      },
-      {
-        value: 2,
-        label: '等他来找你',
-        scores: { pace: -0.05 }
-      },
-      {
-        value: 3,
-        label: '给他倒一杯水缓和氛围',
-        scores: { sincerity: 0.12 }
-      },
-      {
-        value: 4,
-        label: '用笑话试图让他放松',
-        scores: { extraversion: 0.15 }
-      },
-      {
-        value: 5,
-        label: '不干涉',
-        scores: { pace: -0.10 }
-      }
+      { value: 1, label: '主动组织、带领团队', scores: { extraversion: 1 } },
+      { value: 2, label: '提出你的意见并参与讨论', scores: { extraversion: 0.7 } },
+      { value: 3, label: '按分配执行就行', scores: { extraversion: 0.3 } },
+      { value: 4, label: '更喜欢安静做自己的部分', scores: { extraversion: 0 } }
     ],
     required: true
   },
-  // Q17-Q20: 锚点量表题（李克特量表）
+  // Q17-Q20: 锚点量表题
   {
     id: 'zootopia_q17',
     type: 'likert',
@@ -865,7 +544,7 @@ function calculateCharacterMatch(answers: Record<string, string | number>): {
     extraversion: 0,
   };
 
-  // 处理强迫选择题（Q1-Q20）
+  // 处理强迫选择题（Q1-Q16）
   questions.slice(0, 16).forEach((q) => {
     const answer = answers[q.id];
     if (answer && q.type === 'scale') {
@@ -891,6 +570,7 @@ function calculateCharacterMatch(answers: Record<string, string | number>): {
   });
 
   // 计算最大可能得分（用于归一化）
+  // 对每道题，只取该维度在所有选项中的最大正值
   const maxPossibleScores: Record<string, number> = {
     pace: 0,
     orderliness: 0,
@@ -900,62 +580,62 @@ function calculateCharacterMatch(answers: Record<string, string | number>): {
 
   questions.slice(0, 16).forEach((q) => {
     if (q.type === 'scale' && q.options) {
+      // 对每个维度，找出这道题所有选项中的最大加分
+      const maxScoresInQuestion: Record<string, number> = {
+        pace: 0,
+        orderliness: 0,
+        sincerity: 0,
+        extraversion: 0,
+      };
+
       q.options.forEach((opt) => {
         if (opt.scores) {
           Object.entries(opt.scores).forEach(([dim, score]) => {
             if (typeof score === 'number' && score > 0) {
-              maxPossibleScores[dim] = (maxPossibleScores[dim] || 0) + score;
+              maxScoresInQuestion[dim] = Math.max(maxScoresInQuestion[dim], score);
             }
           });
         }
+      });
+
+      // 累加每道题的最大值
+      Object.entries(maxScoresInQuestion).forEach(([dim, maxScore]) => {
+        maxPossibleScores[dim] += maxScore;
       });
     }
   });
 
   // 阶段3: 混合校准（Hybrid Calibration）
-  const alpha = 0.65; // 强迫选择题权重
-  const beta = 0.35;  // 锚点量表权重
+  const alpha = 0.7; // 强迫选择题权重
+  const beta = 0.3;  // 锚点量表权重
 
   const calibratedScores: Record<string, number> = {};
   dimensions.forEach((dim) => {
     const relativeScore = maxPossibleScores[dim] > 0
       ? Math.max(0, Math.min(1, rawScores[dim] / maxPossibleScores[dim]))
       : 0;
-    const anchorScore = anchorScores[dim] || 0.5;
+    const anchorScore = anchorScores[dim] ?? 0.5;
     calibratedScores[dim] = alpha * relativeScore + beta * anchorScore;
   });
 
-  // 阶段4: 混合相似度匹配（Hybrid Similarity）
+  // 阶段4: 欧氏距离匹配
   const characterMatches = Object.entries(CHARACTER_PROFILES).map(([id, profile]) => {
-    // 计算余弦相似度
-    let dotProduct = 0;
-    let userMagnitude = 0;
-    let characterMagnitude = 0;
-
-    dimensions.forEach((dim) => {
-      const userScore = calibratedScores[dim];
-      const charScore = profile.scores[dim];
-      dotProduct += userScore * charScore;
-      userMagnitude += userScore * userScore;
-      characterMagnitude += charScore * charScore;
-    });
-
-    const cosineSimilarity = dotProduct / (Math.sqrt(userMagnitude) * Math.sqrt(characterMagnitude));
-
     // 计算欧氏距离
     let squaredDifference = 0;
     dimensions.forEach((dim) => {
       const diff = calibratedScores[dim] - profile.scores[dim];
       squaredDifference += diff * diff;
     });
+
+    // 归一化欧氏距离（除以sqrt(维度数)使其在0-1范围）
     const euclideanDistance = Math.sqrt(squaredDifference) / Math.sqrt(dimensions.length);
 
-    // 混合相似度（余弦0.7 + 欧氏0.3）
-    const hybridSimilarity = 0.7 * cosineSimilarity + 0.3 * (1 - euclideanDistance);
+    // 转换为相似度（距离越小，相似度越高）
+    const similarity = 1 - euclideanDistance;
 
     return {
       characterId: id,
-      similarity: hybridSimilarity,
+      similarity: similarity,
       userScores: { ...calibratedScores },
     };
   });
@@ -979,7 +659,7 @@ export const zootopia: QuizTemplate = {
   description: '以《疯狂动物城》8位核心角色为原型，测试你最像谁',
   category: '趣味测评',
   purpose: '通过20道题目（16道情景选择题 + 4道人格锚点题），从行动速度、秩序偏好、真诚指数、外向呈现等4个维度，判断你最接近哪种"动物城人格"',
-  duration: '6-8分钟',
+  duration: '5-7分钟',
   questionCount: 20,
 
   dimensions: [

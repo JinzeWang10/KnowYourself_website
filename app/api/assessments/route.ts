@@ -83,7 +83,9 @@ export async function POST(request: NextRequest) {
       const assessmentRecord = await tx.assessmentRecord.create({
         data: {
           id: record.id,
-          userId: user.id,
+          user: {
+            connect: { id: user.id }
+          },
           scaleId: record.scaleId,
           scaleTitle: record.scaleTitle,
           totalScore: record.totalScore,
