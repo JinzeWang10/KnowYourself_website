@@ -86,16 +86,19 @@ const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(function ShareCard(
 
   return (
     <div ref={ref} className="relative mx-auto mb-6 animate-slide-up" style={{ width: '1800px', maxWidth: '100%' }}>
-      {/* 装饰性背景光晕 - 使用动态颜色 */}
-      <div className={`absolute -inset-1 bg-gradient-to-r ${colorScheme.glow} rounded-3xl blur-2xl`}></div>
+      {/* 装饰性背景光晕 - 导出时会被隐藏 */}
+      <div
+        className="export-hide absolute -inset-1 rounded-3xl blur-2xl"
+        style={{ background: `linear-gradient(90deg, ${levelColor}20, ${levelColor}10)` }}
+      ></div>
 
       {/* 主卡片 */}
       <div className="relative bg-white rounded-3xl shadow-soft-xl overflow-hidden border border-neutral-100/50">
-        {/* 顶部装饰性渐变条 - 使用动态颜色 */}
-        <div className={`h-2 bg-gradient-to-r ${colorScheme.stripe}`}></div>
+        {/* 顶部装饰性渐变条 - 使用实色 */}
+        <div className="h-2" style={{ backgroundColor: levelColor }}></div>
 
-        {/* 背景装饰图案 */}
-        <div className="absolute top-0 right-0 w-64 h-64 opacity-5">
+        {/* 背景装饰图案 - 导出时会被隐藏 */}
+        <div className="export-hide absolute top-0 right-0 w-64 h-64 opacity-5">
           <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
             <path fill="currentColor" d="M44.7,-76.4C58.8,-69.2,71.8,-59.1,79.6,-45.8C87.4,-32.6,90,-16.3,88.5,-0.9C87,14.6,81.4,29.2,73.1,42.8C64.8,56.4,53.8,69,39.9,76.8C26,84.6,9.2,87.6,-6.5,86.8C-22.2,86,-37.8,81.4,-51.2,73.4C-64.6,65.4,-75.8,54,-82.6,40.2C-89.4,26.4,-91.8,10.2,-90.1,-5.3C-88.4,-20.8,-82.6,-35.6,-73.8,-48.2C-65,-60.8,-53.2,-71.2,-39.7,-78.6C-26.2,-86,-13.1,-90.4,1.3,-92.5C15.7,-94.6,30.6,-83.6,44.7,-76.4Z" transform="translate(100 100)" />
           </svg>
@@ -105,15 +108,18 @@ const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(function ShareCard(
           {/* Logo和标题 */}
           <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
             <div className="flex items-center gap-3">
-              <Image
-                src="/knowyourself_logo.png"
-                alt="KnowYourself"
-                width={40}
-                height={40}
-                className="object-contain"
-              />
+              <div style={{ width: '40px', height: '40px', flexShrink: 0 }}>
+                <Image
+                  src="/knowyourself_logo.png"
+                  alt="KnowYourself"
+                  width={40}
+                  height={40}
+                  className="object-contain"
+                  style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                />
+              </div>
               <div>
-                <div className="font-bold text-xl gradient-text">KnowYourself</div>
+                <div className="font-bold text-xl text-neutral-900">KnowYourself</div>
                 <div className="text-xs text-neutral-500 font-light">专业心理测评</div>
               </div>
             </div>
@@ -125,26 +131,48 @@ const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(function ShareCard(
           {/* 量表标题 */}
           <div className="text-center mb-8">
             <h2 className="text-2xl font-bold text-neutral-900 mb-3 px-2">{scaleTitle}</h2>
-            <div className="h-1 w-20 bg-gradient-to-r from-primary to-purple-500 mx-auto rounded-full"></div>
+            <div className="h-1 w-20 mx-auto rounded-full" style={{ backgroundColor: levelColor }}></div>
           </div>
 
           {/* 分数展示区 - 核心视觉元素 */}
           <div className="relative mb-8">
-            {/* 装饰性背景 */}
-            <div className="absolute inset-0 bg-gradient-to-br from-primary-50 via-purple-50 to-pink-50 rounded-3xl -z-10"></div>
+            {/* 装饰性背景 - 使用纯色避免渐变渲染问题 */}
+            <div className="absolute inset-0 bg-neutral-50 rounded-3xl -z-10"></div>
 
             <div style={{ padding: '0px 0px', width: '100%' }}>
               {/* 分数圆环 */}
               <div className="flex justify-center mb-6">
                 <div className="relative">
-                  {/* 外层装饰环 - 使用动态颜色 */}
-                  <div className={`absolute bg-gradient-to-br ${colorScheme.glow} rounded-full blur-xl animate-pulse`} style={{ inset: '-16px' }}></div>
+                  {/* 外层装饰环 - 导出时会被隐藏 */}
+                  <div
+                    className="export-hide absolute rounded-full blur-xl animate-pulse"
+                    style={{
+                      inset: '-16px',
+                      background: `linear-gradient(135deg, ${levelColor}20, ${levelColor}10)`
+                    }}
+                  ></div>
 
-                  {/* 主圆环 - 使用动态颜色 */}
-                  <div className={`relative rounded-full bg-gradient-to-br ${colorScheme.gradient} shadow-glow-lg`} style={{ width: '176px', height: '176px', padding: '4px' }}>
+                  {/* 主圆环 - 使用实色边框替代渐变 */}
+                  <div
+                    className="relative rounded-full shadow-glow-lg"
+                    style={{
+                      width: '176px',
+                      height: '176px',
+                      padding: '4px',
+                      backgroundColor: levelColor
+                    }}
+                  >
                     <div className="w-full h-full rounded-full bg-white flex items-center justify-center">
                       <div className="text-center">
-                        <div className={`font-black bg-gradient-to-br ${colorScheme.gradient} bg-clip-text text-transparent`} style={{ fontSize: '64px', lineHeight: '1' }}>
+                        {/* 使用实色文字替代渐变文字 */}
+                        <div
+                          className="font-black"
+                          style={{
+                            fontSize: '64px',
+                            lineHeight: '1',
+                            color: levelColor
+                          }}
+                        >
                           {isPAT && patMetadata ? patMetadata.psychologicalAge : score}
                         </div>
                         <div className="text-sm text-neutral-500 font-medium mt-2">
@@ -176,7 +204,7 @@ const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(function ShareCard(
               {/* 百分位信息 */}
               {percentile !== null && percentile !== undefined && (
                 <div className="text-center mb-6">
-                  <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full shadow-soft border border-neutral-100" style={{ padding: '8px 20px' }}>
+                  <div className="inline-flex items-center gap-2 rounded-full shadow-soft border border-neutral-100" style={{ padding: '8px 20px', backgroundColor: '#ffffffcc' }}>
                     <span style={{ fontSize: '18px' }}>📊</span>
                     <span className="text-sm text-neutral-600">
                       超过 <span className="font-bold text-primary" style={{ fontSize: '18px' }}>{percentile}%</span> 的测评者
@@ -187,7 +215,7 @@ const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(function ShareCard(
 
               {/* 简短解读 */}
               {description && (
-                <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-soft border border-neutral-100 mb-6" style={{ padding: '10px 8px' }}>
+                <div className="rounded-2xl shadow-soft border border-neutral-100 mb-6" style={{ padding: '10px 8px', backgroundColor: '#ffffffcc' }}>
                   <div className={`text-neutral-700 leading-relaxed ${isZHZ ? 'text-left' : 'text-center'} whitespace-pre-wrap`} style={{
                     lineHeight: '1.6',
                     fontSize: '14px',
@@ -208,7 +236,7 @@ const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(function ShareCard(
 
               {/* 雷达图 - 维度分析 */}
               {radarData && radarData.length > 0 && (
-                <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-soft border border-neutral-100" style={{ padding: '10px 4px' }}>
+                <div className="rounded-2xl shadow-soft border border-neutral-100" style={{ padding: '10px 4px', backgroundColor: '#ffffffcc' }}>
                   <h3 className="text-center font-bold text-neutral-900 mb-3" style={{ fontSize: '14px' }}>维度分析</h3>
                   <div style={{ width: '100%', height: '300px' }}>
                     <DimensionRadarChart data={radarData} showLegend={false} compact={true} />
@@ -218,9 +246,9 @@ const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(function ShareCard(
 
               {/* PAT心理年龄展示 */}
               {isPAT && patMetadata && (
-                <div className="bg-gradient-to-br from-purple-50 via-pink-50 to-rose-50 rounded-2xl shadow-soft border border-purple-100/50 mb-6" style={{ padding: '20px' }}>
+                <div className="rounded-2xl shadow-soft border mb-6" style={{ padding: '20px', backgroundColor: '#faf5ff', borderColor: '#e9d5ff' }}>
                   <div className="text-center mb-3">
-                    <div className="inline-flex items-center gap-2 bg-white/60 backdrop-blur-sm rounded-full border border-purple-100/30" style={{ padding: '6px 16px' }}>
+                    <div className="inline-flex items-center gap-2 rounded-full border" style={{ padding: '6px 16px', backgroundColor: '#ffffff99', borderColor: '#e9d5ff4d' }}>
                       <span style={{ fontSize: '16px' }}>🎂</span>
                       <span style={{ fontSize: '12px', fontWeight: '600', color: '#9333ea' }}>心理年龄</span>
                     </div>
@@ -239,7 +267,7 @@ const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(function ShareCard(
 
                     <div className="text-center">
                       <div style={{ fontSize: '10px', opacity: 0.6, marginBottom: '4px', color: '#6b7280' }}>心理年龄</div>
-                      <div className="bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl shadow-soft" style={{ fontSize: '32px', fontWeight: '900', padding: '8px 16px', color: '#ffffff' }}>
+                      <div className="rounded-xl shadow-soft" style={{ fontSize: '32px', fontWeight: '900', padding: '8px 16px', color: '#ffffff', backgroundColor: levelColor }}>
                         {patMetadata.psychologicalAge}
                       </div>
                       <div style={{ fontSize: '10px', opacity: 0.5, color: '#9ca3af' }}>岁</div>
@@ -247,7 +275,7 @@ const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(function ShareCard(
                   </div>
 
                   <div className="text-center mt-4">
-                    <div className="inline-flex items-center gap-2 bg-white/60 backdrop-blur-sm rounded-lg border border-purple-100/30" style={{ padding: '6px 12px' }}>
+                    <div className="inline-flex items-center gap-2 rounded-lg border" style={{ padding: '6px 12px', backgroundColor: '#ffffff99', borderColor: '#e9d5ff4d' }}>
                       {patMetadata.ageDifference > 0 ? (
                         <>
                           <span style={{ fontSize: '14px' }}>📈</span>

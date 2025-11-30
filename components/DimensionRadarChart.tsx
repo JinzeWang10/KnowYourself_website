@@ -15,7 +15,7 @@ import {
 export interface RadarDataPoint {
   dimension: string;
   value: number;
-  fullMark: 100;
+  fullMark?: number;
 }
 
 interface DimensionRadarChartProps {
@@ -37,9 +37,8 @@ export default function DimensionRadarChart({
     setMounted(true);
   }, []);
 
-  // 计算最大值，向上取整到最近的10
-  const maxValue = Math.max(...data.map(d => d.value));
-  const maxDomain = Math.ceil(maxValue / 10) * 10;
+  // 使用固定的 100 作为最大值，因为所有数据都已归一化到 0-100
+  const maxDomain = 100;
 
   if (!mounted) {
     return (
@@ -130,82 +129,133 @@ export default function DimensionRadarChart({
         </h3>
       )}
 
-      {/* 雷达图容器 - 添加渐变背景 */}
-      <div className={compact ? "relative" : "relative p-3 sm:p-6 bg-gradient-to-br from-purple-50/50 via-pink-50/30 to-blue-50/50 rounded-2xl"}>
-        <ResponsiveContainer width="100%" height={compact ? 300 : 300}>
-          <RadarChart data={data} margin={{ top: 10, right: 80, bottom: 10, left: 80 }}>
-            {/* 网格 - 更精致的样式 */}
-            <PolarGrid
-              stroke="#d4d4d8"
-              strokeDasharray="5 5"
-              strokeWidth={1}
-              strokeOpacity={0.6}
-            />
+      {/* 雷达图容器 - 使用纯色背景以确保图片导出正常 */}
+      <div className={compact ? "relative" : "relative p-3 sm:p-6 rounded-2xl"} style={compact ? {} : { backgroundColor: '#f5f3ff' }}>
+        {compact ? (
+          // 紧凑模式：使用固定尺寸，避免 ResponsiveContainer 在导出时的渲染问题
+          <div className="flex justify-center">
+            <RadarChart width={500} height={300} data={data} margin={{ top: 10, right: 80, bottom: 10, left: 80 }}>
+              {/* 网格 - 更精致的样式 */}
+              <PolarGrid
+                stroke="#d4d4d8"
+                strokeDasharray="5 5"
+                strokeWidth={1}
+                strokeOpacity={0.6}
+              />
 
-            {/* 角度轴（维度名称） */}
-            <PolarAngleAxis
-              dataKey="dimension"
-              tick={<CustomAngleAxisTick />}
-            />
+              {/* 角度轴（维度名称） */}
+              <PolarAngleAxis
+                dataKey="dimension"
+                tick={<CustomAngleAxisTick />}
+              />
 
-            {/* 半径轴（分数） - 自适应最大值 */}
-            <PolarRadiusAxis
-              angle={90}
-              domain={[0, maxDomain]}
-              tick={{ fill: '#a1a1aa', fontSize: 11, fontWeight: 500 }}
-              tickCount={6}
-              stroke="#e4e4e7"
-            />
+              {/* 半径轴（分数） - 自适应最大值 */}
+              <PolarRadiusAxis
+                angle={90}
+                domain={[0, maxDomain]}
+                tick={{ fill: '#a1a1aa', fontSize: 11, fontWeight: 500 }}
+                tickCount={6}
+                stroke="#e4e4e7"
+              />
 
-            {/* 雷达区域 - 使用渐变色 */}
-            <Radar
-              name="得分"
-              dataKey="value"
-              stroke="url(#radarGradient)"
-              fill="url(#radarFill)"
-              fillOpacity={0.65}
-              strokeWidth={3}
-              dot={{
-                r: 6,
-                fill: '#8b5cf6',
-                strokeWidth: 3,
-                stroke: '#fff',
-              }}
-              activeDot={{
-                r: 8,
-                fill: '#7c3aed',
-                strokeWidth: 3,
-                stroke: '#fff',
-              }}
-            />
-
-            {/* 定义渐变 */}
-            <defs>
-              <linearGradient id="radarGradient" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stopColor="#6366f1" />
-                <stop offset="50%" stopColor="#8b5cf6" />
-                <stop offset="100%" stopColor="#ec4899" />
-              </linearGradient>
-              <linearGradient id="radarFill" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stopColor="#8b5cf6" stopOpacity={0.8} />
-                <stop offset="50%" stopColor="#a855f7" stopOpacity={0.6} />
-                <stop offset="100%" stopColor="#ec4899" stopOpacity={0.4} />
-              </linearGradient>
-            </defs>
-
-            {/* 提示框 */}
-            <Tooltip content={<CustomTooltip />} />
-
-            {/* 图例 */}
-            {showLegend && (
-              <Legend
-                wrapperStyle={{
-                  paddingTop: '20px',
+              {/* 雷达区域 - 使用实色以确保图片导出正常 */}
+              <Radar
+                name="得分"
+                dataKey="value"
+                stroke="#8b5cf6"
+                fill="#8b5cf6"
+                fillOpacity={0.5}
+                strokeWidth={3}
+                dot={{
+                  r: 6,
+                  fill: '#8b5cf6',
+                  strokeWidth: 3,
+                  stroke: '#fff',
+                }}
+                activeDot={{
+                  r: 8,
+                  fill: '#7c3aed',
+                  strokeWidth: 3,
+                  stroke: '#fff',
                 }}
               />
-            )}
-          </RadarChart>
-        </ResponsiveContainer>
+
+              {/* 提示框 */}
+              <Tooltip content={<CustomTooltip />} />
+
+              {/* 图例 */}
+              {showLegend && (
+                <Legend
+                  wrapperStyle={{
+                    paddingTop: '20px',
+                  }}
+                />
+              )}
+            </RadarChart>
+          </div>
+        ) : (
+          // 非紧凑模式：使用 ResponsiveContainer 以适应不同屏幕尺寸
+          <ResponsiveContainer width="100%" height={300}>
+            <RadarChart data={data} margin={{ top: 10, right: 80, bottom: 10, left: 80 }}>
+              {/* 网格 - 更精致的样式 */}
+              <PolarGrid
+                stroke="#d4d4d8"
+                strokeDasharray="5 5"
+                strokeWidth={1}
+                strokeOpacity={0.6}
+              />
+
+              {/* 角度轴（维度名称） */}
+              <PolarAngleAxis
+                dataKey="dimension"
+                tick={<CustomAngleAxisTick />}
+              />
+
+              {/* 半径轴（分数） - 自适应最大值 */}
+              <PolarRadiusAxis
+                angle={90}
+                domain={[0, maxDomain]}
+                tick={{ fill: '#a1a1aa', fontSize: 11, fontWeight: 500 }}
+                tickCount={6}
+                stroke="#e4e4e7"
+              />
+
+              {/* 雷达区域 - 使用实色以确保图片导出正常 */}
+              <Radar
+                name="得分"
+                dataKey="value"
+                stroke="#8b5cf6"
+                fill="#8b5cf6"
+                fillOpacity={0.5}
+                strokeWidth={3}
+                dot={{
+                  r: 6,
+                  fill: '#8b5cf6',
+                  strokeWidth: 3,
+                  stroke: '#fff',
+                }}
+                activeDot={{
+                  r: 8,
+                  fill: '#7c3aed',
+                  strokeWidth: 3,
+                  stroke: '#fff',
+                }}
+              />
+
+              {/* 提示框 */}
+              <Tooltip content={<CustomTooltip />} />
+
+              {/* 图例 */}
+              {showLegend && (
+                <Legend
+                  wrapperStyle={{
+                    paddingTop: '20px',
+                  }}
+                />
+              )}
+            </RadarChart>
+          </ResponsiveContainer>
+        )}
       </div>
 
       {/* 图例说明 - 精美卡片样式（非紧凑模式显示） */}
@@ -216,7 +266,7 @@ export default function DimensionRadarChart({
           {/* 说明文字 */}
           <div className="mt-4 p-3 bg-blue-50/50 rounded-xl border border-blue-100">
             <p className="text-xs text-neutral-600 text-center leading-relaxed">
-              <span className="font-medium">💡 提示：</span> 雷达图已根据最高维度得分自动调整量程（当前最大值：{maxDomain}分），便于查看各维度差异
+              <span className="font-medium">💡 提示：</span> 雷达图展示各维度得分（满分 100 分），便于查看各维度表现
             </p>
           </div>
         </>

@@ -75,8 +75,17 @@ export async function exportAsImage(element: HTMLElement, filename: string) {
       element.style.animation = 'none';
       document.body.appendChild(element);
 
-      // 等待重新渲染
-      await new Promise(resolve => setTimeout(resolve, 100));
+      // 等待重新渲染和图表加载（特别是 ResponsiveContainer）
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      // 强制触发所有 SVG 的重绘
+      const svgs = element.querySelectorAll('svg');
+      svgs.forEach(svg => {
+        // 触发重排，确保 SVG 正确渲染
+        svg.style.display = 'none';
+        void svg.offsetHeight; // 触发重排
+        svg.style.display = '';
+      });
 
       // 2. 清理会导致 html2canvas 渲染问题的样式
 
@@ -97,8 +106,9 @@ export async function exportAsImage(element: HTMLElement, filename: string) {
         const hasGradient = styles.backgroundImage !== 'none' && styles.backgroundImage.includes('gradient');
         const isGlowLayer = hasBlur && hasGradient;
         const hasOpacity = parseFloat(styles.opacity) < 1;
+        const shouldHideForExport = el.classList.contains('export-hide');
 
-        if (hasBlur || styles.backdropFilter !== 'none' || isGlowLayer || hasOpacity) {
+        if (hasBlur || styles.backdropFilter !== 'none' || isGlowLayer || hasOpacity || shouldHideForExport) {
           backups.push({
             el,
             filter: el.style.filter || '',
@@ -109,7 +119,7 @@ export async function exportAsImage(element: HTMLElement, filename: string) {
 
           if (hasBlur) el.style.filter = 'none';
           if (styles.backdropFilter !== 'none') el.style.backdropFilter = 'none';
-          if (isGlowLayer) el.style.display = 'none';
+          if (isGlowLayer || shouldHideForExport) el.style.display = 'none';
           if (hasOpacity) el.style.opacity = '1';
         }
       });
