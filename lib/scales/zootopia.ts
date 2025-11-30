@@ -351,7 +351,7 @@ const questions: QuizTemplate['questions'] = [
   {
     id: 'zootopia_q7',
     type: 'scale',
-    question: '你发现公司内部将开放一个竞争激烈、压力很大的晋升名额，你会？',
+    question: '你发现公司内部将开放一个竞争激烈但很宝贵的晋升名额，你会？',
     options: [
       { value: 1, label: '不考虑，不想让自己太累', scores: { ambition: 0 } },
       { value: 2, label: '观望一下，如果竞争不激烈再试', scores: { ambition: 0.3 } },
@@ -371,7 +371,7 @@ const questions: QuizTemplate['questions'] = [
       { value: 1, label: '主动提醒对方遵守规则', scores: { orderliness: 1 } },
       { value: 2, label: '委婉向管理人员反馈', scores: { orderliness: 0.7 } },
       { value: 3, label: '保持沉默但心里不舒服', scores: { orderliness: 0.3 } },
-      { value: 4, label: '完全不在乎，跟我没有关系', scores: { orderliness: 0 } }
+      { value: 4, label: '不在乎，跟我没有关系', scores: { orderliness: 0 } }
     ],
     required: true
   },
