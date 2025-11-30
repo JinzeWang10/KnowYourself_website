@@ -83,7 +83,7 @@ export async function exportAsImage(element: HTMLElement, filename: string) {
       svgs.forEach(svg => {
         // 触发重排，确保 SVG 正确渲染
         svg.style.display = 'none';
-        void svg.offsetHeight; // 触发重排
+        void (svg as HTMLElement).offsetHeight; // 触发重排
         svg.style.display = '';
       });
 
