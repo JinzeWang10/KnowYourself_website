@@ -25,7 +25,9 @@
       "Bash(python3:*)",
       "Read(//d/**)",
       "Bash(pip install:*)",
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Bash(findstr:*)",
+      "Bash(git restore:*)"
     ],
     "deny": [],
     "ask": []
