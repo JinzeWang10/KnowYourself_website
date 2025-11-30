@@ -60,8 +60,8 @@ export const CHARACTER_PROFILES = {
     }
   },
   'mayor_lionheart': {
-    name: '马市长 Lionheart',
-    emoji: '🦁',
+    name: '马市长 Winddancer',
+    emoji: '🐴',
     subtitle: '威仪十足的秩序守护者',
     scores: {
       pace: 0.55,
