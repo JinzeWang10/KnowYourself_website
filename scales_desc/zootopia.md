@@ -59,7 +59,7 @@
 角色 Pace Orderliness Sincerity Extraversion
 🐰 朱迪 Judy Hopps 0.95 0.85 0.80 0.80
 🦊 尼克 Nick Wilde 0.75 0.45 0.30 0.55
-🐴 马市长 Winddancer 0.55 0.90 0.55 0.65
+🐴 马市长 Winddancer 0.55 0.90 0.80 0.65
 🐆 雪豹警官 Clawhauser 0.60 0.80 0.75 0.90
 🦥 闪电 Flash 0.00 0.30 0.85 0.20
 🐭 大先生 Mr. Big 0.40 0.20 0.40 0.10

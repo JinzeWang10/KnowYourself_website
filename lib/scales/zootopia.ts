@@ -66,8 +66,8 @@ export const CHARACTER_PROFILES = {
     scores: {
       pace: 0.55,
       orderliness: 0.90,
-      sincerity: 0.55,
-      extraversion: 0.65,
+      sincerity: 0.75,
+      extraversion: 0.85,
     }
   },
   'clawhauser': {
