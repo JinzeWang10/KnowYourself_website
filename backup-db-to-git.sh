@@ -51,11 +51,12 @@ if [ "$DB_TYPE" = "postgresql" ]; then
     # PostgreSQL 备份
     echo "备份 PostgreSQL 数据库: $DB_NAME"
 
-    # 导出为 SQL 格式（便于查看和 Git diff）
-    pg_dump -U $DB_USER -d $DB_NAME --clean --if-exists > $BACKUP_DIR/database.sql
+    # 使用 postgres 用户执行备份（避免认证问题）
+    echo "导出 SQL 格式..."
+    sudo -u postgres pg_dump -d $DB_NAME --clean --if-exists > $BACKUP_DIR/database.sql
 
-    # 同时导出为压缩格式（节省空间）
-    pg_dump -U $DB_USER -d $DB_NAME -F c > $BACKUP_DIR/database.dump
+    echo "导出压缩格式..."
+    sudo -u postgres pg_dump -d $DB_NAME -F c > $BACKUP_DIR/database.dump
 
     echo -e "${GREEN}✓ PostgreSQL 数据库已导出${NC}"
 

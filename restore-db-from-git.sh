@@ -84,13 +84,13 @@ if [ "$DB_TYPE" = "postgresql" ]; then
     echo "恢复到数据库: $DB_NAME (用户: $DB_USER)"
     echo ""
 
-    # 优先使用 dump 格式
+    # 优先使用 dump 格式（使用 postgres 用户避免认证问题）
     if [ -f "$BACKUP_DIR/database.dump" ]; then
         echo "使用 dump 格式恢复..."
-        pg_restore -U $DB_USER -d $DB_NAME -c -v $BACKUP_DIR/database.dump
+        sudo -u postgres pg_restore -d $DB_NAME -c -v $BACKUP_DIR/database.dump
     elif [ -f "$BACKUP_DIR/database.sql" ]; then
         echo "使用 SQL 格式恢复..."
-        psql -U $DB_USER -d $DB_NAME < $BACKUP_DIR/database.sql
+        sudo -u postgres psql -d $DB_NAME < $BACKUP_DIR/database.sql
     fi
 
     # 验证恢复
