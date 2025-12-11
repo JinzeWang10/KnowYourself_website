@@ -1,0 +1,24 @@
+========================================
+数据库备份信息
+========================================
+
+备份时间: 2025-12-11 23:13:48
+数据库类型: postgresql
+数据库名: scales_db
+用户名: scales_user
+
+文件说明:
+- database.sql: SQL 格式备份（可直接查看）
+- database.dump: 压缩格式备份（推荐恢复使用）
+
+恢复方法:
+  pg_restore -U scales_user -d scales_db -c database-backup/database.dump
+  或
+  psql -U scales_user -d scales_db < database-backup/database.sql
+
+⚠️ 重要提醒:
+1. 此备份包含用户数据，仅用于临时系统迁移
+2. 迁移完成后应立即从 Git 历史中删除
+3. 不要将此备份长期保存在 Git 仓库中
+
+========================================
