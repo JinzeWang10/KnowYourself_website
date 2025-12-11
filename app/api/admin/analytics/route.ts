@@ -1,7 +1,6 @@
-import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { NextRequest, NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
+import { applyRateLimit, RATE_LIMITS, getRateLimitHeaders } from '@/lib/rate-limiter';
 
 interface ScaleStats {
   scaleId: string;
@@ -56,7 +55,13 @@ interface AnalyticsData {
   recentActivity: RecentActivity;
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  // 应用速率限制（管理接口更严格）
+  const rateLimitResponse = applyRateLimit(request, RATE_LIMITS.ADMIN);
+  if (rateLimitResponse) {
+    return rateLimitResponse;
+  }
+
   try {
     // 总体统计
     const totalUsers = await prisma.anonymousUser.count();
@@ -248,14 +253,17 @@ export async function GET() {
       },
     };
 
-    return NextResponse.json(analyticsData);
+    // 添加速率限制响应头
+    const rateLimitHeaders = getRateLimitHeaders(request, RATE_LIMITS.ADMIN);
+
+    return NextResponse.json(analyticsData, {
+      headers: rateLimitHeaders,
+    });
   } catch (error) {
     console.error('Analytics API error:', error);
     return NextResponse.json(
       { error: 'Failed to fetch analytics data' },
       { status: 500 }
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }

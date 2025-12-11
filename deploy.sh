@@ -18,7 +18,8 @@ NC='\033[0m' # No Color
 
 # 项目配置
 APP_NAME="knowyourself"
-PORT=8080
+# 使用非标准端口提高安全性（避开常见的 8080 等端口，减少自动扫描攻击）
+PORT=${PORT:-42156}
 
 # 1. 拉取最新代码
 echo -e "${YELLOW}[1/5] 拉取最新代码...${NC}"
@@ -80,9 +81,9 @@ echo ""
 # 5. 启动新服务
 echo -e "${YELLOW}[5/5] 启动新服务...${NC}"
 if command -v pm2 &> /dev/null; then
-    # 使用 PM2 启动
+    # 使用 PM2 启动（设置环境变量）
     echo "使用 PM2 启动服务..."
-    pm2 start npm --name "$APP_NAME" -- start
+    PORT=$PORT pm2 start npm --name "$APP_NAME" -- start
     pm2 save
     echo -e "${GREEN}✓ 服务已通过 PM2 启动${NC}"
     echo ""
@@ -93,11 +94,11 @@ else
     # 使用 nohup 后台启动
     echo "使用 nohup 后台启动服务..."
     if command -v pnpm &> /dev/null; then
-        nohup pnpm start > ./logs/app.log 2>&1 &
+        PORT=$PORT nohup pnpm start > ./logs/app.log 2>&1 &
     elif command -v yarn &> /dev/null; then
-        nohup yarn start > ./logs/app.log 2>&1 &
+        PORT=$PORT nohup yarn start > ./logs/app.log 2>&1 &
     else
-        nohup npm start > ./logs/app.log 2>&1 &
+        PORT=$PORT nohup npm start > ./logs/app.log 2>&1 &
     fi
     echo $! > ./logs/app.pid
     echo -e "${GREEN}✓ 服务已后台启动${NC}"

@@ -1,29 +1,36 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { applyRateLimit, RATE_LIMITS, getRateLimitHeaders } from '@/lib/rate-limiter';
+import { validateId, validateScore, createValidationErrorResponse } from '@/lib/input-validator';
 
 /**
  * GET /api/percentile?scaleId=xxx&score=yyy
  * 计算用户得分的百分位排名
  */
 export async function GET(request: NextRequest) {
+  // 应用速率限制
+  const rateLimitResponse = applyRateLimit(request, RATE_LIMITS.GET);
+  if (rateLimitResponse) {
+    return rateLimitResponse;
+  }
+
   try {
     const { searchParams } = new URL(request.url);
     const scaleId = searchParams.get('scaleId');
     const scoreParam = searchParams.get('score');
 
     if (!scaleId || !scoreParam) {
-      return NextResponse.json(
-        { success: false, error: '缺少必要参数' },
-        { status: 400 }
-      );
+      return createValidationErrorResponse('缺少必要参数');
+    }
+
+    // 验证 scaleId 格式
+    if (!validateId(scaleId)) {
+      return createValidationErrorResponse('scaleId 格式无效');
     }
 
     const score = parseFloat(scoreParam);
-    if (isNaN(score)) {
-      return NextResponse.json(
-        { success: false, error: '分数格式无效' },
-        { status: 400 }
-      );
+    if (isNaN(score) || !validateScore(score)) {
+      return createValidationErrorResponse('分数格式无效');
     }
 
     // 从数据库查询该量表的所有历史得分
@@ -56,15 +63,23 @@ export async function GET(request: NextRequest) {
     // 计算百分位（低于该分数的记录占比）
     const percentile = Math.round((lowerCount / totalCount) * 100);
 
-    return NextResponse.json({
-      success: true,
-      data: {
-        percentile,
-        totalCount,
-        higherCount: totalCount - lowerCount,
-        lowerCount,
+    // 添加速率限制响应头
+    const rateLimitHeaders = getRateLimitHeaders(request, RATE_LIMITS.GET);
+
+    return NextResponse.json(
+      {
+        success: true,
+        data: {
+          percentile,
+          totalCount,
+          higherCount: totalCount - lowerCount,
+          lowerCount,
+        },
       },
-    });
+      {
+        headers: rateLimitHeaders,
+      }
+    );
   } catch (error) {
     console.error('[Percentile] 计算百分位失败:', error);
     return NextResponse.json(
