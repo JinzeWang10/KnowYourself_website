@@ -42,5 +42,8 @@ prisma/schema.prisma
 *.db
 *.db-journal
 
-# database backups
+# database backups (自动备份目录，不提交)
 database_backups/
+
+# 注意：database-backup/ 目录是临时 Git 备份目录
+# 仅在系统迁移时使用，迁移后必须删除
