@@ -28,7 +28,7 @@ echo -e "${GREEN}✓ 代码更新完成${NC}"
 echo ""
 
 # 2. 安装依赖
-echo -e "${YELLOW}[2/5] 安装依赖...${NC}"
+echo -e "${YELLOW}[2/8] 安装依赖...${NC}"
 if command -v pnpm &> /dev/null; then
     echo "使用 pnpm 安装依赖..."
     pnpm install
@@ -42,8 +42,36 @@ fi
 echo -e "${GREEN}✓ 依赖安装完成${NC}"
 echo ""
 
-# 3. 构建项目
-echo -e "${YELLOW}[3/5] 构建项目...${NC}"
+# 3. 检查环境变量
+echo -e "${YELLOW}[3/8] 检查环境变量...${NC}"
+if [ ! -f .env ]; then
+    echo -e "${RED}✗ 错误: .env 文件不存在${NC}"
+    echo "请创建 .env 文件并配置 DATABASE_URL"
+    exit 1
+fi
+
+if ! grep -q "DATABASE_URL" .env; then
+    echo -e "${RED}✗ 错误: .env 中未找到 DATABASE_URL${NC}"
+    exit 1
+fi
+echo -e "${GREEN}✓ 环境变量检查通过${NC}"
+echo ""
+
+# 4. 生成 Prisma Client
+echo -e "${YELLOW}[4/8] 生成 Prisma Client...${NC}"
+npx prisma generate
+echo -e "${GREEN}✓ Prisma Client 生成完成${NC}"
+echo ""
+
+# 5. 同步数据库结构
+echo -e "${YELLOW}[5/8] 同步数据库结构...${NC}"
+echo "正在将 schema 推送到数据库..."
+npx prisma db push --skip-generate
+echo -e "${GREEN}✓ 数据库结构同步完成${NC}"
+echo ""
+
+# 6. 构建项目
+echo -e "${YELLOW}[6/8] 构建项目...${NC}"
 if command -v pnpm &> /dev/null; then
     pnpm run build
 elif command -v yarn &> /dev/null; then
@@ -54,8 +82,8 @@ fi
 echo -e "${GREEN}✓ 项目构建完成${NC}"
 echo ""
 
-# 4. 停止旧服务（如果存在）
-echo -e "${YELLOW}[4/5] 停止旧服务...${NC}"
+# 7. 停止旧服务（如果存在）
+echo -e "${YELLOW}[7/8] 停止旧服务...${NC}"
 if command -v pm2 &> /dev/null; then
     # 使用 PM2
     if pm2 list | grep -q "$APP_NAME"; then
@@ -78,8 +106,8 @@ else
 fi
 echo ""
 
-# 5. 启动新服务
-echo -e "${YELLOW}[5/5] 启动新服务...${NC}"
+# 8. 启动新服务
+echo -e "${YELLOW}[8/8] 启动新服务...${NC}"
 if command -v pm2 &> /dev/null; then
     # 使用 PM2 启动（设置环境变量）
     echo "使用 PM2 启动服务..."

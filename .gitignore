@@ -38,12 +38,32 @@ next-env.d.ts
 
 # prisma
 prisma/migrations/
-prisma/schema.prisma
+prisma/schema.prisma.template
 *.db
 *.db-journal
 
 # database backups (自动备份目录，不提交)
 database_backups/
+database-backup/
 
-# 注意：database-backup/ 目录是临时 Git 备份目录
-# 仅在系统迁移时使用，迁移后必须删除
+# 临时文件
+*.bak
+*.tmp
+*.log
+nul
+
+# 测试和调试脚本
+test_*.js
+analyze_*.js
+diagnose_*.js
+check_*.js
+verify_*.js
+migrate_*.js
+replace_*.js
+
+# 腾讯云验证文件
+tencent*.txt
+
+# 临时报告和文档
+*_report.txt
+character_similarity_report.txt
