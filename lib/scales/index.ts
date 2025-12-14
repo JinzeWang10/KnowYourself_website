@@ -24,9 +24,60 @@ const scales: QuizTemplate[] = [
   // scl90,
 ];
 
+// 测评分类配置
+export interface ScaleCategory {
+  id: string;
+  name: string;
+  emoji: string;
+  description: string;
+  scaleIds: string[];
+}
+
+export const SCALE_CATEGORIES: ScaleCategory[] = [
+  {
+    id: 'clinical',
+    name: '心理健康',
+    emoji: '📊',
+    description: '评估情绪状态、饮食行为、成瘾倾向等心理健康相关指标',
+    scaleIds: ['ess', 'bes', 'ani'],
+  },
+  {
+    id: 'personality',
+    name: '人格测评',
+    emoji: '🧠',
+    description: '了解人格特质、心理年龄、自我认知等内在特征',
+    scaleIds: ['pat', 'zootopia', 'zhz'],
+  },
+  {
+    id: 'career',
+    name: '职场生活',
+    emoji: '💼',
+    description: '评估工作状态、职业倦怠等职场相关议题',
+    scaleIds: ['workhorse'],
+  },
+  {
+    id: 'relationship',
+    name: '人际情感',
+    emoji: '❤️',
+    description: '测量共情能力、亲密关系需求等社交情感维度',
+    scaleIds: ['eq', 'ini'],
+  },
+];
+
 // 获取所有量表列表
 export function getScaleList(): QuizTemplate[] {
   return scales;
+}
+
+// 获取按分类组织的量表列表
+export function getScalesByCategory(): Array<{
+  category: ScaleCategory;
+  scales: QuizTemplate[];
+}> {
+  return SCALE_CATEGORIES.map(category => ({
+    category,
+    scales: scales.filter(scale => category.scaleIds.includes(scale.id)),
+  }));
 }
 
 // 根据ID获取量表

@@ -1,28 +1,32 @@
-import type { Metadata } from 'next';
+'use client';
+
+import { useState } from 'react';
 import Link from "next/link";
-import { getScaleList } from '@/lib/scales';
+import { getScalesByCategory, getScaleList } from '@/lib/scales';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
-export const metadata: Metadata = {
-  title: "选择测评量表 - KnowYourself 知己",
-  description: "选择适合你的心理测评量表，包括SCL-90、ESS、INI等专业量表，帮助你更好地了解自己。",
-  keywords: "心理测评,量表选择,SCL-90,ESS,INI,心理健康评估",
-};
-
 export default function ScalesPage() {
-  const scales = getScaleList();
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const categorizedScales = getScalesByCategory();
+
+  // 获取要显示的测评列表
+  const displayedScales = selectedCategory === 'all'
+    ? getScaleList()
+    : categorizedScales.find(cg => cg.category.id === selectedCategory)?.scales || [];
 
   // 量表图标映射
   const scaleIcons: Record<string, string> = {
     'zootopia': '🦊',
-    'zhz': '🌹',
-    'ani': '🎯',
+    'zhz': '👑',
+    'ani': '⛓️‍💥',
     'scl90': '🧠',
-    'ess': '💭',
-    'ini': '😴',
-    'bes': '🍽️',
-    'workhorse': '🐴',
+    'ess': '🎢',
+    'ini': '💞',
+    'bes': '🍔',
+    'workhorse': '⚙️',
+    'pat': '🌱',
+    'eq': '🤝',
   };
 
   // 量表主题色配置
@@ -83,66 +87,114 @@ export default function ScalesPage() {
         </div>
       </section>
 
-      {/* Scales Grid */}
+      {/* Category Filter Bar */}
+      <section className="sticky top-0 z-40 bg-white/60 backdrop-blur-lg border-b border-neutral-200/60">
+        <div className="container mx-auto px-4 py-6">
+          <div className="relative">
+            {/* 左侧渐变遮罩 */}
+            <div className="absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-white/60 via-white/30 to-transparent pointer-events-none z-10" />
+
+            {/* 右侧渐变遮罩 */}
+            <div className="absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-white/60 via-white/30 to-transparent pointer-events-none z-10" />
+
+            <div className="flex items-center justify-start gap-2 overflow-x-auto pb-2 scrollbar-hide scroll-smooth">
+              {/* "全部" 按钮 */}
+              <button
+                onClick={() => setSelectedCategory('all')}
+                className={`
+                  px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap
+                  transition-all duration-300 ease-out
+                  ${selectedCategory === 'all'
+                    ? 'bg-gradient-to-r from-primary to-purple-600 text-white shadow-lg shadow-primary/30 scale-105'
+                    : 'bg-white border border-neutral-300 text-neutral-600 hover:border-primary hover:text-primary hover:scale-105'
+                  }
+                `}
+              >
+                全部
+              </button>
+
+              {/* 分类按钮 */}
+              {categorizedScales.map(({ category }) => (
+                <button
+                  key={category.id}
+                  onClick={() => setSelectedCategory(category.id)}
+                  className={`
+                    px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap
+                    transition-all duration-300 ease-out
+                    ${selectedCategory === category.id
+                      ? 'bg-gradient-to-r from-primary to-purple-600 text-white shadow-lg shadow-primary/30 scale-105'
+                      : 'bg-white border border-neutral-300 text-neutral-600 hover:border-primary hover:text-primary hover:scale-105'
+                    }
+                  `}
+                >
+                  {category.name}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Scales Grid - 无分类标题,直接展示测评卡片 */}
       <section id="scales" className="container mx-auto px-4 py-8 pb-20">
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {scales.map((scale, idx) => {
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8" key={selectedCategory}>
+          {displayedScales.map((scale, idx) => {
             const theme = scaleThemes[scale.id] || scaleThemes['ani'];
             return (
               <div
                 key={scale.id}
-                className="animate-slide-up"
-                style={{ animationDelay: `${idx * 100}ms` }}
+                className="animate-fade-in"
+                style={{ animationDelay: `${idx * 50}ms` }}
               >
                 <div className={`
                   group relative overflow-hidden
                   bg-gradient-to-br ${theme.gradient}
                   backdrop-blur-md
-                  rounded-3xl
+                  rounded-2xl
                   shadow-soft hover:shadow-soft-xl
                   transition-all duration-500 ease-out
                   hover:-translate-y-2
                   ${theme.glow}
                   border-2 border-transparent
-                  before:absolute before:inset-0 before:rounded-3xl
+                  before:absolute before:inset-0 before:rounded-2xl
                   before:p-[2px] before:bg-gradient-to-br before:${theme.border}
                   before:opacity-0 before:transition-opacity before:duration-500
                   hover:before:opacity-100
                   before:-z-10
-                  after:absolute after:inset-[2px] after:rounded-[22px]
+                  after:absolute after:inset-[2px] after:rounded-[14px]
                   after:bg-gradient-to-br after:${theme.gradient}
                   after:-z-10
                 `}>
-                  <div className="relative z-10 p-8">
+                  <div className="relative z-10 p-6">
                     {/* 顶部：图标 + 标题区域 */}
-                    <div className="flex items-start gap-4 mb-6">
-                      <div className="text-5xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="text-3xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
                         {scaleIcons[scale.id] || '📝'}
                       </div>
                       <div>
-                        <h4 className="text-xl font-bold text-neutral-900 mb-1 group-hover:text-primary transition-colors duration-300">
+                        <h4 className="text-lg font-bold text-neutral-900 mb-0.5 group-hover:text-primary transition-colors duration-300">
                           {scale.title}
                         </h4>
-                        <p className="text-xs text-neutral-500 font-medium uppercase tracking-wider">
+                        <p className="text-[10px] text-neutral-500 font-medium uppercase tracking-wider">
                           {scale.titleEn || ''}
                         </p>
                       </div>
                     </div>
 
                     {/* 中部：描述 */}
-                    <p className="text-sm text-neutral-700 mb-6 leading-relaxed min-h-[3rem]">
+                    <p className="text-sm text-neutral-700 mb-4 leading-relaxed line-clamp-2">
                       {scale.description}
                     </p>
 
-                    {/* 底部：元信息 + 按钮 */}
-                    <div className="flex items-center justify-between pt-4 border-t border-neutral-200/60">
-                      <div className="flex items-center gap-4 text-xs text-neutral-600 font-medium">
-                        <span className="flex items-center gap-1.5 bg-white/60 px-3 py-1.5 rounded-lg backdrop-blur-sm">
-                          <span className="text-sm">📝</span>
+                    {/* 底部:元信息 + 按钮 */}
+                    <div className="flex items-center justify-between pt-3 border-t border-neutral-200/60">
+                      <div className="flex items-center gap-2 text-xs text-neutral-600 font-medium">
+                        <span className="flex items-center gap-1 bg-white/60 px-2 py-1 rounded-lg backdrop-blur-sm">
+                          <span className="text-xs">📝</span>
                           {scale.questionCount}题
                         </span>
-                        <span className="flex items-center gap-1.5 bg-white/60 px-3 py-1.5 rounded-lg backdrop-blur-sm">
-                          <span className="text-sm">⏱️</span>
+                        <span className="flex items-center gap-1 bg-white/60 px-2 py-1 rounded-lg backdrop-blur-sm">
+                          <span className="text-xs">⏱️</span>
                           {scale.duration}
                         </span>
                       </div>
