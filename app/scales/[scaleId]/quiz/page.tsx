@@ -7,6 +7,7 @@ import { getScaleById, calculateScore, calculateDimensionScores, getScoreLevel, 
 import { calculateANI } from '@/lib/calculateANI';
 import { calculateZHZResults } from '@/lib/scales/zhz';
 import { calculatePsychologicalAge, getAgeInterpretation } from '@/lib/scales/pat';
+import { calculateSCL90Scores } from '@/lib/scales/scl90-calculator';
 import { submitAssessmentRecord } from '@/lib/api-client';
 import { getOrCreateUserId } from '@/lib/user-id';
 import type { QuizResult, UserInfo } from '@/types/quiz';
@@ -649,6 +650,96 @@ export default function QuizPage() {
       return;
     }
 
+    // SCL-90 量表使用自定义计算（GSI、PST、PSDI、因子分、危机预警）
+    if (scaleId === 'scl90') {
+      const scl90Result = calculateSCL90Scores(scale, convertedAnswers);
+
+      // 创建结果对象
+      const result: QuizResult = {
+        id: `result-${Date.now()}`,
+        quizId: scale.id,
+        quizTitle: scale.title,
+        score: scl90Result.totalScore,
+        level: scl90Result.isScreeningPositive ? '筛查阳性' : '心理健康',
+        completedAt: new Date(),
+        answers: Object.entries(convertedAnswers).map(([questionId, answer]) => ({
+          questionId,
+          answer,
+        })),
+        dimensionScores: scl90Result.factorScores,
+        report: {
+          summary: scl90Result.isScreeningPositive
+            ? '检测结果显示您可能存在一定程度的心理症状，建议寻求专业心理咨询或评估。'
+            : '检测结果显示您目前整体心理健康状况良好，请继续保持积极的生活态度。',
+          details: scl90Result.crisisWarnings,
+          recommendations: scl90Result.isScreeningPositive
+            ? [
+                '建议尽快寻求专业心理咨询师或精神科医生的帮助',
+                '注意观察自己的情绪变化，保持规律的作息',
+                '适当进行放松活动，如冥想、运动等',
+                '与信任的朋友或家人倾诉，寻求社会支持',
+              ]
+            : [
+                '继续保持良好的生活习惯和心态',
+                '定期进行自我心理健康检查',
+                '遇到压力时及时调节，必要时寻求专业支持',
+              ],
+        },
+        metadata: {
+          gsi: scl90Result.gsi,
+          pst: scl90Result.pst,
+          psdi: scl90Result.psdi,
+          isScreeningPositive: scl90Result.isScreeningPositive,
+          crisisWarnings: scl90Result.crisisWarnings,
+        },
+      };
+
+      // 提交到后台（如果有用户信息）
+      if (userInfo) {
+        const userId = getOrCreateUserId();
+        const submission: AssessmentSubmission = {
+          userId,
+          gender: userInfo.gender,
+          age: userInfo.age,
+          region: undefined,
+          record: {
+            id: result.id,
+            userId,
+            scaleId: scale.id,
+            scaleTitle: scale.title,
+            totalScore: scl90Result.totalScore,
+            normalizedScore: scl90Result.totalScore,
+            level: result.level,
+            dimensionScores: scl90Result.factorScores,
+            // completedAt 由服务器自动设置
+            answers: Object.entries(convertedAnswers).map(([questionId, answer]) => ({
+              questionId,
+              answer,
+            })),
+          },
+        };
+
+        submitAssessmentRecord(submission).catch(err => {
+          console.error('提交测评记录失败:', err);
+        });
+      }
+
+      // 保存到历史记录
+      const history = JSON.parse(localStorage.getItem('quiz-history') || '[]');
+      const existingIndex = history.findIndex((r: QuizResult) => r.id === result.id);
+      if (existingIndex === -1) {
+        history.push(result);
+        localStorage.setItem('quiz-history', JSON.stringify(history));
+      }
+
+      // 清除进度
+      localStorage.removeItem(`quiz-progress-${scaleId}`);
+
+      // 跳转到结果页
+      router.push(`/scales/${scaleId}/result/${result.id}`);
+      return;
+    }
+
     // 其他量表使用常规计算
     const totalScore = calculateScore(scale, convertedAnswers);
     const dimensionScores = calculateDimensionScores(scale, convertedAnswers);
@@ -830,12 +921,12 @@ export default function QuizPage() {
                 </div>
 
                 {/* 按钮条 */}
-                <div className="flex items-center justify-between gap-2 sm:gap-3 px-2 sm:px-4 py-4 sm:py-6 bg-gradient-to-r from-red-50/50 via-yellow-50/30 to-green-50/50 rounded-xl sm:rounded-2xl border-2 border-neutral-200">
+                <div className="flex items-center justify-between gap-2 sm:gap-3 px-2 sm:px-4 py-4 sm:py-6 bg-gradient-to-r from-green-50/50 via-yellow-50/30 to-red-50/50 rounded-xl sm:rounded-2xl border-2 border-neutral-200">
                   {currentQuestion.options?.map((option, idx) => {
                     const isSelected = answers[currentQuestion.id] === idx;
                     const totalOptions = currentQuestion.options!.length;
-                    // 计算颜色：从红色过渡到绿色
-                    const colorProgress = idx / (totalOptions - 1);
+                    // 计算颜色：从绿色过渡到红色（反转：左绿右红，符合心理学直觉）
+                    const colorProgress = 1 - (idx / (totalOptions - 1));
 
                     return (
                       <button

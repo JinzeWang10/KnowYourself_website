@@ -35,7 +35,7 @@ export const pat: QuizTemplate = {
     // ========== 维度A：情绪成熟度（Emotional Maturity）7题 ==========
     {
       id: 'pat_1',
-      type: 'scale',
+      type: 'likert',
       question: '我能够控制自己的情绪，而不是被情绪支配。',
       dimension: 'emotional_maturity',
       options: [
@@ -49,7 +49,7 @@ export const pat: QuizTemplate = {
     },
     {
       id: 'pat_2',
-      type: 'scale',
+      type: 'likert',
       question: '当我生气时，我很难冷静下来，容易冲动行事。',
       dimension: 'emotional_maturity',
       reversed: true,
@@ -64,7 +64,7 @@ export const pat: QuizTemplate = {
     },
     {
       id: 'pat_3',
-      type: 'scale',
+      type: 'likert',
       question: '我能接受事情并不总是按我的意愿发展。',
       dimension: 'emotional_maturity',
       options: [
@@ -78,7 +78,7 @@ export const pat: QuizTemplate = {
     },
     {
       id: 'pat_4',
-      type: 'scale',
+      type: 'likert',
       question: '在冲突中，我更倾向于发泄情绪，而不是沟通解决。',
       dimension: 'emotional_maturity',
       reversed: true,
@@ -93,7 +93,7 @@ export const pat: QuizTemplate = {
     },
     {
       id: 'pat_5',
-      type: 'scale',
+      type: 'likert',
       question: '遇到失败时，我需要很长时间才能从负面情绪中走出来。',
       dimension: 'emotional_maturity',
       reversed: true,
@@ -108,7 +108,7 @@ export const pat: QuizTemplate = {
     },
     {
       id: 'pat_6',
-      type: 'scale',
+      type: 'likert',
       question: '我很少让情绪影响到我的判断。',
       dimension: 'emotional_maturity',
       options: [
@@ -122,7 +122,7 @@ export const pat: QuizTemplate = {
     },
     {
       id: 'pat_7',
-      type: 'scale',
+      type: 'likert',
       question: '面对批评时，我会立刻防御或反击。',
       dimension: 'emotional_maturity',
       reversed: true,
@@ -139,7 +139,7 @@ export const pat: QuizTemplate = {
     // ========== 维度B：自我认知与自我接纳（Self-Awareness & Acceptance）6题 ==========
     {
       id: 'pat_8',
-      type: 'scale',
+      type: 'likert',
       question: '我能清楚地了解自己的优点与缺点。',
       dimension: 'self_awareness',
       options: [
@@ -153,7 +153,7 @@ export const pat: QuizTemplate = {
     },
     {
       id: 'pat_9',
-      type: 'scale',
+      type: 'likert',
       question: '我知道自己想要成为什么样的人。',
       dimension: 'self_awareness',
       options: [
@@ -167,7 +167,7 @@ export const pat: QuizTemplate = {
     },
     {
       id: 'pat_10',
-      type: 'scale',
+      type: 'likert',
       question: '我很难接受自己的不完美，经常自我否定。',
       dimension: 'self_awareness',
       reversed: true,
@@ -182,7 +182,7 @@ export const pat: QuizTemplate = {
     },
     {
       id: 'pat_11',
-      type: 'scale',
+      type: 'likert',
       question: '我会反思自己的行为并尝试改进。',
       dimension: 'self_awareness',
       options: [
@@ -196,7 +196,7 @@ export const pat: QuizTemplate = {
     },
     {
       id: 'pat_12',
-      type: 'scale',
+      type: 'likert',
       question: '我不太愿意承认自己的错误。',
       dimension: 'self_awareness',
       reversed: true,
@@ -211,7 +211,7 @@ export const pat: QuizTemplate = {
     },
     {
       id: 'pat_13',
-      type: 'scale',
+      type: 'likert',
       question: '我很少花时间思考自己真正的内心需求。',
       dimension: 'self_awareness',
       reversed: true,
@@ -228,7 +228,7 @@ export const pat: QuizTemplate = {
     // ========== 维度C：社会责任与人际成熟（Social Responsibility & Interpersonal Maturity）7题 ==========
     {
       id: 'pat_14',
-      type: 'scale',
+      type: 'likert',
       question: '我在团队中能承担自己的责任。',
       dimension: 'social_maturity',
       options: [
@@ -242,7 +242,7 @@ export const pat: QuizTemplate = {
     },
     {
       id: 'pat_15',
-      type: 'scale',
+      type: 'likert',
       question: '我会考虑他人的感受和立场。',
       dimension: 'social_maturity',
       options: [
@@ -256,7 +256,7 @@ export const pat: QuizTemplate = {
     },
     {
       id: 'pat_16',
-      type: 'scale',
+      type: 'likert',
       question: '我很难尊重那些与我意见不同的人。',
       dimension: 'social_maturity',
       reversed: true,
@@ -271,7 +271,7 @@ export const pat: QuizTemplate = {
     },
     {
       id: 'pat_17',
-      type: 'scale',
+      type: 'likert',
       question: '我在与人相处时能保持平等与尊重。',
       dimension: 'social_maturity',
       options: [
@@ -285,7 +285,7 @@ export const pat: QuizTemplate = {
     },
     {
       id: 'pat_18',
-      type: 'scale',
+      type: 'likert',
       question: '我理解人际关系需要相互的付出与包容。',
       dimension: 'social_maturity',
       options: [
@@ -299,7 +299,7 @@ export const pat: QuizTemplate = {
     },
     {
       id: 'pat_19',
-      type: 'scale',
+      type: 'likert',
       question: '我觉得原谅他人的错误很难，容易长期记恨。',
       dimension: 'social_maturity',
       reversed: true,
@@ -314,7 +314,7 @@ export const pat: QuizTemplate = {
     },
     {
       id: 'pat_20',
-      type: 'scale',
+      type: 'likert',
       question: '如果帮助别人会给我带来不便，我通常不会去做。',
       dimension: 'social_maturity',
       reversed: true,
@@ -331,7 +331,7 @@ export const pat: QuizTemplate = {
     // ========== 维度D：自我控制与意志力（Self-Control & Discipline）6题 ==========
     {
       id: 'pat_21',
-      type: 'scale',
+      type: 'likert',
       question: '我能够坚持完成计划好的事情。',
       dimension: 'self_control',
       options: [
@@ -345,7 +345,7 @@ export const pat: QuizTemplate = {
     },
     {
       id: 'pat_22',
-      type: 'scale',
+      type: 'likert',
       question: '面对诱惑时，我很难保持理性。',
       dimension: 'self_control',
       reversed: true,
@@ -360,7 +360,7 @@ export const pat: QuizTemplate = {
     },
     {
       id: 'pat_23',
-      type: 'scale',
+      type: 'likert',
       question: '当事情变得困难时，我很容易放弃。',
       dimension: 'self_control',
       reversed: true,
@@ -375,7 +375,7 @@ export const pat: QuizTemplate = {
     },
     {
       id: 'pat_24',
-      type: 'scale',
+      type: 'likert',
       question: '我在面对压力时能保持冷静并找到解决办法。',
       dimension: 'self_control',
       options: [
@@ -389,7 +389,7 @@ export const pat: QuizTemplate = {
     },
     {
       id: 'pat_25',
-      type: 'scale',
+      type: 'likert',
       question: '我经常被冲动情绪支配做出决定。',
       dimension: 'self_control',
       reversed: true,
@@ -404,7 +404,7 @@ export const pat: QuizTemplate = {
     },
     {
       id: 'pat_26',
-      type: 'scale',
+      type: 'likert',
       question: '我能延迟满足，为了长远目标放弃短期享乐。',
       dimension: 'self_control',
       options: [
@@ -420,7 +420,7 @@ export const pat: QuizTemplate = {
     // ========== 维度E：自我成长与目标感（Personal Growth & Purpose）7题 ==========
     {
       id: 'pat_27',
-      type: 'scale',
+      type: 'likert',
       question: '我对自己的生活目标或方向感到迷茫。',
       dimension: 'personal_growth',
       reversed: true,
@@ -435,7 +435,7 @@ export const pat: QuizTemplate = {
     },
     {
       id: 'pat_28',
-      type: 'scale',
+      type: 'likert',
       question: '我相信自己的人生有意义。',
       dimension: 'personal_growth',
       options: [
@@ -449,7 +449,7 @@ export const pat: QuizTemplate = {
     },
     {
       id: 'pat_29',
-      type: 'scale',
+      type: 'likert',
       question: '我乐于学习新的知识与技能。',
       dimension: 'personal_growth',
       options: [
@@ -463,7 +463,7 @@ export const pat: QuizTemplate = {
     },
     {
       id: 'pat_30',
-      type: 'scale',
+      type: 'likert',
       question: '我很少主动去改善自己的不足。',
       dimension: 'personal_growth',
       reversed: true,
@@ -478,7 +478,7 @@ export const pat: QuizTemplate = {
     },
     {
       id: 'pat_31',
-      type: 'scale',
+      type: 'likert',
       question: '我能够从生活经历中看到成长的机会。',
       dimension: 'personal_growth',
       options: [
@@ -492,7 +492,7 @@ export const pat: QuizTemplate = {
     },
     {
       id: 'pat_32',
-      type: 'scale',
+      type: 'likert',
       question: '我很少为自己设定新的目标。',
       dimension: 'personal_growth',
       reversed: true,
@@ -507,7 +507,7 @@ export const pat: QuizTemplate = {
     },
     {
       id: 'pat_33',
-      type: 'scale',
+      type: 'likert',
       question: '我相信自己能掌控并改变未来。',
       dimension: 'personal_growth',
       options: [
@@ -523,7 +523,7 @@ export const pat: QuizTemplate = {
     // ========== 维度F：共情与亲密能力（Empathy & Intimacy）7题 ==========
     {
       id: 'pat_34',
-      type: 'scale',
+      type: 'likert',
       question: '我能理解他人的情绪，即使他们没有明说。',
       dimension: 'empathy',
       options: [
@@ -537,7 +537,7 @@ export const pat: QuizTemplate = {
     },
     {
       id: 'pat_35',
-      type: 'scale',
+      type: 'likert',
       question: '当别人遇到困难时，我会真诚地关心他们。',
       dimension: 'empathy',
       options: [
@@ -551,7 +551,7 @@ export const pat: QuizTemplate = {
     },
     {
       id: 'pat_36',
-      type: 'scale',
+      type: 'likert',
       question: '我能够与人建立稳定而真诚的关系。',
       dimension: 'empathy',
       options: [
@@ -565,7 +565,7 @@ export const pat: QuizTemplate = {
     },
     {
       id: 'pat_37',
-      type: 'scale',
+      type: 'likert',
       question: '我在关系中能表达感受，也能倾听他人。',
       dimension: 'empathy',
       options: [
@@ -579,7 +579,7 @@ export const pat: QuizTemplate = {
     },
     {
       id: 'pat_38',
-      type: 'scale',
+      type: 'likert',
       question: '我会害怕与他人产生情感上的亲密。',
       dimension: 'empathy',
       reversed: true,
@@ -594,7 +594,7 @@ export const pat: QuizTemplate = {
     },
     {
       id: 'pat_39',
-      type: 'scale',
+      type: 'likert',
       question: '我很难平衡自己的独立性与他人的需求。',
       dimension: 'empathy',
       reversed: true,
@@ -609,7 +609,7 @@ export const pat: QuizTemplate = {
     },
     {
       id: 'pat_40',
-      type: 'scale',
+      type: 'likert',
       question: '我觉得与他人建立真诚连接很困难。',
       dimension: 'empathy',
       reversed: true,

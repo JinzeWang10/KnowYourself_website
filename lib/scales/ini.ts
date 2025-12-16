@@ -22,7 +22,7 @@ export const ini: QuizTemplate = {
     // ========== 情感需求 (Emotional Need, 4题) ==========
     {
       id: 'q1',
-      type: 'scale',
+      type: 'likert',
       question: '我觉得自己需要有人在我身边支持和关心。',
       dimension: 'emotional_need',
       options: [
@@ -36,7 +36,7 @@ export const ini: QuizTemplate = {
     },
     {
       id: 'q2',
-      type: 'scale',
+      type: 'likert',
       question: '当我感到困惑或痛苦时，我希望有一个人能理解我。',
       dimension: 'emotional_need',
       options: [
@@ -50,7 +50,7 @@ export const ini: QuizTemplate = {
     },
     {
       id: 'q3',
-      type: 'scale',
+      type: 'likert',
       question: '我在亲密关系中寻求深层次的情感交流。',
       dimension: 'emotional_need',
       options: [
@@ -64,7 +64,7 @@ export const ini: QuizTemplate = {
     },
     {
       id: 'q4',
-      type: 'scale',
+      type: 'likert',
       question: '我常常希望别人能了解我的感受和情绪。',
       dimension: 'emotional_need',
       options: [
@@ -80,7 +80,7 @@ export const ini: QuizTemplate = {
     // ========== 依赖性 (Dependency, 4题) ==========
     {
       id: 'q5',
-      type: 'scale',
+      type: 'likert',
       question: '我在情感上经常依赖我的伴侣或亲密朋友。',
       dimension: 'dependency',
       options: [
@@ -94,7 +94,7 @@ export const ini: QuizTemplate = {
     },
     {
       id: 'q6',
-      type: 'scale',
+      type: 'likert',
       question: '在面对挑战时，我更倾向于依赖亲密关系中的另一方来获得安慰。',
       dimension: 'dependency',
       options: [
@@ -108,7 +108,7 @@ export const ini: QuizTemplate = {
     },
     {
       id: 'q7',
-      type: 'scale',
+      type: 'likert',
       question: '我很难独自应对生活中的压力，通常需要依靠他人。',
       dimension: 'dependency',
       options: [
@@ -122,7 +122,7 @@ export const ini: QuizTemplate = {
     },
     {
       id: 'q8',
-      type: 'scale',
+      type: 'likert',
       question: '我习惯于在亲密关系中寻求帮助和支持。',
       dimension: 'dependency',
       options: [
@@ -138,7 +138,7 @@ export const ini: QuizTemplate = {
     // ========== 孤独感 (Loneliness, 4题) ==========
     {
       id: 'q9',
-      type: 'scale',
+      type: 'likert',
       question: '如果我没有亲密关系，我常常感到孤单。',
       dimension: 'loneliness',
       options: [
@@ -152,7 +152,7 @@ export const ini: QuizTemplate = {
     },
     {
       id: 'q10',
-      type: 'scale',
+      type: 'likert',
       question: '在没有亲密伴侣的情况下，我会觉得生活失去了很多色彩。',
       dimension: 'loneliness',
       options: [
@@ -166,7 +166,7 @@ export const ini: QuizTemplate = {
     },
     {
       id: 'q11',
-      type: 'scale',
+      type: 'likert',
       question: '我在没有亲密关系时感到情感上的空虚。',
       dimension: 'loneliness',
       options: [
@@ -180,7 +180,7 @@ export const ini: QuizTemplate = {
     },
     {
       id: 'q12',
-      type: 'scale',
+      type: 'likert',
       question: '我经常会因为没有人陪伴而感到孤独。',
       dimension: 'loneliness',
       options: [
@@ -196,7 +196,7 @@ export const ini: QuizTemplate = {
     // ========== 亲密互动需求 (Intimate Interaction Need, 4题) ==========
     {
       id: 'q13',
-      type: 'scale',
+      type: 'likert',
       question: '我喜欢与伴侣或亲密朋友保持频繁的身体接触（如拥抱、亲吻、牵手等）。',
       dimension: 'intimate_interaction',
       options: [
@@ -210,7 +210,7 @@ export const ini: QuizTemplate = {
     },
     {
       id: 'q14',
-      type: 'scale',
+      type: 'likert',
       question: '我觉得与亲密关系中的人保持亲密互动非常重要。',
       dimension: 'intimate_interaction',
       options: [
@@ -224,7 +224,7 @@ export const ini: QuizTemplate = {
     },
     {
       id: 'q15',
-      type: 'scale',
+      type: 'likert',
       question: '我常常渴望与他人分享我的感受，特别是在情感上得到回应。',
       dimension: 'intimate_interaction',
       options: [
@@ -238,7 +238,7 @@ export const ini: QuizTemplate = {
     },
     {
       id: 'q16',
-      type: 'scale',
+      type: 'likert',
       question: '我对身体上的亲密接触（如拥抱、亲吻等）有很强的需求。',
       dimension: 'intimate_interaction',
       options: [
@@ -254,7 +254,7 @@ export const ini: QuizTemplate = {
     // ========== 安全感需求 (Need for Security, 4题) ==========
     {
       id: 'q17',
-      type: 'scale',
+      type: 'likert',
       question: '在亲密关系中，我觉得非常需要情感上的安全感。',
       dimension: 'security_need',
       options: [
@@ -268,7 +268,7 @@ export const ini: QuizTemplate = {
     },
     {
       id: 'q18',
-      type: 'scale',
+      type: 'likert',
       question: '我希望伴侣或亲密关系中的人能承诺和支持我。',
       dimension: 'security_need',
       options: [
@@ -282,7 +282,7 @@ export const ini: QuizTemplate = {
     },
     {
       id: 'q19',
-      type: 'scale',
+      type: 'likert',
       question: '我对亲密关系中的稳定性有很高的需求。',
       dimension: 'security_need',
       options: [
@@ -296,7 +296,7 @@ export const ini: QuizTemplate = {
     },
     {
       id: 'q20',
-      type: 'scale',
+      type: 'likert',
       question: '我觉得在亲密关系中得到的安全感对我的心理健康非常重要。',
       dimension: 'security_need',
       options: [

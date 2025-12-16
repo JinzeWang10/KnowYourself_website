@@ -21,7 +21,7 @@ const scales: QuizTemplate[] = [
   essScale,
   ini,
   ani,
-  // scl90,
+  scl90,
 ];
 
 // 测评分类配置
@@ -39,7 +39,7 @@ export const SCALE_CATEGORIES: ScaleCategory[] = [
     name: '心理健康',
     emoji: '📊',
     description: '评估情绪状态、饮食行为、成瘾倾向等心理健康相关指标',
-    scaleIds: ['ess', 'bes', 'ani'],
+    scaleIds: ['scl90', 'ess', 'bes', 'ani'],
   },
   {
     id: 'personality',

@@ -20,6 +20,7 @@ import type { RadarDataPoint } from '@/components/DimensionRadarChart';
 import ShareCard from '@/components/ShareCard';
 import ZHZShareCard from '@/components/ZHZShareCard';
 import ZootopiaShareCard from '@/components/ZootopiaShareCard';
+import SCL90ShareCard from '@/components/SCL90ShareCard';
 
 // 动态导入雷达图组件（仅客户端）
 const DimensionRadarChart = dynamic(
@@ -187,6 +188,10 @@ export default function ResultPage() {
   const isPAT = scaleId === 'pat';
   const patMetadata = isPAT && result.metadata ? result.metadata : null;
 
+  // 检查是否是 SCL-90 量表，需要特殊处理
+  const isSCL90 = scaleId === 'scl90';
+  const scl90Metadata = isSCL90 && result.metadata ? result.metadata : null;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-purple-50/30 to-pink-50/30">
       {/* 成功提示Toast */}
@@ -267,6 +272,13 @@ export default function ResultPage() {
                 dimension: dimension.name,
                 value: Math.round((zootopiaMetadata.primaryResult.dimensionScores[dimension.id] || 0) * 100 * 10) / 10,
                 fullMark: 100,
+              }));
+            } else if (isSCL90 && result.dimensionScores) {
+              // 对于 SCL-90 量表，因子分是 1-5 分制，直接使用原始分数
+              radarData = scale.dimensions?.map((dimension) => ({
+                dimension: dimension.name,
+                value: Math.round((result.dimensionScores![dimension.id] || 0) * 100) / 100,
+                fullMark: 5,
               }));
             } else {
               // 其他量表使用标准计算
@@ -373,6 +385,24 @@ export default function ResultPage() {
                   completedAt={typeof result.completedAt === 'string' ? result.completedAt : new Date(result.completedAt).toISOString()}
                   radarData={radarData}
                   coreKeywords={coreKeywords.length > 0 ? coreKeywords : undefined}
+                />
+              );
+            }
+
+            // 对于 SCL-90 量表，使用专属的 SCL90ShareCard
+            if (isSCL90 && scl90Metadata) {
+              return (
+                <SCL90ShareCard
+                  ref={shareCardRef}
+                  scaleTitle={scale.title}
+                  totalScore={result.score}
+                  gsi={scl90Metadata.gsi as number}
+                  pst={scl90Metadata.pst as number}
+                  psdi={scl90Metadata.psdi as number}
+                  isScreeningPositive={scl90Metadata.isScreeningPositive as boolean}
+                  crisisWarnings={scl90Metadata.crisisWarnings as string[]}
+                  completedAt={typeof result.completedAt === 'string' ? result.completedAt : new Date(result.completedAt).toISOString()}
+                  radarData={radarData}
                 />
               );
             }
@@ -604,6 +634,140 @@ export default function ResultPage() {
                       </>
                     ) : null;
                   })()}
+                </>
+              ) : isSCL90 && scl90Metadata ? (
+                <>
+                  {/* SCL-90 测评专属解读 */}
+                  {/* 危机预警区域（如果有） */}
+                  {scl90Metadata.crisisWarnings && (scl90Metadata.crisisWarnings as string[]).length > 0 && (
+                    <div className="p-5 sm:p-8 bg-gradient-to-br from-red-50 to-pink-50 rounded-xl sm:rounded-2xl border-2 border-red-300 shadow-soft mb-4 sm:mb-6">
+                      <h3 className="font-bold text-red-900 mb-4 text-base sm:text-lg flex items-center gap-2">
+                        <span className="text-xl sm:text-2xl">🚨</span>
+                        危机预警
+                      </h3>
+                      <div className="space-y-3 sm:space-y-4 mb-4">
+                        {(scl90Metadata.crisisWarnings as string[]).map((warning, index) => (
+                          <div key={index} className="flex items-start gap-3 sm:gap-4 group">
+                            <span className="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-gradient-to-br from-red-500 to-pink-600 text-white text-xs sm:text-sm flex items-center justify-center font-bold shadow-soft">
+                              ⚠️
+                            </span>
+                            <span className="text-sm sm:text-base text-red-800 leading-relaxed flex-1 pt-0.5">
+                              {warning}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="bg-red-100/50 rounded-xl p-4 border border-red-200">
+                        <p className="text-sm text-red-900 font-semibold">
+                          🆘 24小时心理危机热线：<a href="tel:400-161-9995" className="underline hover:text-red-700">400-161-9995</a>
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 核心指标解读 */}
+                  <div className="p-5 sm:p-8 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl sm:rounded-2xl border border-blue-200/30 shadow-soft mb-4 sm:mb-6">
+                    <h3 className="font-bold text-neutral-900 mb-4 text-base sm:text-lg flex items-center gap-2">
+                      <span className="text-xl sm:text-2xl">📊</span>
+                      核心指标
+                    </h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="bg-white/70 rounded-lg p-4 border border-blue-100">
+                        <div className="text-xs text-blue-600 font-semibold mb-1">总均分 (GSI)</div>
+                        <div className="text-2xl font-bold text-blue-900 mb-1">{(scl90Metadata.gsi as number).toFixed(2)}</div>
+                        <div className="text-xs text-neutral-600">
+                          {(scl90Metadata.gsi as number) < 1.5 ? '✅ 正常范围' : (scl90Metadata.gsi as number) < 2 ? '⚠️ 轻度' : (scl90Metadata.gsi as number) < 3 ? '🔶 中度' : '🚨 严重'}
+                        </div>
+                      </div>
+                      <div className="bg-white/70 rounded-lg p-4 border border-blue-100">
+                        <div className="text-xs text-blue-600 font-semibold mb-1">阳性项目数 (PST)</div>
+                        <div className="text-2xl font-bold text-blue-900 mb-1">{scl90Metadata.pst as number}</div>
+                        <div className="text-xs text-neutral-600">
+                          {(scl90Metadata.pst as number) <= 43 ? '✅ 正常范围' : '⚠️ 超出阈值'}
+                        </div>
+                      </div>
+                      <div className="bg-white/70 rounded-lg p-4 border border-blue-100">
+                        <div className="text-xs text-blue-600 font-semibold mb-1">阳性症状均分 (PSDI)</div>
+                        <div className="text-2xl font-bold text-blue-900 mb-1">{(scl90Metadata.psdi as number).toFixed(2)}</div>
+                        <div className="text-xs text-neutral-600">
+                          {(scl90Metadata.psdi as number) < 2 ? '✅ 轻度' : (scl90Metadata.psdi as number) < 3 ? '⚠️ 中度' : '🚨 严重'}
+                        </div>
+                      </div>
+                      <div className="bg-white/70 rounded-lg p-4 border border-blue-100">
+                        <div className="text-xs text-blue-600 font-semibold mb-1">筛查结果</div>
+                        <div className="text-2xl font-bold text-blue-900 mb-1">
+                          {scl90Metadata.isScreeningPositive ? '阳性' : '阴性'}
+                        </div>
+                        <div className="text-xs text-neutral-600">
+                          {scl90Metadata.isScreeningPositive ? '🔶 建议咨询' : '✅ 健康状况良好'}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 因子分析 */}
+                  {result.dimensionScores && Object.keys(result.dimensionScores).length > 0 && (
+                    <div className="p-5 sm:p-8 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl sm:rounded-2xl border border-purple-200/30 shadow-soft mb-4 sm:mb-6">
+                      <h3 className="font-bold text-neutral-900 mb-4 text-base sm:text-lg flex items-center gap-2">
+                        <span className="text-xl sm:text-2xl">🔍</span>
+                        十因子详细分析
+                      </h3>
+                      <p className="text-xs sm:text-sm text-neutral-600 mb-4">因子分 &lt; 2：正常 | 2-3：中度症状 | ≥ 3：严重症状</p>
+                      <div className="grid grid-cols-1 gap-3">
+                        {scale.dimensions?.map((dimension) => {
+                          const score = result.dimensionScores![dimension.id] || 0;
+                          const level = score < 2 ? '正常' : score < 3 ? '中度' : '严重';
+                          const colorClass = score < 2 ? 'from-green-500 to-emerald-600' : score < 3 ? 'from-orange-500 to-amber-600' : 'from-red-500 to-pink-600';
+                          const bgClass = score < 2 ? 'bg-green-50 border-green-200' : score < 3 ? 'bg-orange-50 border-orange-200' : 'bg-red-50 border-red-200';
+
+                          return (
+                            <div key={dimension.id} className={`p-4 rounded-lg border ${bgClass}`}>
+                              <div className="flex items-center justify-between mb-2">
+                                <h4 className="font-semibold text-neutral-900 text-sm sm:text-base">{dimension.name}</h4>
+                                <span className={`px-2 py-0.5 rounded-full text-xs font-bold text-white bg-gradient-to-r ${colorClass}`}>
+                                  {level}
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-3">
+                                <div className="text-2xl font-bold text-neutral-900">{score.toFixed(2)}</div>
+                                <div className="flex-1 bg-neutral-200 rounded-full h-2 overflow-hidden">
+                                  <div
+                                    className={`h-full bg-gradient-to-r ${colorClass} transition-all duration-500`}
+                                    style={{ width: `${Math.min((score / 5) * 100, 100)}%` }}
+                                  />
+                                </div>
+                              </div>
+                              {dimension.description && (
+                                <p className="text-xs text-neutral-600 mt-2 leading-relaxed">{dimension.description}</p>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 建议区域 */}
+                  {result.report?.recommendations && result.report.recommendations.length > 0 && (
+                    <div className="p-5 sm:p-8 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-xl sm:rounded-2xl border border-blue-200/30 shadow-soft">
+                      <h3 className="font-bold text-neutral-900 mb-4 sm:mb-6 text-base sm:text-lg flex items-center gap-2">
+                        <span className="text-xl sm:text-2xl">💡</span>
+                        专业建议
+                      </h3>
+                      <div className="space-y-3 sm:space-y-4">
+                        {result.report.recommendations.map((suggestion, index) => (
+                          <div key={index} className="flex items-start gap-3 sm:gap-4 group hover:translate-x-1 transition-transform">
+                            <span className="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-gradient-to-br from-primary via-purple-500 to-pink-500 text-white text-xs sm:text-sm flex items-center justify-center font-bold shadow-soft group-hover:shadow-glow transition-shadow">
+                              {index + 1}
+                            </span>
+                            <span className="text-sm sm:text-base text-neutral-700 leading-relaxed flex-1 pt-0.5">
+                              {suggestion}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </>
               ) : (
                 <>

@@ -26,7 +26,7 @@ export const essScale: QuizTemplate = {
     // 维度一：情绪反应性（Emotional Reactivity）- 题目1-5
     {
       id: 'ess_1',
-      type: 'scale',
+      type: 'likert',
       question: '当我感到焦虑时，我很难集中注意力。',
       dimension: 'emotional_reactivity',
       options: [
@@ -41,7 +41,7 @@ export const essScale: QuizTemplate = {
     },
     {
       id: 'ess_2',
-      type: 'scale',
+      type: 'likert',
       question: '面对负面事件时，我容易产生强烈的情绪反应。',
       dimension: 'emotional_reactivity',
       options: [
@@ -56,7 +56,7 @@ export const essScale: QuizTemplate = {
     },
     {
       id: 'ess_3',
-      type: 'scale',
+      type: 'likert',
       question: '在压力大的情况下，我会感到情绪失控。',
       dimension: 'emotional_reactivity',
       options: [
@@ -71,7 +71,7 @@ export const essScale: QuizTemplate = {
     },
     {
       id: 'ess_4',
-      type: 'scale',
+      type: 'likert',
       question: '即使是小小的挫折也能让我感到非常沮丧。',
       dimension: 'emotional_reactivity',
       options: [
@@ -86,7 +86,7 @@ export const essScale: QuizTemplate = {
     },
     {
       id: 'ess_5',
-      type: 'scale',
+      type: 'likert',
       question: '在遭遇批评或拒绝时，我会感到极度不安或愤怒。',
       dimension: 'emotional_reactivity',
       options: [
@@ -103,7 +103,7 @@ export const essScale: QuizTemplate = {
     // 维度二：情绪调节能力（Emotional Regulation）- 题目6-10
     {
       id: 'ess_6',
-      type: 'scale',
+      type: 'likert',
       question: '当我感到愤怒时，我能通过改变思维方式来冷静自己。',
       dimension: 'emotional_regulation',
       options: [
@@ -118,7 +118,7 @@ export const essScale: QuizTemplate = {
     },
     {
       id: 'ess_7',
-      type: 'scale',
+      type: 'likert',
       question: '当我感到沮丧时，我能找到积极的方式来改变我的情绪状态。',
       dimension: 'emotional_regulation',
       options: [
@@ -133,7 +133,7 @@ export const essScale: QuizTemplate = {
     },
     {
       id: 'ess_8',
-      type: 'scale',
+      type: 'likert',
       question: '当我感到焦虑时，我能通过深呼吸或冥想来减轻情绪。',
       dimension: 'emotional_regulation',
       options: [
@@ -148,7 +148,7 @@ export const essScale: QuizTemplate = {
     },
     {
       id: 'ess_9',
-      type: 'scale',
+      type: 'likert',
       question: '面对挑战时，我通常能控制自己的情绪反应。',
       dimension: 'emotional_regulation',
       options: [
@@ -163,7 +163,7 @@ export const essScale: QuizTemplate = {
     },
     {
       id: 'ess_10',
-      type: 'scale',
+      type: 'likert',
       question: '即使我情绪低落，我也能找到方法提升自己的情绪。',
       dimension: 'emotional_regulation',
       options: [
@@ -180,7 +180,7 @@ export const essScale: QuizTemplate = {
     // 维度三：压力应对（Stress Coping）- 题目11-15
     {
       id: 'ess_11',
-      type: 'scale',
+      type: 'likert',
       question: '当我遇到压力时，我会主动采取行动解决问题。',
       dimension: 'stress_coping',
       options: [
@@ -195,7 +195,7 @@ export const essScale: QuizTemplate = {
     },
     {
       id: 'ess_12',
-      type: 'scale',
+      type: 'likert',
       question: '面对工作中的挑战时，我能够保持冷静并进行理智决策。',
       dimension: 'stress_coping',
       options: [
@@ -210,7 +210,7 @@ export const essScale: QuizTemplate = {
     },
     {
       id: 'ess_13',
-      type: 'scale',
+      type: 'likert',
       question: '我通常会寻求帮助来解决压力问题。',
       dimension: 'stress_coping',
       options: [
@@ -225,7 +225,7 @@ export const essScale: QuizTemplate = {
     },
     {
       id: 'ess_14',
-      type: 'scale',
+      type: 'likert',
       question: '当生活压力增加时，我会找到方法缓解压力，而不是让它影响我的情绪。',
       dimension: 'stress_coping',
       options: [
@@ -240,7 +240,7 @@ export const essScale: QuizTemplate = {
     },
     {
       id: 'ess_15',
-      type: 'scale',
+      type: 'likert',
       question: '我能够将压力看作一种挑战而不是威胁。',
       dimension: 'stress_coping',
       options: [
@@ -257,7 +257,7 @@ export const essScale: QuizTemplate = {
     // 维度四：情绪回归速度（Emotional Recovery）- 题目16-20
     {
       id: 'ess_16',
-      type: 'scale',
+      type: 'likert',
       question: '当我感到失落时，我能很快恢复积极的情绪。',
       dimension: 'emotional_recovery',
       options: [
@@ -272,7 +272,7 @@ export const essScale: QuizTemplate = {
     },
     {
       id: 'ess_17',
-      type: 'scale',
+      type: 'likert',
       question: '即使我感到非常生气，我也能迅速让自己冷静下来。',
       dimension: 'emotional_recovery',
       options: [
@@ -287,7 +287,7 @@ export const essScale: QuizTemplate = {
     },
     {
       id: 'ess_18',
-      type: 'scale',
+      type: 'likert',
       question: '经历情绪波动后，我能在很短时间内恢复到正常状态。',
       dimension: 'emotional_recovery',
       options: [
@@ -302,7 +302,7 @@ export const essScale: QuizTemplate = {
     },
     {
       id: 'ess_19',
-      type: 'scale',
+      type: 'likert',
       question: '当我感到沮丧时，我通常能迅速从不愉快的情绪中恢复过来。',
       dimension: 'emotional_recovery',
       options: [
@@ -317,7 +317,7 @@ export const essScale: QuizTemplate = {
     },
     {
       id: 'ess_20',
-      type: 'scale',
+      type: 'likert',
       question: '在面对负面情绪时，我能保持乐观并迅速摆脱不良情绪。',
       dimension: 'emotional_recovery',
       options: [
