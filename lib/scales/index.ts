@@ -12,16 +12,16 @@ import { zootopia } from './zootopia';
 
 // 所有可用的量表
 const scales: QuizTemplate[] = [
+  pat,
+  scl90,
   zootopia,
   zhz,
   workhorse,
-  pat,
   eq,
   bes,
   essScale,
   ini,
   ani,
-  scl90,
 ];
 
 // 测评分类配置

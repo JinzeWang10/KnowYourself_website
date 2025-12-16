@@ -921,12 +921,13 @@ export default function QuizPage() {
                 </div>
 
                 {/* 按钮条 */}
-                <div className="flex items-center justify-between gap-2 sm:gap-3 px-2 sm:px-4 py-4 sm:py-6 bg-gradient-to-r from-green-50/50 via-yellow-50/30 to-red-50/50 rounded-xl sm:rounded-2xl border-2 border-neutral-200">
+                <div className="flex items-center justify-between gap-2 sm:gap-3 px-2 sm:px-4 py-4 sm:py-6 bg-gradient-to-r from-red-50/50 via-yellow-50/30 to-green-50/50 rounded-xl sm:rounded-2xl border-2 border-neutral-200">
                   {currentQuestion.options?.map((option, idx) => {
                     const isSelected = answers[currentQuestion.id] === idx;
                     const totalOptions = currentQuestion.options!.length;
-                    // 计算颜色：从绿色过渡到红色（反转：左绿右红，符合心理学直觉）
-                    const colorProgress = 1 - (idx / (totalOptions - 1));
+                    // 统一颜色逻辑：左红右绿
+                    // 所有选项都遵循：左侧选项（如"完全不符合"）=红色，右侧选项（如"完全符合"）=绿色
+                    const colorProgress = idx / (totalOptions - 1);
 
                     return (
                       <button

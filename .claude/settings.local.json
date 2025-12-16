@@ -32,7 +32,10 @@
       "Bash(chmod:*)",
       "Bash(git pull:*)",
       "Bash(del:*)",
-      "Bash(timeout:*)"
+      "Bash(timeout:*)",
+      "Bash(for file in ani.ts eq.ts ess.ts ini.ts pat.ts scl90.ts zhz.ts zootopia.ts)",
+      "Bash(do echo \"=== $file ===\")",
+      "Bash(done)"
     ],
     "deny": [],
     "ask": []

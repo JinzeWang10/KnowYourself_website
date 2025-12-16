@@ -17,10 +17,10 @@ export default function ScalesPage() {
 
   // 量表图标映射
   const scaleIcons: Record<string, string> = {
+    'scl90': '🧠',
     'zootopia': '🦊',
     'zhz': '👑',
     'ani': '⛓️‍💥',
-    'scl90': '🧠',
     'ess': '🎢',
     'ini': '💞',
     'bes': '🍔',
