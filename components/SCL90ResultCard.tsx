@@ -123,7 +123,7 @@ const SCL90ResultCard = forwardRef<HTMLDivElement, SCL90ResultCardProps>(
                 <DimensionRadarChart data={radarData} />
               </div>
               <p className="text-xs text-neutral-500 text-center mt-3">
-                因子分 &lt; 2：正常范围 | 2-3：中度症状 | ≥ 3：严重症状
+                因子分范围：1-5分 | &lt; 2：正常范围 | 2-3：中度症状 | ≥ 3：严重症状
               </p>
             </div>
           )}

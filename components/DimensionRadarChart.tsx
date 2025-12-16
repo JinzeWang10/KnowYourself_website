@@ -15,7 +15,7 @@ import {
 export interface RadarDataPoint {
   dimension: string;
   value: number;
-  fullMark?: number;
+  fullMark: number; // 该维度的满分值（必填）
 }
 
 interface DimensionRadarChartProps {
@@ -37,8 +37,8 @@ export default function DimensionRadarChart({
     setMounted(true);
   }, []);
 
-  // 使用固定的 100 作为最大值，因为所有数据都已归一化到 0-100
-  const maxDomain = 100;
+  // 从数据中获取最大值（所有维度应该有相同的 fullMark）
+  const maxDomain = data.length > 0 ? (data[0].fullMark || 100) : 100;
 
   if (!mounted) {
     return (
@@ -266,7 +266,7 @@ export default function DimensionRadarChart({
           {/* 说明文字 */}
           <div className="mt-4 p-3 bg-blue-50/50 rounded-xl border border-blue-100">
             <p className="text-xs text-neutral-600 text-center leading-relaxed">
-              <span className="font-medium">💡 提示：</span> 雷达图展示各维度得分（满分 100 分），便于查看各维度表现
+              <span className="font-medium">💡 提示：</span> 雷达图展示各维度得分（满分 {maxDomain} 分），便于查看各维度表现
             </p>
           </div>
         </>

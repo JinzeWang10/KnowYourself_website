@@ -119,7 +119,7 @@ const SCL90ShareCard = forwardRef<HTMLDivElement, SCL90ShareCardProps>(
                 <DimensionRadarChart data={radarData} />
               </div>
               <p className="text-sm text-neutral-500 text-center mt-4">
-                因子分 &lt; 2：正常范围 | 2-3：中度症状 | ≥ 3：严重症状
+                因子分范围：1-5分 | &lt; 2：正常范围 | 2-3：中度症状 | ≥ 3：严重症状
               </p>
             </div>
           )}
